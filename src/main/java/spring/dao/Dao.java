@@ -5,11 +5,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 @Repository
+@Slf4j
 // db를 연동해 컨트롤러로 정보를 전송
 public class Dao {
     @Autowired // 아래 JdbcTemplate에 bean을 알아서 넣어줌
@@ -52,39 +55,34 @@ public class Dao {
         });
     }
 
+    private List<Map<String, Object>> getRows(String queryString) { // List<Map<String, Object>> 형태로 모든 선택된 열을 리턴
+        return jt.queryForList(queryString);
+    }
+
     // 이메일 중복 확인 함수
     public boolean emailAvailable(String email) {
         email = email.replace(" ", "+");
-        List<ResultSet> results = jt.query(String.format("SELECT * FROM members WHERE email = '%s';", email), (ResultSet rs, int rowNum) -> {
-            return rs;
-        });
-        if (results.size() >= 1) {
+        String queryString = String.format("SELECT * FROM members WHERE email = '%s';", email);
+        int userCount = getRows(queryString).size();
+        if (userCount >= 1) {
             return false;
         } else {
             return true;
         }
     }
 
-    // 계정 생성
-    public int createAccount(String email, String password, String nickname) {
-        return jt.update(String.format("INSERT INTO members VALUES ('%s', '%s', '%s', 0, null, null)", email, password, nickname));
-    }
-
-    public String getPassword(String email) {
-        List<ResultSet> results = jt.query(String.format("SELECT * FROM members WHERE email = '%s';", email), (ResultSet rs, int rowNum) -> {
-            return rs;
-        });
-        if (results.size() == 1) {
-            ResultSet targetAccount = results.get(0);
-            String result = null;
-            try {
-                result = targetAccount.getString(2);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-            return result;
+    public String getPassword(String email) { // 데이터베이스에 저장한 암호화된 비밀번호를 리턴
+        email = email.replace(" ", "+");
+        String queryString = String.format("SELECT pw FROM members WHERE email = '%s';", email); // pw 컬럼만 가져옴
+        List<Map<String, Object>> result = getRows(queryString);
+        if (result.size() >= 1) {
+            return result.get(0).get("pw").toString();
         } else {
             return null;
         }
+    }
+
+    public int createAccount(String email, String password, String nickname) { // 계정 생성
+        return jt.update(String.format("INSERT INTO members VALUES ('%s', '%s', '%s', 0, null, null)", email, password, nickname));
     }
 }
