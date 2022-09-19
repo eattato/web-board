@@ -23,6 +23,10 @@ body {
     flex-direction: column;
 }
 
+.origin {
+    display: none;
+}
+
 /* header */
 .banner {
     width: 1000px;
@@ -33,7 +37,7 @@ body {
 .menu {
     width: 1000px;
     height: 40px;
-    background-color: #ecea63;
+    background-color: lightgray;
     margin-top: 10px;
 }
 
@@ -49,8 +53,4 @@ body {
     height: 40px;
     text-align: center;
     line-height: 40px;
-}
-
-.menu a {
-    color: white;
 }

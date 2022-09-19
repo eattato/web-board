@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>메인 페이지</title>
+    <link rel="stylesheet" th:href="@{/components/css/style.css}">
+    <link rel="stylesheet" th:href="@{/categoryList/css/style.css}">
+    <script src="https://kit.fontawesome.com/d5e5d975b2.js" crossorigin="anonymous"></script>
+    <script src="components/js/jquery.js"></script>
+    <script src="components/js/jquery.cookie.js"></script>
+    <script src="categoryList/js/script.js"></script>
+</head>
+<body>
+    <div class="wrap">
+        <div class="banner">
+            <a href="#">
+                <img src="" alt="배너">
+            </a>
+        </div>
+        <div class="menu">
+            <ul>
+                <li><a href="#">메인</a></li>
+                <li><a href="#">신규글</a></li>
+                <li><a href="#">인기글</a></li>
+                <li><a href="#">글 작성</a></li>
+                <li class="menu_setting"><a href="http://localhost:8888/login">로그인</a></li>
+            </ul>
+        </div>
+        <div class="body">
+            <div class="title">
+                <div class="category_name">카테고리 목록</div>
+                <div class="category_info">카테고리를 선택해 게시물을 볼 수 있습니다.</div>
+            </div>
+
+            <div class="main">
+                <div class="main_posts">
+                    <ul class="post_list">
+                        <li class="no_post">카테고리가 없습니다.</li>
+    
+                        <li class="post_simple origin">
+                            <a href="#">
+                                <div class="post_name">카테고리 제목</div>
+                                <div class="post_right">
+                                    <div class="post_wrap">
+                                        <div class="post_top">게시물 갯수</div>
+                                        <div class="post_bottom">123개</div>
+                                    </div>
+    
+                                    <div class="post_wrap">
+                                        <div class="post_top">총 추천 횟수</div>
+                                        <div class="post_bottom">123개</div>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+    
+                        <li class="post_exact origin">
+                            <a href="#">
+                                <div class="post_left">
+                                    <div class="post_name">카테고리 제목</div>
+                                    <div class="post_info">
+                                        <img src="" alt="">
+                                        <p>
+                                            지역 카테고리는 각 지역 명소와 즐길 거리를 소개하고 추천하는 카테고리입니다. <br><br>
+                                            특정 지역을 비하하는 등의 행위는 글 또는 계정의 삭제를 초래할 수 있습니다.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="post_right">
+                                    <div class="post_wrap">
+                                        <div class="post_top">게시물 갯수</div>
+                                        <div class="post_bottom">123개</div>
+                                    </div>
+    
+                                    <div class="post_wrap">
+                                        <div class="post_top">총 추천 횟수</div>
+                                        <div class="post_bottom">123개</div>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <ul class="paging">
+                        <li class="page_move"><a href="#">&lt;</a></li>
+                        <li class="page_button"><a href="#">1</a></li>
+                        <li class="page_button"><a href="#">2</a></li>
+                        <li class="page_button"><a href="#">3</a></li>
+                        <li class="page_move"><a href="#">&gt;</a></li>
+                    </ul>
+                </div>
+
+                <div class="sidebar">
+                    <div class="sidebar_title">카테고리 검색</div>
+                    <form class="sidebar_search">
+                        <div class="search_box">
+                            <div class="search_wrap"></div>
+                            <input class="search_input" type="text" placeholder="검색">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </div>
+
+                        <div class="sidebar_title">보기 모드</div>
+                        <div class="select_box">
+                            <label><input name="view_mode" type="radio" value="simple" checked>간략히</label>
+                            <label><input name="view_mode" type="radio" value="exact">자세히</label>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
