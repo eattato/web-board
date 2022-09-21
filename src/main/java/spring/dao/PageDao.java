@@ -34,6 +34,7 @@ public class PageDao {
             }
         }
         queryString += String.format("ORDER BY id OFFSET %s ROWS FETCH NEXT %s ROWS ONLY", data.getStart(), data.getEnd() - data.getStart());
+        log.info(queryString);
         return getRows(queryString);
     }
 }

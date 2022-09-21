@@ -33,6 +33,10 @@ public class AccountService {
     FileService fileService;
 
     // Public Methods
+    public boolean checkEmail(String check) {
+        return accountDao.emailAvailable(check);
+    }
+
     public String getSession(HttpSession session) {
         Object sessionResult = session.getAttribute("email");
         if (sessionResult != null) {
@@ -155,8 +159,6 @@ public class AccountService {
                                 if (accountDao.setProfileImage(sessionData, directory) == 0) {
                                     result = "failed";
                                 }
-                            } else {
-                                result = "image is invalid";
                             }
                         }
                     }

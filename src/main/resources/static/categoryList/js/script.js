@@ -32,9 +32,5 @@ $(() => {
     var postSimple = $(".post_simple origin"); // 카테고리 버튼 원본
     var postExact = $(".post_exact origin");
 
-    
-
-    // var noPost = $(".no_post");
-    // noPost.text("로딩 중 입니다..");
-    // noPost.css({display: "block"});
+    // httpRequest("GET", "http://localhost:8888/getcategory?page=")
 });

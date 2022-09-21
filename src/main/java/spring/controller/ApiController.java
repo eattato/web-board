@@ -34,6 +34,11 @@ public class ApiController {
     @Autowired
     FileService fileService;
 
+    @GetMapping("/check")
+    public boolean email(@RequestParam(value = "target") String check) {
+        return accountService.checkEmail(check);
+    }
+
     @PostMapping("/account")
     public String createAccount(HttpServletRequest request) {
         String email = request.getParameter("email");

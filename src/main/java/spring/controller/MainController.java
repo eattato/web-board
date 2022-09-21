@@ -34,7 +34,7 @@ public class MainController {
             @RequestParam(required = false, defaultValue = "1") String page,
             @RequestParam(required = false, defaultValue = "") String search
             ) {
-        accountService.getProfileBySession(request, model);
+        //accountService.getProfileBySession(request, model);
 
         int pageIndex = Integer.parseInt(page);
         int postPerPage = 0;
@@ -44,12 +44,14 @@ public class MainController {
             postPerPage = 25;
         }
         PageVO vo = new PageVO();
-        vo.setData(pageIndex * postPerPage, (pageIndex + 1) * postPerPage);
+        vo.setData((pageIndex - 1) * postPerPage, pageIndex * postPerPage);
         if (search.equals("") == false) {
             vo.setSearch(search, null, null);
         }
 
-        model.addAttribute("categoryData", pageService.getCategoryPage(vo));
+        List<Map<String, Object>> result = pageService.getCategoryPage(vo);
+        log.info(Integer.toString(result.size()));
+        model.addAttribute("categoryList", result);
         model.addAttribute("page", page);
 
         return "main";

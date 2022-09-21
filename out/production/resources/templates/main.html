@@ -44,11 +44,9 @@
             <div class="main">
                 <div class="main_posts">
                     <ul class="post_list">
-                        <li class="no_post">카테고리가 없습니다.</li>
-    
-                        <li class="post_simple origin">
+                        <li class="post_simple" th:each="category : ${categoryList}">
                             <a href="#">
-                                <div class="post_name">카테고리 제목</div>
+                                <div class="post_name" th:text="${category.category}">카테고리 제목</div>
                                 <div class="post_right">
                                     <div class="post_wrap">
                                         <div class="post_top">게시물 갯수</div>
@@ -63,13 +61,13 @@
                             </a>
                         </li>
     
-                        <li class="post_exact origin">
+                        <li class="post_exact" th:each="category: ${categoryList}">
                             <a href="#">
                                 <div class="post_left">
-                                    <div class="post_name">카테고리 제목</div>
+                                    <div class="post_name" th:text="${category.category}">카테고리 제목</div>
                                     <div class="post_info">
-                                        <img src="" alt="">
-                                        <p>
+                                        <img src="" alt="" th:src="${category.img}">
+                                        <p th:text="${category.about}">
                                             지역 카테고리는 각 지역 명소와 즐길 거리를 소개하고 추천하는 카테고리입니다. <br><br>
                                             특정 지역을 비하하는 등의 행위는 글 또는 계정의 삭제를 초래할 수 있습니다.
                                         </p>

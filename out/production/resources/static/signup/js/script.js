@@ -181,7 +181,7 @@ $(() => {
             }
             let result = httpRequest("POST", "http://localhost:8888/account", encode(data), "application/x-www-form-urlencoded");
             if (result == "ok") {
-                window.location.replace("https://localhost:8888");
+                window.location.replace("http://localhost:8888");
             }
         }
     });

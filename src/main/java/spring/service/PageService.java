@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import spring.dao.PageDao;
 import spring.vo.PageVO;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,8 +19,7 @@ public class PageService {
     @Autowired
     PageDao pageDao;
 
-    public String getCategoryPage(PageVO data) {
-        List<Map<String, Object>> result = pageDao.getCategoryPage(data);
-        return JSONArray.toJSONString(result);
+        public List<Map<String, Object>> getCategoryPage(PageVO data) {
+        return pageDao.getCategoryPage(data);
     }
 }
