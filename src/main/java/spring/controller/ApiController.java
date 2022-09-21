@@ -2,132 +2,123 @@ package spring.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import spring.dao.Dao;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.awt.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import spring.service.AccountService;
+import spring.service.FileService;
+import spring.vo.AccountCreateVO;
+import spring.vo.LoginVO;
+import spring.vo.ProfileVO;
 
 @Slf4j
 @RestController
 public class ApiController {
     @Autowired
-    Dao dao;
+    AccountService accountService;
 
-    @GetMapping("/check")
-    public boolean email(@RequestParam(value = "target") String check) {
-        return dao.emailAvailable(check);
-    }
+    @Autowired
+    FileService fileService;
 
     @PostMapping("/account")
     public String createAccount(HttpServletRequest request) {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         String nickname = request.getParameter("nickname");
-        String[] essentialParameters = new String[] {"email", "password", "nickname"};
-        log.info("email: " + email + ", password: " + password + ", nickname: " + nickname);
-
-        String result = null;
-        for (int ind = 0; ind < essentialParameters.length; ind++) {
-            String param = essentialParameters[ind];
-            if (request.getParameter(param) == null) {
-                result = param + " is null";
-                break;
-            }
-        }
-
-        if (result == null) {
-            // 이메일 안 겹치면
-            if (dao.emailAvailable(email) == true) {
-                // 비밀번호 검사
-                result = checkPassword(password);
-
-                if (result == null) {
-                    int nameLength = request.getParameter("nickname").length();
-                    if (nameLength > 0 && nameLength < 50) {
-                        result = "ok";
-                        password = shaEncrypt(password);
-                        if (dao.createAccount(email, password, nickname) == 0) {
-                            result = "failed";
-                        }
-                    } else {
-                        result = "nickname is invalid";
-                    }
-                }
-            } else {
-                result = "email invalid";
-            }
-        }
-        return result;
+        AccountCreateVO vo = new AccountCreateVO();
+        vo.setData(email, password, nickname);
+        return accountService.createAccount(vo);
     }
 
     @PostMapping("/access")
     public String loginAccount(HttpServletRequest request) {
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
-
-        String error = null;
-        if (dao.emailAvailable(email) == false) {
-            if (shaEncrypt(password) == dao.getPassword(email)) {
-                error = "ok";
-                HttpSession session = request.getSession();
-                session.setAttribute("email", email);
-            } else {
-                error = "password invalid";
-            }
-        } else {
-            error = "email not found";
-        }
-        return error;
+        LoginVO vo = new LoginVO();
+        vo.setData(request.getParameter("email"), request.getParameter("password"));
+        return accountService.login(request, vo);
     }
 
-    // 비밀번호 보안 확인 함수
-    private String checkPassword(String pw) {
+    @GetMapping("/logindata")
+    public String loginSession(HttpServletRequest request) {
+        return accountService.getLoginData(request);
+    }
+
+    @PostMapping("/setprofile")
+    public String setProfile(HttpServletRequest request) {
         String result = null;
-        boolean hasEng = false;
-        boolean hasNum = false;
-        boolean hasSpc = false;
-        for (int ind = 0; ind < pw.length(); ind++) {
-            int word = (int)pw.charAt(ind);
-            if ((word >= 65 && word <= 90) || (word >= 97 && word <= 122)) {
-                hasEng = true;
-            } else if (word >= 48 && word <= 57) {
-                hasNum = true;
-            } else if (word >= 33 && word <= 38) {
-                hasSpc = true;
-            } else {
-                result = "password is invalid";
-                break;
-            }
-        }
-        if (!hasEng || !hasNum || !hasSpc) {
-            result = "password is invalid";
-        }
-        return result;
+        String password = request.getParameter("password");
+        String nickname = request.getParameter("nickname");
+        String image = request.getParameter("image");
+        ProfileVO vo = new ProfileVO();
+        vo.setData(password, nickname, image);
+        return accountService.updateProfile(request, vo);
     }
 
-    private String shaEncrypt(String target) {
-        MessageDigest md = null;
-        try {
-            md = MessageDigest.getInstance("SHA-256");
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
+    //@RequestMapping(value = "/images/{path}", method = RequestMethod.GET, produces = MediaType.IMAGE_PNG_VALUE)
+    @GetMapping("/images/**")
+    public ResponseEntity<?> getImage(HttpServletRequest request) throws IOException {
+        String[] fullLink = request.getRequestURI().split("/");
+        String directory = "";
+        for (int ind = 2; ind < fullLink.length; ind++) {
+            directory = directory + "/" + fullLink[ind];
         }
-        md.update(target.getBytes());
-        StringBuilder builder = new StringBuilder();
-        for (byte b: md.digest()) {
-            builder.append(String.format("%02x", b));
+        String basicPath = "C:/board-saves";
+        directory = basicPath + directory;
+        File imageFile = new File(directory);
+
+        if (imageFile.exists() == true && imageFile.isFile() == true) {
+            //log.info("returning " + path);
+            InputStream input = new FileInputStream(imageFile);
+            byte[] result = new byte[(int) imageFile.length()];
+            input.read(result);
+            HttpHeaders header = new HttpHeaders();
+            header.setContentType(MediaType.IMAGE_PNG);
+            ResponseEntity<byte[]> responseEntity = new ResponseEntity<>(result, header, HttpStatus.OK);
+            return responseEntity;
+        } else {
+            //log.info("image not found");
+            String error = "image not found";
+            HttpHeaders header = new HttpHeaders();
+            header.setContentType(MediaType.TEXT_PLAIN);
+            ResponseEntity<String> responseEntity = new ResponseEntity<>(error, header, HttpStatus.OK);
+            return responseEntity;
         }
-        return builder.toString();
     }
 
+    @PostMapping("/tempupload")
+    public ResponseEntity<?> tempUpload(HttpServletRequest request) {
+        String result = fileService.addTempImage(request);
+        if (result != "session not found" || result != "no image") {
+            byte[] image = result.getBytes();
+            HttpHeaders header = new HttpHeaders();
+            header.setContentType(MediaType.IMAGE_PNG);
+            ResponseEntity<byte[]> responseEntity = new ResponseEntity<>(image, header, HttpStatus.OK);
+            return responseEntity;
+        } else {
+            String error = result;
+            HttpHeaders header = new HttpHeaders();
+            header.setContentType(MediaType.TEXT_PLAIN);
+            ResponseEntity<String> responseEntity = new ResponseEntity<>(error, header, HttpStatus.OK);
+            return responseEntity;
+        }
+    }
+
+    // ONLY FOR DEBUG PURPOSE
     @GetMapping("/members")
-    public List<Map<String, ?>> members() {
-        return dao.getMember(null);
+    public List<Map<String, Object>> members() {
+        return accountService.getMembers();
     }
 }

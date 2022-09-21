@@ -54,3 +54,36 @@ body {
     text-align: center;
     line-height: 40px;
 }
+
+.menu_profile {
+    display: none;
+    width: auto !important;
+}
+
+.menu_profile a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.menu_profile_imgframe {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+    border-radius: 15px;
+    overflow: hidden;
+    background-color: white;
+}
+
+.menu_profile img {
+    width: 30px;
+}
+
+.menu_profile_name {
+    font-size: 12px;
+}

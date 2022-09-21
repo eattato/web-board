@@ -134,7 +134,8 @@ $(() => {
             }
             let result = httpRequest("POST", "http://localhost:8888/access", encode(data), "application/x-www-form-urlencoded");
             if (result == "ok") {
-                window.location.replace("https://localhost:8888");
+                //window.location.replace("https://localhost:8888");
+                window.location.href = "http://localhost:8888";
             } else if (result == "email not found") {
                 inputField(email, "해당 이메일로 생성된 계정이 존재하지 않습니다!");
             } else if (result == "password invalid") {

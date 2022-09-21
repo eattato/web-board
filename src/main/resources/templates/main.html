@@ -8,6 +8,7 @@
     <script src="https://kit.fontawesome.com/d5e5d975b2.js" crossorigin="anonymous"></script>
     <script src="components/js/jquery.js"></script>
     <script src="components/js/jquery.cookie.js"></script>
+    <script src="components/js/header.js"></script>
     <script src="categoryList/js/script.js"></script>
 </head>
 <body>
@@ -19,11 +20,19 @@
         </div>
         <div class="menu">
             <ul>
-                <li><a href="#">메인</a></li>
+                <li><a href="http://localhost:8888">메인</a></li>
                 <li><a href="#">신규글</a></li>
                 <li><a href="#">인기글</a></li>
                 <li><a href="#">글 작성</a></li>
-                <li class="menu_setting"><a href="http://localhost:8888/login">로그인</a></li>
+                <li class="menu_login"><a href="http://localhost:8888/login">로그인</a></li>
+                <li class="menu_profile">
+                    <a href="http://localhost:8888/profile">
+                        <div class="menu_profile_imgframe">
+                            <img src="" alt="">
+                        </div>
+                        <div class="menu_profile_name"></div>
+                    </a>
+                </li>
             </ul>
         </div>
         <div class="body">
