@@ -8,11 +8,12 @@ function httpGet(url)
 
 const setViewMode = (viewMode) => {
     if (viewMode == "simple" || viewMode == "exact") {
+        console.log(viewMode);
         $.cookie("viewmode", viewMode, { expires: 2147483647 });
         if (viewMode == "simple") {
             $(".post_simple").css({display: "block"});
             $(".post_exact").css({display: "none"});
-        } else if (changedValue == "exact") {
+        } else if (viewMode == "exact") {
             $(".post_simple").css({display: "none"});
             $(".post_exact").css({display: "block"});
         }
@@ -22,6 +23,11 @@ const setViewMode = (viewMode) => {
 $(() => {
     // 보기 모드 쿠키 읽기
     let viewMode = $.cookie("viewmode")
+    if (viewMode == "exact") {
+        $("view_mode[value=simple]").prop("checked", true);
+        $("view_mode[value=exact]").prop("checked", true);
+    }
+
     if (viewMode == undefined || (viewMode != "simple" && viewMode != "exact")) {
         viewMode = "simple";
     }
