@@ -24,8 +24,8 @@ $(() => {
     // 보기 모드 쿠키 읽기
     let viewMode = $.cookie("viewmode")
     if (viewMode == "exact") {
-        $("view_mode[value=simple]").prop("checked", true);
-        $("view_mode[value=exact]").prop("checked", true);
+        $("#view_simple").prop("checked", false);
+        $("#view_exact").prop("checked", true);
     }
 
     if (viewMode == undefined || (viewMode != "simple" && viewMode != "exact")) {

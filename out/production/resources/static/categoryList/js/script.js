@@ -23,7 +23,11 @@ const setViewMode = (viewMode) => {
 $(() => {
     // 보기 모드 쿠키 읽기
     let viewMode = $.cookie("viewmode")
-    $("input[name='view_mode']").val(viewMode);
+    if (viewMode == "exact") {
+        $("#view_simple").prop("checked", false);
+        $("#view_exact").prop("checked", true);
+    }
+
     if (viewMode == undefined || (viewMode != "simple" && viewMode != "exact")) {
         viewMode = "simple";
     }
