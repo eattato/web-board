@@ -1,101 +1,137 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>메인 페이지</title>
-    <link rel="stylesheet" th:href="@{/components/css/style.css}">
-    <link rel="stylesheet" th:href="@{/categoryList/css/style.css}">
-    <script src="https://kit.fontawesome.com/d5e5d975b2.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" th:href="@{/components/css/style.css}" />
+    <link rel="stylesheet" th:href="@{/categoryList/css/style.css}" />
+    <script
+      src="https://kit.fontawesome.com/d5e5d975b2.js"
+      crossorigin="anonymous"
+    ></script>
     <script src="components/js/jquery.js"></script>
     <script src="components/js/jquery.cookie.js"></script>
     <script src="components/js/header.js"></script>
     <script src="categoryList/js/script.js"></script>
-</head>
-<body>
+  </head>
+  <body>
     <div class="wrap">
-        <div class="banner">
-            <a href="#">
-                <img src="" alt="배너">
-            </a>
+      <div class="banner">
+        <a href="#">
+          <img src="" alt="배너" />
+        </a>
+      </div>
+      <div class="menu" th:replace="fragments/common :: header"></div>
+      <div class="body">
+        <div class="title">
+          <div class="category_name">카테고리 목록</div>
+          <div class="category_info">
+            카테고리를 선택해 게시물을 볼 수 있습니다.
+          </div>
         </div>
-        <div class="menu" th:replace="fragments/common :: header"></div>
-        <div class="body">
-            <div class="title">
-                <div class="category_name">카테고리 목록</div>
-                <div class="category_info">카테고리를 선택해 게시물을 볼 수 있습니다.</div>
-            </div>
 
-            <div class="main">
-                <div class="main_posts">
-                    <ul class="post_list">
-                        <li class="post_simple" th:each="category : ${categoryList}">
-                            <a th:href="|http://localhost:8888/category/${category.id}|">
-                                <div class="post_name" th:text="${category.category}">카테고리 제목</div>
-                                <div class="post_right">
-                                    <div class="post_wrap">
-                                        <div class="post_top">게시물 갯수</div>
-                                        <div class="post_bottom" th:text="|${category.posts}개|"></div>
-                                    </div>
-    
-                                    <div class="post_wrap">
-                                        <div class="post_top">총 추천 횟수</div>
-                                        <div class="post_bottom" th:text="|${category.loved}개|"></div>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-    
-                        <li class="post_exact" th:each="category: ${categoryList}">
-                            <a href="#">
-                                <div class="post_left">
-                                    <div class="post_name" th:text="${category.category}">카테고리 제목</div>
-                                    <div class="post_info">
-                                        <img src="" alt="" th:src="${category.img}">
-                                        <p th:text="${category.about}">카테고리 설명</p>
-                                    </div>
-                                </div>
-                                <div class="post_right">
-                                    <div class="post_wrap">
-                                        <div class="post_top">게시물 갯수</div>
-                                        <div class="post_bottom" th:text="|${category.posts}개|"></div>
-                                    </div>
-    
-                                    <div class="post_wrap">
-                                        <div class="post_top">총 추천 횟수</div>
-                                        <div class="post_bottom" th:text="|${category.loved}개|"></div>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                    </ul>
+        <div class="main">
+          <div class="main_posts">
+            <ul class="post_list">
+              <li class="post_simple" th:each="category : ${categoryList}">
+                <a th:href="|http://localhost:8888/category/${category.id}|">
+                  <div class="post_name" th:text="${category.category}">
+                    카테고리 제목
+                  </div>
+                  <div class="post_right">
+                    <div class="post_wrap">
+                      <div class="post_top">게시물 갯수</div>
+                      <div
+                        class="post_bottom"
+                        th:text="|${category.posts}개|"
+                      ></div>
+                    </div>
 
-                    <ul class="paging">
-                        <li class="page_move"><a href="#">&lt;</a></li>
-                        <li class="page_button"><a href="#">1</a></li>
-                        <li class="page_button"><a href="#">2</a></li>
-                        <li class="page_button"><a href="#">3</a></li>
-                        <li class="page_move"><a href="#">&gt;</a></li>
-                    </ul>
-                </div>
+                    <div class="post_wrap">
+                      <div class="post_top">총 추천 횟수</div>
+                      <div
+                        class="post_bottom"
+                        th:text="|${category.loved}개|"
+                      ></div>
+                    </div>
+                  </div>
+                </a>
+              </li>
 
-                <div class="sidebar">
-                    <div class="sidebar_title">카테고리 검색</div>
-                    <form class="sidebar_search">
-                        <div class="search_box">
-                            <div class="search_wrap"></div>
-                            <input class="search_input" type="text" placeholder="검색">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                        </div>
+              <li class="post_exact" th:each="category: ${categoryList}">
+                <a th:href="|http://localhost:8888/category/${category.id}|">
+                  <div class="post_left">
+                    <div class="post_name" th:text="${category.category}">
+                      카테고리 제목
+                    </div>
+                    <div class="post_info">
+                      <img src="" alt="" th:src="${category.img}" />
+                      <p th:text="${category.about}">카테고리 설명</p>
+                    </div>
+                  </div>
+                  <div class="post_right">
+                    <div class="post_wrap">
+                      <div class="post_top">게시물 갯수</div>
+                      <div
+                        class="post_bottom"
+                        th:text="|${category.posts}개|"
+                      ></div>
+                    </div>
 
-                        <div class="sidebar_title">보기 모드</div>
-                        <div class="select_box">
-                            <label><input name="view_mode" id="view_simple" type="radio" value="simple" checked>간략히</label>
-                            <label><input name="view_mode" id="view_exact" type="radio" value="exact">자세히</label>
-                        </div>
-                    </form>
-                </div>
-            </div>
+                    <div class="post_wrap">
+                      <div class="post_top">총 추천 횟수</div>
+                      <div
+                        class="post_bottom"
+                        th:text="|${category.loved}개|"
+                      ></div>
+                    </div>
+                  </div>
+                </a>
+              </li>
+            </ul>
+
+            <ul class="paging">
+              <li class="page_move"><a href="#">&lt;</a></li>
+              <li class="page_button"><a href="#">1</a></li>
+              <li class="page_button"><a href="#">2</a></li>
+              <li class="page_button"><a href="#">3</a></li>
+              <li class="page_move"><a href="#">&gt;</a></li>
+            </ul>
+          </div>
+
+          <div class="sidebar">
+            <div class="sidebar_title">카테고리 검색</div>
+            <form class="sidebar_search">
+              <div class="search_box">
+                <div class="search_wrap"></div>
+                <input class="search_input" type="text" placeholder="검색" />
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </div>
+
+              <div class="sidebar_title">보기 모드</div>
+              <div class="select_box">
+                <label
+                  ><input
+                    name="view_mode"
+                    id="view_simple"
+                    type="radio"
+                    value="simple"
+                    checked
+                  />간략히</label
+                >
+                <label
+                  ><input
+                    name="view_mode"
+                    id="view_exact"
+                    type="radio"
+                    value="exact"
+                  />자세히</label
+                >
+              </div>
+            </form>
+          </div>
         </div>
+      </div>
     </div>
-</body>
+  </body>
 </html>

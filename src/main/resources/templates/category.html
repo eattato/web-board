@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title th:text="${categoryData.category}">카테고리</title>
@@ -28,51 +28,53 @@
             <div class="main">
                 <div class="main_posts">
                     <ul class="post_list">
-                        <li class="post_simple" th:each="post : ${posts}">
-                            <a th:href="|http://localhost:8888/post/${post.id}|">
-                                <div class="post_name" th:text="${post.postname}">글 제목</div>
-                                <div class="post_right">
-                                    <div class="post_wrap">
-                                        <div class="post_top" th:text="${post.authorInfo.getNickname()}">게시자</div>
-                                        <div class="post_bottom" th:text="${post.postdate}"></div>
+                        <th:block th:each="post : ${posts}">
+                            <li class="post_simple">
+                                <a th:href="|http://localhost:8888/post/${post.id}|">
+                                    <div class="post_name" th:text="${post.postname}">글 제목</div>
+                                    <div class="post_right">
+                                        <div class="post_wrap">
+                                            <div class="post_top" th:text="${post.authorInfo.getNickname()}">게시자</div>
+                                            <div class="post_bottom" th:text="${post.postdate}"></div>
+                                        </div>
+    
+                                        <div class="post_wrap">
+                                            <div class="post_top">조회수</div>
+                                            <div class="post_bottom" th:text="|${post.viewers}회|"></div>
+                                        </div>
+        
+                                        <div class="post_wrap">
+                                            <div class="post_top">추천</div>
+                                            <div class="post_bottom" th:text="|${post.loved}개|"></div>
+                                        </div>
                                     </div>
+                                </a>
+                            </li>
 
-                                    <div class="post_wrap">
-                                        <div class="post_top">조회수</div>
-                                        <div class="post_bottom" th:text="|${post.viewers}회|"></div>
+                            <li class="post_exact">
+                                <a th:href="|http://localhost:8888/post/${post.id}|">
+                                    <div class="post_left">
+                                        <div class="post_title">
+                                            <div class="post_name" th:text="${post.postname}">글 제목</div>
+                                            <div class="post_data" th:text="|조회수 ${post.viewers}회|"></div>
+                                            <div class="post_data" th:text="|추천 ${post.loved}개|"></div>
+                                        </div>
+                                        <div class="post_info">
+                                            <img src="" alt="">
+                                            <p th:text="${post.content}">글 내용</p>
+                                        </div>
                                     </div>
-    
-                                    <div class="post_wrap">
-                                        <div class="post_top">추천</div>
-                                        <div class="post_bottom" th:text="|${post.loved}개|"></div>
+                                    <div class="post_right">
+                                        <div class="post_top" th:text="|게시자 - ${post.authorInfo.getNickname()}|">게시자</div>
+                                        <div class="post_top" th:text="|게시일 - ${post.postdate}|">게시일</div>
+                                        <div class="author_image_frame">
+                                            <img th:if="${post.authorInfo.getImage() == null}" alt="" th:src="http://localhost:8888/images/profiles/default.png">
+                                            <img th:if="${post.authorInfo.getImage() != null}" alt="" th:src="|http://localhost:8888/images/${post.authorInfo.getImage()}|">
+                                        </div>
                                     </div>
-                                </div>
-                            </a>
-                        </li>
-    
-                        <li class="post_exact" th:each="post : ${posts}">
-                            <a th:href="|http://localhost:8888/post/${post.id}|">
-                                <div class="post_left">
-                                    <div class="post_title">
-                                        <div class="post_name" th:text="${post.postname}">글 제목</div>
-                                        <div class="post_data" th:text="|조회수 ${post.viewers}회|"></div>
-                                        <div class="post_data" th:text="|추천 ${post.loved}개|"></div>
-                                    </div>
-                                    <div class="post_info">
-                                        <img src="" alt="">
-                                        <p th:text="${post.content}">글 내용</p>
-                                    </div>
-                                </div>
-                                <div class="post_right">
-                                    <div class="post_top" th:text="|게시자 - ${post.authorInfo.getNickname()}|">게시자</div>
-                                    <div class="post_top" th:text="|게시일 - ${post.postdate}|">게시일</div>
-                                    <div class="author_image_frame">
-                                        <img th:if="${post.authorInfo.getImage() == null}" alt="" th:src="http://localhost:8888/images/profiles/default.png">
-                                        <img th:if="${post.authorInfo.getImage() != null}" alt="" th:src="|http://localhost:8888/images/${post.authorInfo.getImage()}|">
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
+                                </a>
+                            </li>
+                        </th:block>
                     </ul>
 
                     <ul class="paging">
@@ -95,8 +97,8 @@
 
                         <div class="sidebar_title">보기 모드</div>
                         <div class="select_box">
-                            <label><input name="view_mode" type="radio" value="simple" checked>간략히</label>
-                            <label><input name="view_mode" type="radio" value="exact">자세히</label>
+                            <label><input name="view_mode" id="view_simple" type="radio" value="simple" checked>간략히</label>
+                            <label><input name="view_mode" id="view_exact" type="radio" value="exact">자세히</label>
                         </div>
 
                         <div class="sidebar_title">검색 필터</div>
