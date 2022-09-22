@@ -3,6 +3,7 @@ package spring.service;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import spring.dao.AccountDao;
@@ -178,7 +179,7 @@ public class AccountService {
         return result;
     }
 
-    public boolean getProfileBySession(HttpServletRequest request, Model model) {
+    public boolean sendProfileBySession(HttpServletRequest request, Model model) {
         HttpSession session = request.getSession();
         String sessionData = getSession(session);
 
@@ -186,10 +187,8 @@ public class AccountService {
             Map<String, Object> profile = accountDao.getUserProfile(sessionData);
             if (profile != null) {
                 // 이메일로 계정 조회해서 정보를 모델로 전송
-                model.addAttribute("name", profile.get("nickname").toString());
-                if (profile.get("faceimg") != null) {
-                    model.addAttribute("img", profile.get("faceimg").toString());
-                }
+                model.addAttribute("email", sessionData);
+                model.addAttribute("profile", profile);
                 return true;
             } else {
                 return false;
@@ -197,6 +196,13 @@ public class AccountService {
         } else {
             return false;
         }
+    }
+
+    public ProfileVO getProfile(String email) {
+        Map<String, Object> profile = accountDao.getUserProfile(email);
+        ProfileVO result = new ProfileVO();
+        result.setData(null, profile.get("nickname").toString(), profile.get("faceimg").toString());
+        return result;
     }
 
     // DEBUG PURPOSE

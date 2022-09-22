@@ -20,23 +20,3 @@ function httpRequest(reqType, url, data, dataType)
     }
     return xmlHttp.responseText;
 }
-
-const loadSession = () => {
-    let profileResult = httpGet("http://localhost:8888/logindata");
-    if (profileResult != "no session" && profileResult != "no profile" && profileResult != null) {
-        let parsed = JSON.parse(profileResult);
-
-        let login = $(".menu_login");
-        let profile = $(".menu_profile");
-        login.css({display: "none"});
-        profile.css({display: "inline-block"});
-        profile.find(".menu_profile_name").text(parsed.name);
-
-        if (parsed.img != null) {
-            profile.find("img").attr("src", "http://localhost:8888/images/" + parsed.img);
-        } else {
-            profile.find("img").attr("src", "http://localhost:8888/images/profiles/default.png");
-        }
-    }
-    return profileResult;
-}

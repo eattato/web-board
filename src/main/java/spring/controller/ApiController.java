@@ -56,10 +56,10 @@ public class ApiController {
         return accountService.login(request, vo);
     }
 
-    @GetMapping("/logindata")
-    public String loginSession(HttpServletRequest request) {
-        return accountService.getLoginData(request);
-    }
+//    @GetMapping("/logindata")
+//    public String loginSession(HttpServletRequest request) {
+//        return accountService.getLoginData(request);
+//    }
 
     @PostMapping("/setprofile")
     public String setProfile(HttpServletRequest request) {

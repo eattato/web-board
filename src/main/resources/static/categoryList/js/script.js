@@ -6,27 +6,30 @@ function httpGet(url)
     return xmlHttp.responseText;
 }
 
+const setViewMode = (viewMode) => {
+    if (viewMode == "simple" || viewMode == "exact") {
+        $.cookie("viewmode", viewMode, { expires: 2147483647 });
+        if (viewMode == "simple") {
+            $(".post_simple").css({display: "block"});
+            $(".post_exact").css({display: "none"});
+        } else if (changedValue == "exact") {
+            $(".post_simple").css({display: "none"});
+            $(".post_exact").css({display: "block"});
+        }
+    }
+}
+
 $(() => {
     // 보기 모드 쿠키 읽기
-    var viewMode = $.cookie("viewMode")
-    if (viewMode == undefined) {
+    let viewMode = $.cookie("viewmode")
+    if (viewMode == undefined || (viewMode != "simple" && viewMode != "exact")) {
         viewMode = "simple";
     }
     $("input[name='view_mode']").change(() => {
         let changedValue = $("input[name='view_mode']:checked").val();
-        if (changedValue == "simple") {
-            viewMode = "simple";
-            $.cookie("viewmode", viewMode, { expires: 2147483647 });
-            window.location.replace("localhost:8888?viewmode=" + viewMode);
-        } else if (changedValue == "exact") {
-            viewMode = "exact";
-            $.cookie("viewmode", viewMode, { expires: 2147483647 });
-            window.location.replace("localhost:8888?viewmode=" + viewMode);
-        }
+        setViewMode(changedValue);
     });
-
-    // 로그인 세션 불러오기
-    loadSession();
+    setViewMode(viewMode);
 
     // 카테고리 원본 가져오고 로딩 표시
     var postSimple = $(".post_simple origin"); // 카테고리 버튼 원본

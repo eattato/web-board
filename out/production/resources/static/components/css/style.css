@@ -56,7 +56,7 @@ body {
 }
 
 .menu_profile {
-    display: none;
+    display: inline-block;
     width: auto !important;
 }
 

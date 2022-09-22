@@ -54,19 +54,6 @@ $(() => {
     var imgSelect = $("#profile_img_select");
     imgSelect.attr("title", " ");
 
-    // 로그인 세션 불러오기
-    let profileResult = loadSession();
-    if (profileResult != "no session" && profileResult != "no profile" && profileResult != null) {
-        let parsed = JSON.parse(profileResult);
-        $("#email_text").text(parsed.email);
-        nickname.find(".form_input").val(parsed.name);
-        if (parsed.img != null) {
-            $(".profile_img_frame img").attr("src", "http://localhost:8888/images/" + parsed.img);
-        } else {
-            $(".profile_img_frame img").attr("src", "http://localhost:8888/images/profiles/default.png");
-        }
-    }
-
     const imgChanged = async function() {
         imgSelect.attr("title", " ");
         if (imgSelect[0].files.length == 1) {

@@ -19,29 +19,14 @@
                 <img src="" alt="배너">
             </a>
         </div>
-        <div class="menu">
-            <ul>
-                <li><a href="http://localhost:8888">메인</a></li>
-                <li><a href="#">신규글</a></li>
-                <li><a href="#">인기글</a></li>
-                <li><a href="#">글 작성</a></li>
-                <li class="menu_login"><a href="http://localhost:8888/login">로그인</a></li>
-                <li class="menu_profile">
-                    <a href="http://localhost:8888/profile">
-                        <div class="menu_profile_imgframe">
-                            <img src="" alt="">
-                        </div>
-                        <div class="menu_profile_name"></div>
-                    </a>
-                </li>
-            </ul>
-        </div>
+        <div class="menu" th:replace="fragments/common :: header"></div>
         <div class="body">
             <div class="main">
                 <div class="profile_left">
                     <div class="profile_title">프로필 이미지</div>
                     <div class="profile_img_frame">
-                        <img src="" alt="">
+                        <img th:if="${profile.faceimg == null}" src="http://localhost:8888/images/profiles/default.png" alt="">
+                        <img th:if="${profile.faceimg != null}" th:src="|http://localhost:8888/images/${profile.faceimg.toString()}|" alt="">
                         <div class="profile_img_desc">클릭해서 이미지를 변경하세요.</div>
                         <input id="profile_img_select" type="file" title=" ">
                     </div>
@@ -50,13 +35,13 @@
                     <form class="form">
                         <div class="form_input_cover" id="email">
                             <div class="form_label">이메일</div>
-                            <div class="form_text" id="email_text"></div>
+                            <div class="form_text" id="email_text" th:text="${email}"></div>
                             <div class="form_error"></div>
                         </div>
             
                         <div class="form_input_cover" id="nickname">
                             <div class="form_label">닉네임</div>
-                            <input class="form_input" type="text" placeholder="닉네임을 입력하세요.">
+                            <input class="form_input" type="text" placeholder="닉네임을 입력하세요." th:value="${profile.nickname.toString()}">
                             <div class="form_error"></div>
                         </div>
 

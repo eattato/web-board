@@ -18,23 +18,7 @@
                 <img src="" alt="배너">
             </a>
         </div>
-        <div class="menu">
-            <ul>
-                <li><a href="http://localhost:8888">메인</a></li>
-                <li><a href="#">신규글</a></li>
-                <li><a href="#">인기글</a></li>
-                <li><a href="#">글 작성</a></li>
-                <li class="menu_login"><a href="http://localhost:8888/login">로그인</a></li>
-                <li class="menu_profile">
-                    <a href="http://localhost:8888/profile">
-                        <div class="menu_profile_imgframe">
-                            <img src="" alt="">
-                        </div>
-                        <div class="menu_profile_name"></div>
-                    </a>
-                </li>
-            </ul>
-        </div>
+        <div class="menu" th:replace="fragments/common :: header"></div>
         <div class="body">
             <div class="title">
                 <div class="category_name">카테고리 목록</div>
@@ -45,17 +29,17 @@
                 <div class="main_posts">
                     <ul class="post_list">
                         <li class="post_simple" th:each="category : ${categoryList}">
-                            <a href="#">
+                            <a th:href="|http://localhost:8888/category/${category.id}|">
                                 <div class="post_name" th:text="${category.category}">카테고리 제목</div>
                                 <div class="post_right">
                                     <div class="post_wrap">
                                         <div class="post_top">게시물 갯수</div>
-                                        <div class="post_bottom">123개</div>
+                                        <div class="post_bottom" th:text="|${category.posts}개|"></div>
                                     </div>
     
                                     <div class="post_wrap">
                                         <div class="post_top">총 추천 횟수</div>
-                                        <div class="post_bottom">123개</div>
+                                        <div class="post_bottom" th:text="|${category.loved}개|"></div>
                                     </div>
                                 </div>
                             </a>
@@ -67,21 +51,18 @@
                                     <div class="post_name" th:text="${category.category}">카테고리 제목</div>
                                     <div class="post_info">
                                         <img src="" alt="" th:src="${category.img}">
-                                        <p th:text="${category.about}">
-                                            지역 카테고리는 각 지역 명소와 즐길 거리를 소개하고 추천하는 카테고리입니다. <br><br>
-                                            특정 지역을 비하하는 등의 행위는 글 또는 계정의 삭제를 초래할 수 있습니다.
-                                        </p>
+                                        <p th:text="${category.about}">카테고리 설명</p>
                                     </div>
                                 </div>
                                 <div class="post_right">
                                     <div class="post_wrap">
                                         <div class="post_top">게시물 갯수</div>
-                                        <div class="post_bottom">123개</div>
+                                        <div class="post_bottom"></div>
                                     </div>
     
                                     <div class="post_wrap">
                                         <div class="post_top">총 추천 횟수</div>
-                                        <div class="post_bottom">123개</div>
+                                        <div class="post_bottom"></div>
                                     </div>
                                 </div>
                             </a>

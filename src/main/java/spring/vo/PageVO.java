@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PageVO {
+    private int categoryIndex;
+
     private int startIndex;
     private int endIndex;
     private String searchTitle = null;
@@ -35,6 +37,10 @@ public class PageVO {
         return result;
     }
 
+    public int getCategory() {
+        return categoryIndex;
+    }
+
     // setter
     public void setData(int start, int end) {
         startIndex = start;
@@ -45,5 +51,9 @@ public class PageVO {
         searchTitle = title;
         searchDesc = desc;
         searchAuthor = author;
+    }
+
+    public void setCategory(int id) {
+        categoryIndex = id;
     }
 }
