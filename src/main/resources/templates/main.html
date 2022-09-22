@@ -57,12 +57,12 @@
                                 <div class="post_right">
                                     <div class="post_wrap">
                                         <div class="post_top">게시물 갯수</div>
-                                        <div class="post_bottom"></div>
+                                        <div class="post_bottom" th:text="|${category.posts}개|"></div>
                                     </div>
     
                                     <div class="post_wrap">
                                         <div class="post_top">총 추천 횟수</div>
-                                        <div class="post_bottom"></div>
+                                        <div class="post_bottom" th:text="|${category.loved}개|"></div>
                                     </div>
                                 </div>
                             </a>
