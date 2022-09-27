@@ -6,6 +6,7 @@ function httpGet(url) {
 }
 
 const setViewMode = (viewMode) => {
+  console.log(viewMode);
   if (viewMode == "simple" || viewMode == "exact") {
     $.cookie("viewmode", viewMode, { expires: 2147483647 });
     if (viewMode == "simple") {

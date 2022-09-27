@@ -1,129 +1,234 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="UTF-8">
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
     <title th:text="${categoryData.category}">카테고리</title>
-    <link rel="stylesheet" th:href="@{/components/css/style.css}">
-    <link rel="stylesheet" th:href="@{/category/css/style.css}">
-    <script src="https://kit.fontawesome.com/d5e5d975b2.js" crossorigin="anonymous"></script>
-    <script src="components/js/jquery.js"></script>
-    <script src="components/js/jquery.cookie.js"></script>
-    <script src="components/js/header.js"></script>
-    <script src="category/js/script.js"></script>
-</head>
-<body>
+    <link rel="stylesheet" th:href="@{/components/css/style.css}" />
+    <link rel="stylesheet" th:href="@{/category/css/style.css}" />
+    <script
+      src="https://kit.fontawesome.com/d5e5d975b2.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="../components/js/jquery.js"></script>
+    <script src="../components/js/jquery.cookie.js"></script>
+    <script src="../components/js/header.js"></script>
+    <script src="../category/js/script.js"></script>
+  </head>
+  <body>
     <div class="wrap">
-        <div class="banner">
-            <a href="#">
-                <img src="" alt="배너">
-            </a>
+      <div class="banner">
+        <a href="#">
+          <img src="" alt="배너" />
+        </a>
+      </div>
+      <div class="menu" th:replace="fragments/common :: header"></div>
+      <div class="body">
+        <div class="title">
+          <div class="category_name" th:text="${categoryData.category}">
+            글 목록
+          </div>
+          <div class="category_info" th:text="${categoryData.about}">
+            게시물을 둘러보세요.
+          </div>
         </div>
-        <div class="menu" th:replace="fragments/common :: header"></div>
-        <div class="body">
-            <div class="title">
-                <div class="category_name" th:text="${categoryData.category}">글 목록</div>
-                <div class="category_info" th:text="${categoryData.about}">게시물을 둘러보세요.</div>
-            </div>
 
-            <div class="main">
-                <div class="main_posts">
-                    <ul class="post_list">
-                        <th:block th:each="post : ${posts}">
-                            <li class="post_simple">
-                                <a th:href="|http://localhost:8888/post/${post.id}|">
-                                    <div class="post_name" th:text="${post.postname}">글 제목</div>
-                                    <div class="post_right">
-                                        <div class="post_wrap">
-                                            <div class="post_top" th:text="${post.authorInfo.getNickname()}">게시자</div>
-                                            <div class="post_bottom" th:text="${post.postdate}"></div>
-                                        </div>
-    
-                                        <div class="post_wrap">
-                                            <div class="post_top">조회수</div>
-                                            <div class="post_bottom" th:text="|${post.viewers}회|"></div>
-                                        </div>
-        
-                                        <div class="post_wrap">
-                                            <div class="post_top">추천</div>
-                                            <div class="post_bottom" th:text="|${post.loved}개|"></div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
+        <div class="main">
+          <div class="main_posts">
+            <ul class="post_list">
+              <li class="post_simple" th:each="post : ${posts}">
+                <a th:href="|http://localhost:8888/post/${post.id}|">
+                  <div class="post_name" th:text="${post.postname}">
+                    글 제목
+                  </div>
+                  <div class="post_right">
+                    <div class="post_wrap">
+                      <div
+                        class="post_top"
+                        th:text="${post.authorInfo.getNickname()}"
+                      >
+                        게시자
+                      </div>
+                      <div class="post_bottom" th:text="${post.postdate}"></div>
+                    </div>
 
-                            <li class="post_exact">
-                                <a th:href="|http://localhost:8888/post/${post.id}|">
-                                    <div class="post_left">
-                                        <div class="post_title">
-                                            <div class="post_name" th:text="${post.postname}">글 제목</div>
-                                            <div class="post_data" th:text="|조회수 ${post.viewers}회|"></div>
-                                            <div class="post_data" th:text="|추천 ${post.loved}개|"></div>
-                                        </div>
-                                        <div class="post_info">
-                                            <img src="" alt="">
-                                            <p th:text="${post.content}">글 내용</p>
-                                        </div>
-                                    </div>
-                                    <div class="post_right">
-                                        <div class="post_top" th:text="|게시자 - ${post.authorInfo.getNickname()}|">게시자</div>
-                                        <div class="post_top" th:text="|게시일 - ${post.postdate}|">게시일</div>
-                                        <div class="author_image_frame">
-                                            <img th:if="${post.authorInfo.getImage() == null}" alt="" th:src="http://localhost:8888/images/profiles/default.png">
-                                            <img th:if="${post.authorInfo.getImage() != null}" alt="" th:src="|http://localhost:8888/images/${post.authorInfo.getImage()}|">
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                        </th:block>
-                    </ul>
+                    <div class="post_wrap">
+                      <div class="post_top">조회수</div>
+                      <div
+                        class="post_bottom"
+                        th:text="|${post.viewers}회|"
+                      ></div>
+                    </div>
 
-                    <ul class="paging">
-                        <li class="post_move"><a href="#">&lt;</a></li>
-                        <li class="post_button"><a href="#">1</a></li>
-                        <li class="post_button"><a href="#">2</a></li>
-                        <li class="post_button"><a href="#">3</a></li>
-                        <li class="post_move"><a href="#">&gt;</a></li>
-                    </ul>
-                </div>
+                    <div class="post_wrap">
+                      <div class="post_top">추천</div>
+                      <div
+                        class="post_bottom"
+                        th:text="|${post.loved}개|"
+                      ></div>
+                    </div>
+                  </div>
+                </a>
+              </li>
 
-                <div class="sidebar">
-                    <div class="sidebar_title">카테고리 검색</div>
-                    <form class="sidebar_search">
-                        <div class="search_box">
-                            <div class="search_wrap"></div>
-                            <input class="search_input" type="text" placeholder="검색">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                        </div>
+              <li class="post_exact" th:each="post : ${posts}">
+                <a th:href="|http://localhost:8888/post/${post.id}|">
+                  <div class="post_left">
+                    <div class="post_title">
+                      <div class="post_name" th:text="${post.postname}">
+                        글 제목
+                      </div>
+                      <div
+                        class="post_data"
+                        th:text="|조회수 ${post.viewers}회|"
+                      ></div>
+                      <div
+                        class="post_data"
+                        th:text="|추천 ${post.loved}개|"
+                      ></div>
+                    </div>
+                    <div class="post_info">
+                      <img src="" alt="" />
+                      <p th:text="${post.content}">글 내용</p>
+                    </div>
+                  </div>
+                  <div class="post_right">
+                    <div
+                      class="post_top"
+                      th:text="|게시자 - ${post.authorInfo.getNickname()}|"
+                    >
+                      게시자
+                    </div>
+                    <div class="post_top" th:text="|게시일 - ${post.postdate}|">
+                      게시일
+                    </div>
+                    <div class="author_image_frame">
+                      <img
+                        th:if="${post.authorInfo.getImage() == null}"
+                        alt=""
+                        th:src="http://localhost:8888/images/profiles/default.png"
+                      />
+                      <img
+                        th:if="${post.authorInfo.getImage() != null}"
+                        alt=""
+                        th:src="|http://localhost:8888/images/${post.authorInfo.getImage()}|"
+                      />
+                    </div>
+                  </div>
+                </a>
+              </li>
+            </ul>
 
-                        <div class="sidebar_title">보기 모드</div>
-                        <div class="select_box">
-                            <label><input name="view_mode" id="view_simple" type="radio" value="simple" checked>간략히</label>
-                            <label><input name="view_mode" id="view_exact" type="radio" value="exact">자세히</label>
-                        </div>
+            <ul class="paging">
+              <li class="post_move"><a href="#">&lt;</a></li>
+              <li class="post_button"><a href="#">1</a></li>
+              <li class="post_button"><a href="#">2</a></li>
+              <li class="post_button"><a href="#">3</a></li>
+              <li class="post_move"><a href="#">&gt;</a></li>
+            </ul>
+          </div>
 
-                        <div class="sidebar_title">검색 필터</div>
-                        <div class="select_box">
-                            <label><input name="filter" type="checkbox" value="title" checked>제목</label>
-                            <label><input name="filter" type="checkbox" value="author" checked>작성자</label>
-                            <label><input name="filter" type="checkbox" value="content" checked>내용</label>
-                            <label><input name="filter" type="checkbox" value="date">날짜</label>
-                        </div>
+          <div class="sidebar">
+            <div class="sidebar_title">카테고리 검색</div>
+            <form class="sidebar_search">
+              <div class="search_box">
+                <div class="search_wrap"></div>
+                <input class="search_input" type="text" placeholder="검색" />
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </div>
 
-                        <div class="sidebar_title"></div>
-                        <div class="select_box">
-                            <label><input name="sort" type="radio" value="loved" checked>인기순</label>
-                            <label><input name="sort" type="radio" value="new">최신순</label>
-                        </div>
+              <div class="sidebar_title">보기 모드</div>
+              <div class="select_box">
+                <label
+                  ><input
+                    name="view_mode"
+                    id="view_simple"
+                    type="radio"
+                    value="simple"
+                    checked
+                  />간략히</label
+                >
+                <label
+                  ><input
+                    name="view_mode"
+                    id="view_exact"
+                    type="radio"
+                    value="exact"
+                  />자세히</label
+                >
+              </div>
 
-                        <div class="sidebar_title"></div>
-                        <div class="select_box">
-                            <label><input name="direction" type="radio" value="up" checked>오름차순</label>
-                            <label><input name="direction" type="radio" value="down">내림차순</label>
-                        </div>
-                    </form>
-                </div>
-            </div>
+              <div class="sidebar_title">검색 필터</div>
+              <div class="select_box">
+                <label
+                  ><input
+                    name="filter"
+                    type="checkbox"
+                    value="title"
+                    checked
+                  />제목</label
+                >
+                <label
+                  ><input
+                    name="filter"
+                    type="checkbox"
+                    value="author"
+                    checked
+                  />작성자</label
+                >
+                <label
+                  ><input
+                    name="filter"
+                    type="checkbox"
+                    value="content"
+                    checked
+                  />내용</label
+                >
+                <label
+                  ><input
+                    name="filter"
+                    type="checkbox"
+                    value="date"
+                  />날짜</label
+                >
+              </div>
+
+              <div class="sidebar_title"></div>
+              <div class="select_box">
+                <label
+                  ><input
+                    name="sort"
+                    type="radio"
+                    value="loved"
+                    checked
+                  />인기순</label
+                >
+                <label
+                  ><input name="sort" type="radio" value="new" />최신순</label
+                >
+              </div>
+
+              <div class="sidebar_title"></div>
+              <div class="select_box">
+                <label
+                  ><input
+                    name="direction"
+                    type="radio"
+                    value="up"
+                    checked
+                  />오름차순</label
+                >
+                <label
+                  ><input
+                    name="direction"
+                    type="radio"
+                    value="down"
+                  />내림차순</label
+                >
+              </div>
+            </form>
+          </div>
         </div>
+      </div>
     </div>
-</body>
+  </body>
 </html>

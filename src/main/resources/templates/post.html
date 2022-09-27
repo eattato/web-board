@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>글 작성</title>
+    <link rel="stylesheet" th:href="@{/components/css/style.css}" />
+    <link rel="stylesheet" th:href="@{/post/css/style.css}" />
+    <script
+      src="https://kit.fontawesome.com/d5e5d975b2.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="../components/js/jquery.js"></script>
+    <script src="../components/js/jquery.cookie.js"></script>
+    <script src="../components/js/header.js"></script>
+    <script src="../library/smarteditor2-2.8.2.3/js/HuskyEZCreator.js"></script>
+    <script src="../post/js/script.js"></script>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="banner">
+        <a href="#">
+          <img src="" alt="배너" />
+        </a>
+      </div>
+      <div class="menu" th:replace="fragments/common :: header"></div>
+      <div class="body">
+        <div class="main">
+          <div class="editor">
+            <div class="editor_top">
+              <select id="editor_category">
+                <option
+                  th:each="category : ${categoryList}"
+                  th:value="${category.category}"
+                ></option>
+              </select>
+              <input type="text" placeholder="제목을 입력하세요." />
+              <button id="editor_post" type="button">게시</button>
+            </div>
+            <div class="editor_bottom">
+              <ul>
+                <li class="editor_tag">
+                  <div class="editor_tag_name">태그</div>
+                  <div class="editor_tag_close">x</div>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <textarea
+            name="editor_text"
+            id="editor_text"
+            cols="30"
+            rows="10"
+            placeholder="내용을 입력하세요."
+          ></textarea>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
