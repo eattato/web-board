@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.websocket.Session;
 import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,6 +24,7 @@ import spring.service.AccountService;
 import spring.service.FileService;
 import spring.vo.AccountCreateVO;
 import spring.vo.LoginVO;
+import spring.vo.PostVO;
 import spring.vo.ProfileVO;
 
 @Slf4j
@@ -118,6 +120,22 @@ public class ApiController {
             header.setContentType(MediaType.TEXT_PLAIN);
             ResponseEntity<String> responseEntity = new ResponseEntity<>(error, header, HttpStatus.OK);
             return responseEntity;
+        }
+    }
+
+    @PostMapping("/post")
+    public String uploadPost(HttpServletRequest request, @RequestParam PostVO postData) {
+        HttpSession session = request.getSession();
+        String sessionData = accountService.getSession(session);
+        if (sessionData != null) {
+            if (postData.isValid() == true) {
+                // pageService.post(postData);
+                return "ok";
+            } else {
+                return "post not valid";
+            }
+        } else {
+            return "no session";
         }
     }
 

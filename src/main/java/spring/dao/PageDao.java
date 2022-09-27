@@ -29,8 +29,14 @@ public class PageDao {
                 queryString += "WHERE " + String.format("category LIKE '%%%s%%' ", search.get("title"));
             }
         }
-        queryString += "GROUP BY categories.id " +
-                String.format("ORDER BY id OFFSET %s ROWS FETCH NEXT %s ROWS ONLY;", data.getStart(), data.getEnd() - data.getStart());
+
+        if (data.getEnd() != -1) {
+            queryString += "GROUP BY categories.id " +
+                    String.format("ORDER BY id OFFSET %s ROWS FETCH NEXT %s ROWS ONLY;", data.getStart(), data.getEnd() - data.getStart());
+        } else { // 끝이 -1이면 전부 다 로드
+            queryString += "GROUP BY categories.id " +
+                    String.format("ORDER BY id OFFSET %s ROWS;", data.getStart());
+        }
 
         return getRows(queryString);
     }

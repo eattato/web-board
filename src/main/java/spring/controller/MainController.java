@@ -125,7 +125,6 @@ public class MainController {
                 }
                 model.addAttribute("posts", posts);
                 model.addAttribute("categoryData", categoryData);
-                log.info("view category");
                 return "category";
             } else {
                 return "redirect:";
@@ -137,20 +136,40 @@ public class MainController {
         }
     }
 
-    @GetMapping("/post/{id}")
+    @GetMapping("/posts/{id}")
     public String post(HttpServletRequest request, Model model, @PathVariable(value = "id") String strid) {
         try {
             int id = Integer.parseInt(strid);
             Map<String, Object> postData = pageService.getPage(id);
             if (postData != null) {
-                return "post";
+                return "posts";
             } else {
                 return "redirect:";
             }
         } catch (Exception e) {
-            log.info(String.valueOf(e));
-            log.info("redirect");
             return "redirect:";
+        }
+    }
+
+    @GetMapping("/editor")
+    public String editor(HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession();
+        String sessionData = accountService.getSession(session);
+        if (sessionData != null) { // 로그인 세션이 존재하면
+            // 이메일로 계정 조회해서 정보를 모델로 전송
+            boolean profile = accountService.sendProfileBySession(request, model);
+
+            PageVO vo = new PageVO();
+            vo.setData(0, -1);
+            model.addAttribute("categoryList", pageService.getCategoryList(vo));
+
+            if (profile == true) {
+                return "editor";
+            } else {
+                return "redirect:";
+            }
+        } else {
+            return "redirect:login";
         }
     }
 }

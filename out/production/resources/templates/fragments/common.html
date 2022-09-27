@@ -1,27 +1,40 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Fragments</title>
-</head>
-<body>
+  </head>
+  <body>
     <div class="menu" th:fragment="header">
-        <ul>
-            <li><a href="http://localhost:8888">메인</a></li>
-            <li><a href="#">신규글</a></li>
-            <li><a href="#">인기글</a></li>
-            <li><a href="#">글 작성</a></li>
-            <li class="menu_login" th:if="${profile == null}"><a href="http://localhost:8888/login">로그인</a></li>
-            <li class="menu_profile" th:if="${profile != null}">
-                <a href="http://localhost:8888/profile">
-                    <div class="menu_profile_imgframe">
-                        <img th:if="${profile.faceimg == null}" src="http://localhost:8888/images/profiles/default.png" alt="">
-                        <img th:if="${profile.faceimg != null}" alt="" th:src="|http://localhost:8888/images/${profile.faceimg.toString()}|">
-                    </div>
-                    <div class="menu_profile_name" th:text="${profile.nickname.toString()}"></div>
-                </a>
-            </li>
-        </ul>
+      <ul>
+        <li><a href="http://localhost:8888">메인</a></li>
+        <li><a href="#">신규글</a></li>
+        <li><a href="#">인기글</a></li>
+        <li><a href="http://localhost:8888/editor">글 작성</a></li>
+        <li class="menu_login" th:if="${profile == null}">
+          <a href="http://localhost:8888/login">로그인</a>
+        </li>
+        <li class="menu_profile" th:if="${profile != null}">
+          <a href="http://localhost:8888/profile">
+            <div class="menu_profile_imgframe">
+              <img
+                th:if="${profile.faceimg == null}"
+                src="http://localhost:8888/images/profiles/default.png"
+                alt=""
+              />
+              <img
+                th:if="${profile.faceimg != null}"
+                alt=""
+                th:src="|http://localhost:8888/images/${profile.faceimg.toString()}|"
+              />
+            </div>
+            <div
+              class="menu_profile_name"
+              th:text="${profile.nickname.toString()}"
+            ></div>
+          </a>
+        </li>
+      </ul>
     </div>
-</body>
+  </body>
 </html>
