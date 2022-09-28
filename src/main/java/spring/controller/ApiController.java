@@ -65,6 +65,11 @@ public class ApiController {
         return accountService.login(request, vo);
     }
 
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request) {
+        return accountService.logout(request);
+    }
+
 //    @GetMapping("/logindata")
 //    public String loginSession(HttpServletRequest request) {
 //        return accountService.getLoginData(request);

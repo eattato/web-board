@@ -132,6 +132,17 @@ public class AccountService {
         }
     }
 
+    public String logout(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        String sessionData = getSession(session);
+        if (sessionData != null) {
+            session.invalidate();
+            return "ok";
+        } else {
+            return "session not found";
+        }
+    }
+
     public String updateProfile(HttpServletRequest request, ProfileVO data) {
         HttpSession session = request.getSession();
         String sessionData = getSession(session);

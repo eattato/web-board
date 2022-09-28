@@ -50,7 +50,8 @@ $(() => {
   var faceimg = $(".menu_profile_imgframe");
   var password = $("#password");
   var nickname = $("#nickname");
-  var commit = $(".form_button");
+  var commit = $("#submit");
+  var logout = $("#logout");
   var imgSelect = $("#profile_img_select");
   imgSelect.attr("title", " ");
 
@@ -76,6 +77,18 @@ $(() => {
   const changedEvents = [nicknameChanged];
   nickname.find(".form_input").change(nicknameChanged);
   imgSelect.change(imgChanged);
+
+  logout.click(() => {
+    fetch("http://localhost:8888/logout", {
+      method: "GET",
+    })
+      .then((response) => response.text())
+      .then((result) => {
+        if (result == "ok") {
+          window.location.href = "http://localhost:8888";
+        }
+      });
+  });
 
   commit.click(async () => {
     let foundError = false;

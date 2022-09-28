@@ -99,3 +99,16 @@
 #profile_img_select:hover {
   background-color: rgba(0, 0, 0, 0.7);
 }
+
+.commit {
+  display: flex;
+  justify-content: space-between;
+  width: 300px;
+}
+
+#logout {
+  border: 1px solid red;
+  background-color: white;
+  color: red;
+  border-radius: 5px;
+}

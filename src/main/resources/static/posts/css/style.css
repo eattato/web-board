@@ -109,10 +109,12 @@
 }
 
 .author_img_frame {
-  width: 30px;
-  height: 30px;
-  border-radius: 15px;
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
   margin-left: 10px;
+  overflow: hidden;
+  border: 1px solid lightgray;
 }
 
 .author_img_frame a {
@@ -124,7 +126,7 @@
 }
 
 .author_img_frame img {
-  width: 30px;
+  width: 40px;
 }
 
 .author_info {
@@ -133,7 +135,7 @@
   flex-direction: column;
   width: auto;
   height: 50px;
-  margin-left: 30px;
+  margin-left: 15px;
 }
 
 .author_name {
