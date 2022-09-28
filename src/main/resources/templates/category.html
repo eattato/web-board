@@ -2,7 +2,10 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <title th:text="${categoryData.category}">카테고리</title>
+    <title th:text="|BOARDARC - 카테고리: ${categoryData.category}|">
+      카테고리
+    </title>
+    <link rel="icon" href="http://localhost:8888/images/official/icon.png" />
     <link rel="stylesheet" th:href="@{/components/css/style.css}" />
     <link rel="stylesheet" th:href="@{/category/css/style.css}" />
     <script
@@ -36,7 +39,7 @@
           <div class="main_posts">
             <ul class="post_list">
               <li class="post_simple" th:each="post : ${posts}">
-                <a th:href="|http://localhost:8888/post/${post.id}|">
+                <a th:href="|http://localhost:8888/posts/${post.id}|">
                   <div class="post_name" th:text="${post.postname}">
                     글 제목
                   </div>

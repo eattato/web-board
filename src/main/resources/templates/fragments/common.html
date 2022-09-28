@@ -18,19 +18,13 @@
           <a href="http://localhost:8888/profile">
             <div class="menu_profile_imgframe">
               <img
-                th:if="${profile.faceimg == null}"
-                src="http://localhost:8888/images/profiles/default.png"
                 alt=""
-              />
-              <img
-                th:if="${profile.faceimg != null}"
-                alt=""
-                th:src="|http://localhost:8888/images/${profile.faceimg.toString()}|"
+                th:src="|http://localhost:8888/images/${profile.getImage()}|"
               />
             </div>
             <div
               class="menu_profile_name"
-              th:text="${profile.nickname.toString()}"
+              th:text="${profile.getNickname()}"
             ></div>
           </a>
         </li>

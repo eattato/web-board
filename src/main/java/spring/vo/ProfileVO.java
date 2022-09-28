@@ -1,5 +1,8 @@
 package spring.vo;
 
+import lombok.Setter;
+
+@Setter
 public class ProfileVO {
     // Properties
     private String password;

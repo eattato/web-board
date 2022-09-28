@@ -22,6 +22,8 @@ import java.util.Map;
 
 import spring.service.AccountService;
 import spring.service.FileService;
+import spring.service.MailService;
+import spring.service.PageService;
 import spring.vo.AccountCreateVO;
 import spring.vo.LoginVO;
 import spring.vo.PostVO;
@@ -36,25 +38,30 @@ public class ApiController {
     @Autowired
     FileService fileService;
 
+    @Autowired
+    PageService pageService;
+
+    @Autowired
+    MailService mailService;
+
     @GetMapping("/check")
     public boolean email(@RequestParam(value = "target") String check) {
         return accountService.checkEmail(check);
     }
 
     @PostMapping("/account")
-    public String createAccount(HttpServletRequest request) {
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
-        String nickname = request.getParameter("nickname");
-        AccountCreateVO vo = new AccountCreateVO();
-        vo.setData(email, password, nickname);
-        return accountService.createAccount(vo);
+    public String createAccount(HttpServletRequest request, @RequestBody AccountCreateVO vo) {
+//        String email = request.getParameter("email");
+//        String password = request.getParameter("password");
+//        String nickname = request.getParameter("nickname");
+//        AccountCreateVO vo = new AccountCreateVO();
+//        vo.setData(email, password, nickname);
+//        mailService.sendVerifyMessage(email);
+        return accountService.createAccount(request, vo);
     }
 
     @PostMapping("/access")
-    public String loginAccount(HttpServletRequest request) {
-        LoginVO vo = new LoginVO();
-        vo.setData(request.getParameter("email"), request.getParameter("password"));
+    public String loginAccount(HttpServletRequest request, @RequestBody LoginVO vo) {
         return accountService.login(request, vo);
     }
 
@@ -64,13 +71,13 @@ public class ApiController {
 //    }
 
     @PostMapping("/setprofile")
-    public String setProfile(HttpServletRequest request) {
+    public String setProfile(HttpServletRequest request, @RequestBody ProfileVO vo) {
         String result = null;
-        String password = request.getParameter("password");
-        String nickname = request.getParameter("nickname");
-        String image = request.getParameter("image");
-        ProfileVO vo = new ProfileVO();
-        vo.setData(password, nickname, image);
+//        String password = request.getParameter("password");
+//        String nickname = request.getParameter("nickname");
+//        String image = request.getParameter("image");
+//        ProfileVO vo = new ProfileVO();
+//        vo.setData(password, nickname, image);
         return accountService.updateProfile(request, vo);
     }
 
@@ -124,19 +131,8 @@ public class ApiController {
     }
 
     @PostMapping("/post")
-    public String uploadPost(HttpServletRequest request, @RequestParam PostVO postData) {
-        HttpSession session = request.getSession();
-        String sessionData = accountService.getSession(session);
-        if (sessionData != null) {
-            if (postData.isValid() == true) {
-                // pageService.post(postData);
-                return "ok";
-            } else {
-                return "post not valid";
-            }
-        } else {
-            return "no session";
-        }
+    public String uploadPost(HttpServletRequest request, @RequestBody PostVO postData) {
+        return pageService.post(request, postData);
     }
 
     // ONLY FOR DEBUG PURPOSE

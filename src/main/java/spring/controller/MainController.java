@@ -96,14 +96,14 @@ public class MainController {
                            @RequestParam(required = false, defaultValue = "simple") String viewmode,
                            @RequestParam(required = false, defaultValue = "1") String page,
                            @RequestParam(required = false, defaultValue = "") String search,
-                           @PathVariable(value = "id") String strid
+                           @PathVariable String id
     ) {
         accountService.sendProfileBySession(request, model);
         try {
-            int id = Integer.parseInt(strid);
+            int intid = Integer.parseInt(id);
 
             PageVO vo = new PageVO();
-            vo.setCategory(id);
+            vo.setCategory(intid);
             int pageIndex = Integer.parseInt(page);
             int postPerPage = 0;
             if (viewmode.equals("exact")) {
@@ -116,7 +116,7 @@ public class MainController {
                 vo.setSearch(search, null, null);
             }
 
-            Map<String, Object> categoryData = pageService.getCategoryData(id);
+            Map<String, Object> categoryData = pageService.getCategoryData(intid);
             if (categoryData != null) {
                 List<Map<String, Object>> posts = pageService.getPostList(vo);
                 for (Map<String, Object> post : posts) {
@@ -127,28 +127,36 @@ public class MainController {
                 model.addAttribute("categoryData", categoryData);
                 return "category";
             } else {
-                return "redirect:";
+                log.info("redirect - no category data");
+                return "redirect:/";
             }
         } catch (Exception e) {
-            log.info(String.valueOf(e));
-            log.info("redirect");
-            return "redirect:";
+//            log.info("redirect - couldn't get id, got " + id);
+            return "redirect:/";
         }
     }
 
     @GetMapping("/posts/{id}")
-    public String post(HttpServletRequest request, Model model, @PathVariable(value = "id") String strid) {
+    public String posts(HttpServletRequest request, Model model, @PathVariable String id) {
+        HttpSession session = request.getSession();
+        String sessionData = accountService.getSession(session);
+        if (sessionData != null) {
+            boolean profile = accountService.sendProfileBySession(request, model);
+        }
+
+        String page = "redirect:/";
         try {
-            int id = Integer.parseInt(strid);
-            Map<String, Object> postData = pageService.getPage(id);
-            if (postData != null) {
-                return "posts";
+            int intid = Integer.parseInt(id);
+            boolean result = pageService.getPost(request, intid, model);
+            if (result == true) {
+                page = "posts";
             } else {
-                return "redirect:";
+                log.info("failed");
             }
         } catch (Exception e) {
-            return "redirect:";
+            log.info(e.toString());
         }
+        return page;
     }
 
     @GetMapping("/editor")

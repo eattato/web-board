@@ -41,13 +41,19 @@ public class AccountService {
     public String getSession(HttpSession session) {
         Object sessionResult = session.getAttribute("email");
         if (sessionResult != null) {
-            return sessionResult.toString();
+            String email = sessionResult.toString();
+            if (accountDao.emailAvailable(email) == false) {
+                return email;
+            } else {
+                // 존재하지 않거나 삭제된 유저
+                return null;
+            }
         } else {
             return null;
         }
     }
 
-    public String createAccount(AccountCreateVO accountData) {
+    public String createAccount(HttpServletRequest request, AccountCreateVO accountData) {
         String result = null;
         Map<String, String> acData = accountData.getData();
         for (String key : acData.keySet()) {
@@ -71,6 +77,9 @@ public class AccountService {
                         accountData.setPassword(shaEncrypt(accountData.getPassword()));
                         if (accountDao.createAccount(accountData) == 0) {
                             result = "failed";
+                        } else {
+                            HttpSession session = request.getSession();
+                            session.setAttribute("email", accountData.getEmail()); // 세션에 계정 정보 저장
                         }
                     } else {
                         result = "nickname is invalid";
@@ -184,7 +193,7 @@ public class AccountService {
         String sessionData = getSession(session);
 
         if (sessionData != null) { // 로그인 세션이 존재하면
-            Map<String, Object> profile = accountDao.getUserProfile(sessionData);
+            ProfileVO profile = getProfile(sessionData);
             if (profile != null) {
                 // 이메일로 계정 조회해서 정보를 모델로 전송
                 model.addAttribute("email", sessionData);
@@ -198,11 +207,25 @@ public class AccountService {
         }
     }
 
+    private String isNull(Object target, String alternate) {
+        if (target != null) {
+            return target.toString();
+        } else {
+            return alternate;
+        }
+    }
+
     public ProfileVO getProfile(String email) {
         Map<String, Object> profile = accountDao.getUserProfile(email);
-        ProfileVO result = new ProfileVO();
-        result.setData(null, profile.get("nickname").toString(), profile.get("faceimg").toString());
-        return result;
+        if (profile != null) {
+            ProfileVO result = new ProfileVO();
+            result.setData(null, isNull(profile.get("nickname"), "익명"), isNull(profile.get("faceimg"), "profiles/default.png"));
+            return result;
+        } else {
+            ProfileVO result = new ProfileVO();
+            result.setData(null, "삭제된 유저", "profiles/deleted.png");
+            return result;
+        }
     }
 
     // DEBUG PURPOSE

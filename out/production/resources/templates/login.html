@@ -1,40 +1,61 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <title>로그인</title>
-    <link rel="stylesheet" th:href="@{/components/css/style.css}">
-    <link rel="stylesheet" th:href="@{/components/css/form.css}">
-    <script src="https://kit.fontawesome.com/d5e5d975b2.js" crossorigin="anonymous"></script>
+  <head>
+    <meta charset="UTF-8" />
+    <title>BOARDARC - 로그인</title>
+    <link rel="icon" href="http://localhost:8888/images/official/icon.png" />
+    <link rel="stylesheet" th:href="@{/components/css/style.css}" />
+    <link rel="stylesheet" th:href="@{/components/css/form.css}" />
+    <script
+      src="https://kit.fontawesome.com/d5e5d975b2.js"
+      crossorigin="anonymous"
+    ></script>
     <script src="components/js/jquery.js"></script>
     <script src="components/js/jquery.cookie.js"></script>
     <script src="login/js/script.js"></script>
-</head>
-<body>
+  </head>
+  <body>
     <div class="wrap">
-        <div class="logo">로고</div>
-        <div class="act">로그인</div>
-        <form class="form">
-            <div class="form_input_cover" id="email">
-                <div class="form_label">이메일</div>
-                <input class="form_input" type="email" placeholder="이메일을 입력하세요.">
-                <div class="form_error"></div>
-            </div>
+      <div class="logo">
+        <a href="http://localhost:8888">
+          <img
+            src="http://localhost:8888/images/official/boardarc.png"
+            alt=""
+          />
+        </a>
+      </div>
+      <div class="act">로그인</div>
+      <form class="form">
+        <div class="form_input_cover" id="email">
+          <div class="form_label">이메일</div>
+          <input
+            class="form_input"
+            type="email"
+            placeholder="이메일을 입력하세요."
+          />
+          <div class="form_error"></div>
+        </div>
 
-            <div class="form_blank"></div>
+        <div class="form_blank"></div>
 
-            <div class="form_input_cover" id="password">
-                <div class="form_label">비밀번호</div>
-                <input class="form_input" type="password" placeholder="비밀번호를 입력하세요.">
-                <div class="form_error"></div>
-                <div class="form_help"><a href="#">비밀번호를 잊으셨나요?</a></div>
-            </div>
+        <div class="form_input_cover" id="password">
+          <div class="form_label">비밀번호</div>
+          <input
+            class="form_input"
+            type="password"
+            placeholder="비밀번호를 입력하세요."
+          />
+          <div class="form_error"></div>
+          <div class="form_help"><a href="#">비밀번호를 잊으셨나요?</a></div>
+        </div>
 
-            <div class="commit">
-                <button class="form_button" type="button">다음</button>
-                <a href="http://localhost:8888/signup">아직 회원가입을 하지 않으셨나요?</a>
-            </div>
-        </form>
+        <div class="commit">
+          <button class="form_button" type="button">다음</button>
+          <a href="http://localhost:8888/signup"
+            >아직 회원가입을 하지 않으셨나요?</a
+          >
+        </div>
+      </form>
     </div>
-</body>
+  </body>
 </html>

@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import spring.vo.PageVO;
+import spring.vo.PostVO;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -77,8 +79,47 @@ public class PageDao {
         return getRows(queryString);
     }
 
-    public List<Map<String, Object>> getPageData(int id) {
+    public Map<String, Object> getPostData(int id) {
         String queryString = String.format("SELECT * FROM posts WHERE id = %s", id);
-        return getRows(queryString);
+        List<Map<String, Object>> result = getRows(queryString);
+        if (result.size() >= 1) {
+            return result.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    public int getCategoryCount() {
+        String queryString = "SELECT id FROM categories;";
+        List<Map<String, Object>> result = getRows(queryString);
+        return result.size();
+    }
+
+    public boolean hasCategory(int id) {
+        boolean result = false;
+        String queryString = "SELECT id FROM categories;";
+        List<Map<String, Object>> query = getRows(queryString);
+        for (Map<String, Object> map : query) {
+            if ((int)map.get("id") == id) {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
+
+    public int getPostIdCurrent() {
+        int idCurrent = 0;
+        List<Map<String, Object>> result = getRows("SELECT MAX(id) AS maxid FROM posts");
+        if (result.size() >= 1 && result.get(0).get("maxid") != null) {
+            idCurrent = (int)result.get(0).get("maxid");
+        }
+        return idCurrent;
+    }
+
+    public int post(PostVO vo) {String queryString = "INSERT INTO posts VALUES(";
+        int idCurrent = getPostIdCurrent();
+        queryString += String.format("%s, %s, '%s', '%s', '%s', '%s', %s, %s, %s, %s);", idCurrent + 1, vo.getCategory(), vo.getTitle(), vo.getAuthor(), LocalDate.now(), vo.getContent(), 0, 0, 0, vo.getTags());
+        return jt.update(queryString);
     }
 }

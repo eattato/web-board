@@ -1,102 +1,111 @@
 .wrap {
-    justify-content: center;
-    align-items: center;
+  justify-content: center;
+  align-items: center;
 }
 
 /* header */
 .logo {
-    width: 300px;
-    height: 80px;
-    margin-top: 50px;
-    margin-bottom: 30px;
-    text-align: center;
-    line-height: 80px;
-    font-size: 36px;
-    background-color: lightgray;
+  width: 300px;
+  height: 80px;
+  margin-top: 50px;
+  margin-bottom: 30px;
+  text-align: center;
+  line-height: 80px;
+  font-size: 36px;
+}
+.logo a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+.logo img {
+  width: 300px;
 }
 
 .act {
-    text-align: center;
-    font-size: 30px;
+  text-align: center;
+  font-size: 30px;
 }
 
 .form {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    width: 600px;
-    height: 700px;
-    border: 1px solid lightgray;
-    padding-left: 20px;
-    padding-top: 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 600px;
+  height: 700px;
+  border: 1px solid lightgray;
+  padding-left: 20px;
+  padding-top: 20px;
 }
 
 .form_input_cover {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 20px;
 }
 
 .form_help {
-    color: cornflowerblue;
-    font-size: 14px;
+  color: cornflowerblue;
+  font-size: 14px;
 }
 
 .form_error {
-    display: none;
-    color: red;
-    font-size: 14px;
+  display: none;
+  color: red;
+  font-size: 14px;
 }
 
 .form_error.error {
-    display: block;
+  display: block;
 }
 
 .form_label {
-    font-size: 24px;
-    margin-bottom: 10px;
+  font-size: 24px;
+  margin-bottom: 10px;
 }
 
 .form_input {
-    width: 300px;
-    height: 50px;
-    line-height: 50px;
-    padding-left: 10px;
-    border-radius: 5px;
-    border: 1px solid lightgray;
-    color: gray;
-    font-size: 18px;
+  width: 300px;
+  height: 50px;
+  line-height: 50px;
+  padding-left: 10px;
+  border-radius: 5px;
+  border: 1px solid lightgray;
+  color: gray;
+  font-size: 18px;
 }
 
 .form_input.correct {
-    border: 1px solid rgb(0, 255, 0);
+  border: 1px solid rgb(0, 255, 0);
 }
 
 .form_input.error {
-    border: 1px solid rgb(255, 0, 0);
+  border: 1px solid rgb(255, 0, 0);
 }
 
 .form_blank {
-    margin-bottom: 30px;
+  margin-bottom: 30px;
 }
 
 .commit {
-    position: absolute;
-    display: flex;
-    align-items: flex-end;
-    left: 20px;
-    bottom: 20px;
+  position: absolute;
+  display: flex;
+  align-items: flex-end;
+  left: 20px;
+  bottom: 20px;
 }
 
 .form_button {
-    width: 100px;
-    height: 40px;
-    text-align: center;
-    line-height: 40px;
+  width: 100px;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
 }
 
 .commit a {
-    margin-left: 20px;
-    color:cornflowerblue;
+  margin-left: 20px;
+  color: cornflowerblue;
 }

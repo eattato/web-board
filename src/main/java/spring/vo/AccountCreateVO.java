@@ -1,8 +1,11 @@
 package spring.vo;
 
+import lombok.Setter;
+
 import java.util.HashMap;
 import java.util.Map;
 
+@Setter
 public class AccountCreateVO {
     // Properties
     private String email;
