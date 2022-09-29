@@ -2,9 +2,11 @@ package spring.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @Setter
+@Slf4j
 public class AccountDataDTO {
     private String email;
     private String pw;
@@ -23,6 +25,7 @@ public class AccountDataDTO {
     }
 
     public String getFaceimg() {
+        log.info("face get");
         if (faceimg != null) {
             return faceimg;
         } else {

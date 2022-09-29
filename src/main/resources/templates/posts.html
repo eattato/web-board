@@ -93,10 +93,17 @@
           <div class="comments_frame">
             <div class="comments_top">
               <div class="comments_profile">
-                <div class="comments_name" th:text="${author.getNickname()}">
+                <div class="comments_name" th:if="${profile == null}">
+                  댓글을 남기려면 로그인 해주세요.
+                </div>
+                <div
+                  class="comments_name"
+                  th:if="${profile != null}"
+                  th:text="${profile.getNickname()}"
+                >
                   작성자
                 </div>
-                <div class="comments_img_frame">
+                <div class="comments_img_frame" th:if="${profile != null}">
                   <img
                     th:src="|http://localhost:8888/images/${profile.getFaceimg()}|"
                     src=""

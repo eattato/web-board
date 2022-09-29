@@ -64,6 +64,8 @@ $(() => {
             input.val("");
             alert("댓글을 성공적으로 전송했습니다!");
             window.location.href = window.location.href;
+          } else if (result == "no session") {
+            alert("댓글을 작성하려면 로그인이 필요합니다!");
           } else if (result == "target comment not found") {
             alert("해당 댓글은 존재하지 않거나 삭제된 댓글입니다.");
           } else {
@@ -86,12 +88,24 @@ $(() => {
   });
 
   // 댓글 메뉴
-  let comments = {};
+  let comments = [];
+  const findInComments = (id) => {
+    let result = null;
+    for (let ind = 0; ind < comments.length; ind++) {
+      let comment = comments[ind];
+      if (comment[0] == id) {
+        result = comment;
+        break;
+      }
+    }
+    return result;
+  };
   $(".comment").each((ind, obj) => {
     let comment = $(obj);
     let ids = getId(comment);
     let commentId = ids[0];
-    comments[commentId] = comment;
+    let replyId = ids[1];
+    comments.push([commentId, replyId, comment]);
 
     let menuActivated = false;
     let button = comment.find(".comment_ellipsis_button");
@@ -138,33 +152,21 @@ $(() => {
   });
 
   // 댓글 정렬
-  while (true) {
-    let done = true;
-    $(".comment").each((ind, obj) => {
-      let comment = $(obj);
-      let ids = getId(comment);
-      let commentId = ids[0];
-      let replyId = ids[1];
+  $(".comment").each((ind, obj) => {
+    let comment = $(obj);
+    let ids = getId(comment);
+    let commentId = ids[0];
+    let replyId = ids[1];
 
-      if (commentId != null && replyId != null) {
-        if (replyId != -1) {
-          console.log("mo?ving");
-          if (comments[replyId] != null) {
-            if (getId(comments[replyId])[0] != replyId) {
-              console.log("moving man");
-              done = false;
-              comment
-                .detach()
-                .appendTo(".comment" + replyId + " .comment_holder");
-            }
-          } else {
-            comment.remove();
-          }
+    if (commentId != null && replyId != null) {
+      if (replyId != -1) {
+        let parentComment = findInComments(replyId);
+        if (parentComment != null) {
+          comment.detach().appendTo(parentComment[2].find(".comment_holder"));
+        } else {
+          // comment.remove();
         }
       }
-    });
-    if (done == true) {
-      break;
     }
-  }
+  });
 });

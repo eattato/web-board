@@ -154,7 +154,7 @@ public class AccountService {
 
                             File image = fileService.uploadImage(data.getImage());
                             if (image != null && image.exists() == true) {
-                                log.info(image.toString());
+//                                log.info(image.toString());
                                 String[] fullLink = image.toString().split("\\\\");
                                 String directory = "";
                                 for (int ind = 2; ind < fullLink.length; ind++) {
