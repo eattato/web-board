@@ -24,10 +24,7 @@ import spring.service.AccountService;
 import spring.service.FileService;
 import spring.service.MailService;
 import spring.service.PageService;
-import spring.vo.AccountCreateVO;
-import spring.vo.LoginVO;
-import spring.vo.PostVO;
-import spring.vo.ProfileVO;
+import spring.vo.*;
 
 @Slf4j
 @RestController
@@ -138,6 +135,11 @@ public class ApiController {
     @PostMapping("/post")
     public String uploadPost(HttpServletRequest request, @RequestBody PostVO postData) {
         return pageService.post(request, postData);
+    }
+
+    @PostMapping("/comment")
+    public String uploadComment(HttpServletRequest request, @RequestBody CommentVO vo) {
+        return pageService.comment(request, vo);
     }
 
     // ONLY FOR DEBUG PURPOSE

@@ -74,7 +74,7 @@
               </li>
 
               <li class="post_exact" th:each="post : ${posts}">
-                <a th:href="|http://localhost:8888/post/${post.id}|">
+                <a th:href="|http://localhost:8888/posts/${post.id}|">
                   <div class="post_left">
                     <div class="post_title">
                       <div class="post_name" th:text="${post.postname}">

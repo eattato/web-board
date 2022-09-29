@@ -65,6 +65,16 @@ public class AccountDao {
         }
     }
 
+    public Map<String, Object> getUserData(String email) {
+        String queryString = String.format("SELECT * FROM members WHERE email = '%s';", email);
+        List<Map<String, Object>> result = getRows(queryString);
+        if (result.size() >= 1) {
+            return result.get(0);
+        } else {
+            return null;
+        }
+    }
+
     public int createAccount(AccountCreateVO accountData) { // 계정 생성
         String queryString = String.format(
                 "INSERT INTO members VALUES ('%s', '%s', '%s', 0, null, null)",

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import spring.dao.PageDao;
+import spring.vo.CommentVO;
 import spring.vo.PageVO;
 import spring.vo.PostVO;
 import spring.vo.ProfileVO;
@@ -79,7 +80,7 @@ public class PageService {
                         data.setAuthor(sessionData);
                         int result = pageDao.post(data);
                         if (result == 1) {
-                            return Integer.toString(pageDao.getPostIdCurrent());
+                            return Integer.toString(pageDao.getIdCurrent("posts"));
                         } else {
                             return "data save failed";
                         }
@@ -96,4 +97,55 @@ public class PageService {
             return "no session";
         }
     }
+
+    public String comment(HttpServletRequest request, CommentVO data) {
+        HttpSession session = request.getSession();
+        String sessionData = accountService.getSession(session);
+        if (sessionData != null) {
+            data.setAuthor(sessionData);
+            if (data.isValid() == true) {
+                if (pageDao.hasPost(data.getPost()) == true) {
+                    if (data.getReplyTarget() != -1) {
+                        if (pageDao.hasComment(data.getReplyTarget()) == false) {
+                            return "target comment not exist";
+                        }
+                    }
+                    int result = pageDao.uploadComment(data);
+                    if (result == 1) {
+                        return "ok";
+                    } else {
+                        return "failed";
+                    }
+                } else {
+                    return "post does not exist";
+                }
+            } else {
+                return "data not valid";
+            }
+        } else {
+            return "no session";
+        }
+    }
+
+//    public String removeComment(HttpServletRequest request, int id) {
+//        HttpSession session = request.getSession();
+//        String sessionData = accountService.getSession(session);
+//        if (sessionData != null) {
+//            Map<String, Object> commentData = pageDao.getCommentData();
+//            Map<String, Object> accountData = accountService.accountDao.getUserData(sessionData);
+//            if ( || (Boolean) accountData.get("isadmin") == true) {
+//
+//            } else {
+//                return "no access";
+//            }
+//        } else {
+//            return "no session";
+//        }
+//
+//        if (pageDao.hasComment(id) == true) {
+//
+//        } else {
+//            return "comment does not exist";
+//        }
+//    }
 }

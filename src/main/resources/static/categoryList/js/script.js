@@ -35,6 +35,22 @@ $(() => {
   });
   setViewMode(viewMode);
 
+  $(".post_exact p").each((ind, obj) => {
+    let previewText = $(obj);
+    let textValue = previewText.text();
+    textValue = removeHTML(textValue);
+
+    let longHeight = 120;
+    previewText.text(textValue);
+    if (previewText.height() > longHeight) {
+      while (previewText.height() > longHeight) {
+        textValue = textValue.substring(0, textValue.length - 1);
+        previewText.text(textValue + "..");
+      }
+    }
+    previewText.css({ display: "block" });
+  });
+
   // 카테고리 원본 가져오고 로딩 표시
   var postSimple = $(".post_simple origin"); // 카테고리 버튼 원본
   var postExact = $(".post_exact origin");

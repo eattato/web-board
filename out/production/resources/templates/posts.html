@@ -86,6 +86,52 @@
           </div>
 
           <div class="post_main" th:text="${post.content}">본문</div>
+
+          <div class="comments_frame">
+            <div class="comments_top">
+              <div class="comments_profile">
+                <div class="comments_name">작성자</div>
+                <div class="comments_img_frame"></div>
+              </div>
+              <div class="comments_input_frame">
+                <div class="comments_input">
+                  <div class="comments_reply">
+                    <div class="comments_reply_target">에게 다는 답글</div>
+                    <div class="comments_reply_close">x</div>
+                  </div>
+                  <textarea
+                    id="comments_input"
+                    cols="30"
+                    rows="10"
+                    placeholder="댓글을 입력하세요."
+                  ></textarea>
+                </div>
+                <button id="comments_send" type="button">전송</button>
+              </div>
+            </div>
+            <div class="comments_bottom">
+              <div class="comment">
+                <div class="comments_profile">
+                  <div class="comments_name">작성자</div>
+                  <div class="comments_img_frame"></div>
+                </div>
+                <p>댓글 내용</p>
+                <div class="comment_ellipsis">
+                  <button type="button" class="comment_ellipsis_button">
+                    ...
+                  </button>
+                  <div class="comment_ellipsis_menu">
+                    <button type="button" class="comment_ellipsis_reply">
+                      답글 달기
+                    </button>
+                    <button type="button" class="comment_ellipsis_report">
+                      신고
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

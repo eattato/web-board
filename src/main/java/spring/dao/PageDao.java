@@ -1,9 +1,11 @@
 package spring.dao;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import spring.vo.CommentVO;
 import spring.vo.PageVO;
 import spring.vo.PostVO;
 
@@ -16,6 +18,8 @@ import java.util.Map;
 public class PageDao {
     @Autowired
     JdbcTemplate jt;
+
+    ObjectMapper mapper = new ObjectMapper();
 
     private List<Map<String, Object>> getRows(String queryString) { // List<Map<String, Object>> 형태로 모든 선택된 열을 리턴
         return jt.queryForList(queryString);
@@ -108,9 +112,35 @@ public class PageDao {
         return result;
     }
 
-    public int getPostIdCurrent() {
+    public boolean hasPost(int id) {
+        boolean result = false;
+        String queryString = "SELECT id FROM posts;";
+        List<Map<String, Object>> query = getRows(queryString);
+        for (Map<String, Object> map : query) {
+            if ((int)map.get("id") == id) {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
+
+    public boolean hasComment(int id) {
+        boolean result = false;
+        String queryString = "SELECT id FROM comments;";
+        List<Map<String, Object>> query = getRows(queryString);
+        for (Map<String, Object> map : query) {
+            if ((int)map.get("id") == id) {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
+
+    public int getIdCurrent(String search) {
         int idCurrent = 0;
-        List<Map<String, Object>> result = getRows("SELECT MAX(id) AS maxid FROM posts");
+        List<Map<String, Object>> result = getRows(String.format("SELECT MAX(id) AS maxid FROM %s", search));
         if (result.size() >= 1 && result.get(0).get("maxid") != null) {
             idCurrent = (int)result.get(0).get("maxid");
         }
@@ -118,8 +148,15 @@ public class PageDao {
     }
 
     public int post(PostVO vo) {String queryString = "INSERT INTO posts VALUES(";
-        int idCurrent = getPostIdCurrent();
+        int idCurrent = getIdCurrent("posts");
         queryString += String.format("%s, %s, '%s', '%s', '%s', '%s', %s, %s, %s, %s);", idCurrent + 1, vo.getCategory(), vo.getTitle(), vo.getAuthor(), LocalDate.now(), vo.getContent(), 0, 0, 0, vo.getTags());
+        return jt.update(queryString);
+    }
+
+    public int uploadComment(CommentVO vo) {
+        String queryString = "INSERT INTO comments VALUES(";
+        int idCurrent = getIdCurrent("comments");
+        queryString += String.format("%s, %s, '%s', %s, '%s', '%s'", idCurrent + 1, vo.getPost(), vo.getAuthor(), vo.getReplyTarget(), vo.getContent(), LocalDate.now());
         return jt.update(queryString);
     }
 }
