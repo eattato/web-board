@@ -5,11 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import spring.dto.CategoryDTO;
+import spring.dto.PostDTO;
 import spring.vo.CommentVO;
 import spring.vo.PageVO;
 import spring.vo.PostVO;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +28,7 @@ public class PageDao {
         return jt.queryForList(queryString);
     }
 
-    public List<Map<String, Object>> getCategoryList(PageVO data) {
+    public List<CategoryDTO> getCategoryList(PageVO data) {
         String queryString = "SELECT categories.*, COUNT(posts.category) AS posts, IFNULL(SUM(posts.loved), 0) AS loved FROM categories " +
                 "LEFT JOIN posts " +
                 "ON (categories.id = posts.category) ";
@@ -44,10 +47,15 @@ public class PageDao {
                     String.format("ORDER BY id OFFSET %s ROWS;", data.getStart());
         }
 
-        return getRows(queryString);
+        List<Map<String, Object>> queryResult = getRows(queryString);
+        List<CategoryDTO> result = new ArrayList<>();
+        for (Map<String, Object> map : queryResult) {
+            result.add(mapper.convertValue(map, CategoryDTO.class));
+        }
+        return result;
     }
 
-    public List<Map<String, Object>> getPostList(PageVO data) {
+    public List<PostDTO> getPostList(PageVO data) {
         String queryString = "SELECT id, category, postname, author, postdate, content, IFNULL(loved, 0) - IFNULL(hated, 0) AS loved, IFNULL(viewers, 0) AS viewers, taglist FROM posts ";
         queryString += String.format("WHERE category = %s ", data.getCategory());
         if (data.hasSearch() == true) {
@@ -75,28 +83,32 @@ public class PageDao {
         }
         queryString += "GROUP BY id;";
 
-        return getRows(queryString);
+        List<Map<String, Object>> queryResult = getRows(queryString);
+        List<PostDTO> result = new ArrayList<>();
+        for (Map<String, Object> map : queryResult) {
+            result.add(mapper.convertValue(map, PostDTO.class));
+        }
+        return result;
     }
 
-    public List<Map<String, Object>> getCategoryData(int id) {
-        String queryString = String.format("SELECT category, IFNULL(about, '글을 둘러보세요.') AS about, img, anonymous, adminonly FROM categories WHERE id = %s", id);
-        return getRows(queryString);
-    }
-
-    public Map<String, Object> getPostData(int id) {
-        String queryString = String.format("SELECT * FROM posts WHERE id = %s", id);
-        List<Map<String, Object>> result = getRows(queryString);
-        if (result.size() >= 1) {
-            return result.get(0);
+    public CategoryDTO getCategoryData(int id) {
+        String queryString = String.format("SELECT * FROM categories WHERE id = %s", id);
+        List<Map<String, Object>> queryResult = getRows(queryString);
+        if (queryResult.size() >= 1) {
+            return mapper.convertValue(queryResult.get(0), CategoryDTO.class);
         } else {
             return null;
         }
     }
 
-    public int getCategoryCount() {
-        String queryString = "SELECT id FROM categories;";
+    public PostDTO getPostData(int id) {
+        String queryString = String.format("SELECT * FROM posts WHERE id = %s", id);
         List<Map<String, Object>> result = getRows(queryString);
-        return result.size();
+        if (result.size() >= 1) {
+            return mapper.convertValue(result.get(0), PostDTO.class);
+        } else {
+            return null;
+        }
     }
 
     public boolean hasCategory(int id) {

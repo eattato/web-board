@@ -35,8 +35,10 @@
           <div class="main_posts">
             <ul class="post_list">
               <li class="post_simple" th:each="category : ${categoryList}">
-                <a th:href="|http://localhost:8888/category/${category.id}|">
-                  <div class="post_name" th:text="${category.category}">
+                <a
+                  th:href="|http://localhost:8888/category/${category.getId()}|"
+                >
+                  <div class="post_name" th:text="${category.getCategory()}">
                     카테고리 제목
                   </div>
                   <div class="post_right">
@@ -44,7 +46,7 @@
                       <div class="post_top">게시물 갯수</div>
                       <div
                         class="post_bottom"
-                        th:text="|${category.posts}개|"
+                        th:text="|${category.getPosts()}개|"
                       ></div>
                     </div>
 
@@ -52,7 +54,7 @@
                       <div class="post_top">총 추천 횟수</div>
                       <div
                         class="post_bottom"
-                        th:text="|${category.loved}개|"
+                        th:text="|${category.getLoved()}개|"
                       ></div>
                     </div>
                   </div>
@@ -60,14 +62,16 @@
               </li>
 
               <li class="post_exact" th:each="category: ${categoryList}">
-                <a th:href="|http://localhost:8888/category/${category.id}|">
+                <a
+                  th:href="|http://localhost:8888/category/${category.getId()}|"
+                >
                   <div class="post_left">
-                    <div class="post_name" th:text="${category.category}">
+                    <div class="post_name" th:text="${category.getCategory()}">
                       카테고리 제목
                     </div>
                     <div class="post_info">
-                      <img src="" alt="" th:src="${category.img}" />
-                      <p th:text="${category.about}">카테고리 설명</p>
+                      <img src="" alt="" th:src="${category.getImg()}" />
+                      <p th:text="${category.getAbout()}">카테고리 설명</p>
                     </div>
                   </div>
                   <div class="post_right">
@@ -75,7 +79,7 @@
                       <div class="post_top">게시물 갯수</div>
                       <div
                         class="post_bottom"
-                        th:text="|${category.posts}개|"
+                        th:text="|${category.getPosts()}개|"
                       ></div>
                     </div>
 
@@ -83,7 +87,7 @@
                       <div class="post_top">총 추천 횟수</div>
                       <div
                         class="post_bottom"
-                        th:text="|${category.loved}개|"
+                        th:text="|${category.getLoved()}개|"
                       ></div>
                     </div>
                   </div>

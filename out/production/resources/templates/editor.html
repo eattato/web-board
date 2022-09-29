@@ -31,8 +31,8 @@
               <select id="editor_category">
                 <option
                   th:each="category : ${categoryList}"
-                  th:value="${category.id}"
-                  th:text="${category.category}"
+                  th:value="${category.getId()}"
+                  th:text="${category.getCategory()}"
                 ></option>
               </select>
               <input

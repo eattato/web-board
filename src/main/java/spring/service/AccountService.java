@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import spring.dao.AccountDao;
+import spring.dto.AccountDataDTO;
 import spring.vo.AccountCreateVO;
 import spring.vo.LoginVO;
 import spring.vo.ProfileVO;
@@ -112,26 +113,6 @@ public class AccountService {
         return result;
     }
 
-    public String getLoginData(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        String sessionData = getSession(session);
-
-        if (sessionData != null) {
-            Map<String, Object> profile = accountDao.getUserProfile(sessionData);
-            if (profile != null) {
-                JSONObject json = new JSONObject();
-                json.put("name", profile.get("nickname"));
-                json.put("img", profile.get("faceimg"));
-                json.put("email", sessionData);
-                return json.toJSONString();
-            } else {
-                return "no profile";
-            }
-        } else {
-            return "no session";
-        }
-    }
-
     public String logout(HttpServletRequest request) {
         HttpSession session = request.getSession();
         String sessionData = getSession(session);
@@ -164,8 +145,15 @@ public class AccountService {
 
                     if (result == null) {
                         if (data.getImage() != null) {
+                            AccountDataDTO userData = accountDao.getUserData(sessionData);
+                            String faceimg = userData.getFaceimg();
+                            if (faceimg != null && !faceimg.equals("profiles/default.png") && !faceimg.equals("profiles/delete.png")) {
+                                File oldImage = new File("C:/board-saves/" + userData.getFaceimg());
+                                oldImage.delete();
+                            }
+
                             File image = fileService.uploadImage(data.getImage());
-                            if (image != null) {
+                            if (image != null && image.exists() == true) {
                                 log.info(image.toString());
                                 String[] fullLink = image.toString().split("\\\\");
                                 String directory = "";
@@ -204,7 +192,7 @@ public class AccountService {
         String sessionData = getSession(session);
 
         if (sessionData != null) { // 로그인 세션이 존재하면
-            ProfileVO profile = getProfile(sessionData);
+            AccountDataDTO profile = getProfile(sessionData);
             if (profile != null) {
                 // 이메일로 계정 조회해서 정보를 모델로 전송
                 model.addAttribute("email", sessionData);
@@ -218,30 +206,20 @@ public class AccountService {
         }
     }
 
-    private String isNull(Object target, String alternate) {
-        if (target != null) {
-            return target.toString();
-        } else {
-            return alternate;
-        }
-    }
-
-    public ProfileVO getProfile(String email) {
-        Map<String, Object> profile = accountDao.getUserProfile(email);
-        if (profile != null) {
-            ProfileVO result = new ProfileVO();
-            result.setData(null, isNull(profile.get("nickname"), "익명"), isNull(profile.get("faceimg"), "profiles/default.png"));
+    public AccountDataDTO getProfile(String email) { // 공개해도 되는 계정 정보만 공개
+        AccountDataDTO userData = accountDao.getUserData(email);
+        if (userData != null) {
+            AccountDataDTO result = new AccountDataDTO();
+            result.setEmail(userData.getEmail());
+            result.setNickname(userData.getNickname());
+            result.setFaceimg(userData.getFaceimg());
             return result;
         } else {
-            ProfileVO result = new ProfileVO();
-            result.setData(null, "삭제된 유저", "profiles/deleted.png");
+            AccountDataDTO result = new AccountDataDTO();
+            result.setNickname("삭제된 유저");
+            result.setFaceimg("profiles/deleted.png");
             return result;
         }
-    }
-
-    // DEBUG PURPOSE
-    public List<Map<String, Object>> getMembers() {
-        return accountDao.getMember(null);
     }
 
     // Private Methods

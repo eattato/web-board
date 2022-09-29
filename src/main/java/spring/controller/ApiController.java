@@ -141,10 +141,4 @@ public class ApiController {
     public String uploadComment(HttpServletRequest request, @RequestBody CommentVO vo) {
         return pageService.comment(request, vo);
     }
-
-    // ONLY FOR DEBUG PURPOSE
-    @GetMapping("/members")
-    public List<Map<String, Object>> members() {
-        return accountService.getMembers();
-    }
 }

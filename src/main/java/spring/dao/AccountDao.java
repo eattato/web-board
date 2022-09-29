@@ -1,12 +1,16 @@
 package spring.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.jdbc.core.JdbcTemplate;
+import spring.dto.AccountDataDTO;
+import spring.dto.PostDTO;
 import spring.vo.AccountCreateVO;
 
 @Repository
@@ -16,16 +20,7 @@ public class AccountDao {
     @Autowired // 아래 JdbcTemplate에 bean을 알아서 넣어줌
     JdbcTemplate jt;
 
-    // 디버깅용 - 나중에 없애기
-    public List<Map<String, Object>> getMember(String userEmail) {
-        if (userEmail == null) {
-            userEmail = "";
-        } else { // 이메일 들어가면 쿼리문에 조건문 붙임
-            userEmail = String.format(" WHERE email = '%s'", userEmail);
-        }
-
-        return getRows(String.format("SELECT * FROM members%s;", userEmail));
-    }
+    ObjectMapper mapper = new ObjectMapper();
 
     private List<Map<String, Object>> getRows(String queryString) { // List<Map<String, Object>> 형태로 모든 선택된 열을 리턴
         return jt.queryForList(queryString);
@@ -54,22 +49,11 @@ public class AccountDao {
         }
     }
 
-    public Map<String, Object> getUserProfile(String email) {
-        email = email.replace(" ", "+");
-        String queryString = String.format("SELECT nickname, faceimg FROM members WHERE email = '%s';", email);
-        List<Map<String, Object>> result = getRows(queryString);
-        if (result.size() >= 1) {
-            return result.get(0);
-        } else {
-            return null;
-        }
-    }
-
-    public Map<String, Object> getUserData(String email) {
+    public AccountDataDTO getUserData(String email) {
         String queryString = String.format("SELECT * FROM members WHERE email = '%s';", email);
         List<Map<String, Object>> result = getRows(queryString);
         if (result.size() >= 1) {
-            return result.get(0);
+            return mapper.convertValue(result.get(0), AccountDataDTO.class);
         } else {
             return null;
         }

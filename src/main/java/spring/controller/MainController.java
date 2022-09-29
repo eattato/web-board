@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import spring.dto.AccountDataDTO;
+import spring.dto.CategoryDTO;
+import spring.dto.PostDTO;
 import spring.service.AccountService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,7 +53,8 @@ public class MainController {
             vo.setSearch(search, null, null);
         }
 
-        List<Map<String, Object>> result = pageService.getCategoryList(vo);
+        List<CategoryDTO> result = pageService.getCategoryList(vo);
+        // 카테고리에서 클라이언트가 볼 필요 없는 내용 삭제, 근데 다 공개해도 상관 없는 내용이라 그냥 줌
         model.addAttribute("categoryList", result);
         model.addAttribute("page", page);
 
@@ -99,7 +103,7 @@ public class MainController {
                            @PathVariable String id
     ) {
         accountService.sendProfileBySession(request, model);
-        try {
+//        try {
             int intid = Integer.parseInt(id);
 
             PageVO vo = new PageVO();
@@ -116,12 +120,12 @@ public class MainController {
                 vo.setSearch(search, null, null);
             }
 
-            Map<String, Object> categoryData = pageService.getCategoryData(intid);
+            CategoryDTO categoryData = pageService.getCategoryData(intid);
             if (categoryData != null) {
-                List<Map<String, Object>> posts = pageService.getPostList(vo);
-                for (Map<String, Object> post : posts) {
-                    ProfileVO authorInfo = accountService.getProfile(post.get("author").toString());
-                    post.put("authorInfo", authorInfo);
+                List<PostDTO> posts = pageService.getPostList(vo);
+                for (PostDTO post : posts) {
+                    AccountDataDTO authorInfo = accountService.getProfile(post.getAuthor());
+                    post.setAuthorInfo(authorInfo);
                 }
                 model.addAttribute("posts", posts);
                 model.addAttribute("categoryData", categoryData);
@@ -130,10 +134,10 @@ public class MainController {
                 log.info("redirect - no category data");
                 return "redirect:/";
             }
-        } catch (Exception e) {
+//        } catch (Exception e) {
 //            log.info("redirect - couldn't get id, got " + id);
-            return "redirect:/";
-        }
+//            return "redirect:/";
+//        }
     }
 
     @GetMapping("/posts/{id}")
@@ -144,19 +148,17 @@ public class MainController {
             boolean profile = accountService.sendProfileBySession(request, model);
         }
 
-        String page = "redirect:/";
         try {
             int intid = Integer.parseInt(id);
             boolean result = pageService.getPost(request, intid, model);
             if (result == true) {
-                page = "posts";
+                return "posts";
             } else {
-                log.info("failed");
+                return "redirect:/";
             }
         } catch (Exception e) {
-            log.info(e.toString());
+            return "redirect:/";
         }
-        return page;
     }
 
     @GetMapping("/editor")

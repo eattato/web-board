@@ -1,5 +1,6 @@
 package spring.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.handler.codec.http2.Http2ServerUpgradeCodec;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
@@ -8,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import spring.dao.PageDao;
+import spring.dto.AccountDataDTO;
+import spring.dto.CategoryDTO;
+import spring.dto.PostDTO;
 import spring.vo.CommentVO;
 import spring.vo.PageVO;
 import spring.vo.PostVO;
@@ -29,14 +33,16 @@ public class PageService {
     @Autowired
     AccountService accountService;
 
-    public List<Map<String, Object>> getCategoryList(PageVO data) {
+    ObjectMapper mapper = new ObjectMapper();
+
+    public List<CategoryDTO> getCategoryList(PageVO data) {
         return pageDao.getCategoryList(data);
     }
 
-    public List<Map<String, Object>> getPostList(PageVO data) {
-        List<Map<String, Object>> result = pageDao.getPostList(data);
-        for (Map<String, Object> map : result) {
-            if (map.get("content").toString().contains("{image}")) {
+    public List<PostDTO> getPostList(PageVO data) {
+        List<PostDTO> result = pageDao.getPostList(data);
+        for (PostDTO post : result) {
+            if (post.getContent().contains("{image}")) {
 //                map.put("mainImage", );
             } else {
 //                map.put("mainImage", null);
@@ -45,25 +51,20 @@ public class PageService {
         return result;
     }
 
-    public Map<String, Object> getCategoryData(int id) {
-        return pageDao.getCategoryData(id).get(0);
+    public CategoryDTO getCategoryData(int id) {
+        return pageDao.getCategoryData(id);
     }
 
     public boolean getPost(HttpServletRequest request, int id, Model model) {
         HttpSession session = request.getSession();
         String sessionData = accountService.getSession(session);
 
-        Map<String, Object> postData = pageDao.getPostData(id);
+        PostDTO postData = pageDao.getPostData(id);
         if (postData != null) {
             model.addAttribute("post", postData);
-            model.addAttribute("category", getCategoryData(Integer.parseInt(postData.get("category").toString())));
-            if (postData.get("taglist") != null) {
-                model.addAttribute("tags", postData.get("taglist").toString().split(" "));
-            } else {
-                model.addAttribute("tags", null);
-            }
-            ProfileVO vo = accountService.getProfile(postData.get("author").toString());
-            model.addAttribute("author", vo);
+            model.addAttribute("category", getCategoryData(postData.getCategory()));
+            model.addAttribute("tags", postData.getTaglist());
+            model.addAttribute("author", accountService.getProfile(postData.getAuthor()));
             return true;
         } else {
             return false;
