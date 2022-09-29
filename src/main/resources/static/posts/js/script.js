@@ -5,6 +5,23 @@ function httpGet(url) {
   return xmlHttp.responseText;
 }
 
+const getId = (comment) => {
+  let classList = comment.attr("class");
+  classList = classList.split(" ");
+
+  let commentId = null;
+  let replyId = null;
+  for (let ind = 0; ind < classList.length; ind++) {
+    let className = classList[ind];
+    if (className.includes("id") == true) {
+      commentId = Number(className.replace("id", ""));
+    } else if (className.includes("reply") == true) {
+      replyId = Number(className.replace("reply", ""));
+    }
+  }
+  return [commentId, replyId];
+};
+
 $(() => {
   let main = $(".post_main");
   let content = $.parseHTML(main.text());
@@ -46,6 +63,7 @@ $(() => {
           if (result == "ok") {
             input.val("");
             alert("댓글을 성공적으로 전송했습니다!");
+            window.location.href = window.location.href;
           } else if (result == "target comment not found") {
             alert("해당 댓글은 존재하지 않거나 삭제된 댓글입니다.");
           } else {
@@ -68,10 +86,16 @@ $(() => {
   });
 
   // 댓글 메뉴
-  $(".comment_ellipsis").each((ind, obj) => {
+  let comments = {};
+  $(".comment").each((ind, obj) => {
+    let comment = $(obj);
+    let ids = getId(comment);
+    let commentId = ids[0];
+    comments[commentId] = comment;
+
     let menuActivated = false;
-    let button = $(obj).find(".comment_ellipsis_button");
-    let menu = $(obj).find(".comment_ellipsis_menu");
+    let button = comment.find(".comment_ellipsis_button");
+    let menu = comment.find(".comment_ellipsis_menu");
     let reply = menu.find(".comment_ellipsis_reply");
     let report = menu.find(".comment_ellipsis_report");
 
@@ -93,7 +117,14 @@ $(() => {
     });
 
     reply.click(() => {
-      // replying = true;
+      let ids = getId(comment);
+      let commentId = ids[0];
+      replyTo = commentId;
+
+      let replyingAuthor = comment.find(".comments_name");
+      replyDisplay
+        .find(".comments_reply_target")
+        .text(replyingAuthor.text() + "에게 다는 답글");
       replyDisplay.addClass("replying");
       input.addClass("replying");
       menuActivated = false;
@@ -105,4 +136,35 @@ $(() => {
       menuDisplay();
     });
   });
+
+  // 댓글 정렬
+  while (true) {
+    let done = true;
+    $(".comment").each((ind, obj) => {
+      let comment = $(obj);
+      let ids = getId(comment);
+      let commentId = ids[0];
+      let replyId = ids[1];
+
+      if (commentId != null && replyId != null) {
+        if (replyId != -1) {
+          console.log("mo?ving");
+          if (comments[replyId] != null) {
+            if (getId(comments[replyId])[0] != replyId) {
+              console.log("moving man");
+              done = false;
+              comment
+                .detach()
+                .appendTo(".comment" + replyId + " .comment_holder");
+            }
+          } else {
+            comment.remove();
+          }
+        }
+      }
+    });
+    if (done == true) {
+      break;
+    }
+  }
 });

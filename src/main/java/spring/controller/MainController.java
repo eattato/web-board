@@ -152,6 +152,7 @@ public class MainController {
             int intid = Integer.parseInt(id);
             boolean result = pageService.getPost(request, intid, model);
             if (result == true) {
+                pageService.addView(intid);
                 return "posts";
             } else {
                 return "redirect:/";

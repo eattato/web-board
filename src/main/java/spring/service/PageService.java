@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import spring.dao.PageDao;
 import spring.dto.AccountDataDTO;
 import spring.dto.CategoryDTO;
+import spring.dto.CommentDTO;
 import spring.dto.PostDTO;
 import spring.vo.CommentVO;
 import spring.vo.PageVO;
@@ -35,6 +36,7 @@ public class PageService {
 
     ObjectMapper mapper = new ObjectMapper();
 
+    // Category
     public List<CategoryDTO> getCategoryList(PageVO data) {
         return pageDao.getCategoryList(data);
     }
@@ -55,16 +57,19 @@ public class PageService {
         return pageDao.getCategoryData(id);
     }
 
+    // Post
     public boolean getPost(HttpServletRequest request, int id, Model model) {
         HttpSession session = request.getSession();
         String sessionData = accountService.getSession(session);
 
         PostDTO postData = pageDao.getPostData(id);
+        List<CommentDTO> commentData = getCommentData(id);
         if (postData != null) {
             model.addAttribute("post", postData);
             model.addAttribute("category", getCategoryData(postData.getCategory()));
             model.addAttribute("tags", postData.getTaglist());
             model.addAttribute("author", accountService.getProfile(postData.getAuthor()));
+            model.addAttribute("comments", commentData);
             return true;
         } else {
             return false;
@@ -99,6 +104,17 @@ public class PageService {
         }
     }
 
+    public boolean addView(int id) {
+        PostDTO postData = pageDao.getPostData(id);
+        if (postData != null) {
+            pageDao.addToPost(id, "viewers", 1);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // Comment
     public String comment(HttpServletRequest request, CommentVO data) {
         HttpSession session = request.getSession();
         String sessionData = accountService.getSession(session);
@@ -126,6 +142,14 @@ public class PageService {
         } else {
             return "no session";
         }
+    }
+
+    public List<CommentDTO> getCommentData(int id) {
+        List<CommentDTO> result = pageDao.getCommentsFromPost(id);
+        for (CommentDTO comment : result) {
+            comment.setAuthorInfo(accountService.getProfile(comment.getAuthor()));
+        }
+        return result;
     }
 
 //    public String removeComment(HttpServletRequest request, int id) {

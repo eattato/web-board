@@ -181,12 +181,17 @@
 
 .comments_img_frame {
   display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100px;
   height: 100px;
   border: 1px solid lightgray;
   border-radius: 50px;
   overflow: hidden;
   margin-top: 10px;
+}
+.comments_img_frame img {
+  width: 100%;
 }
 
 .comments_input_frame {
@@ -256,9 +261,24 @@
 
 .comment {
   display: flex;
-  width: 1000px;
+  flex-direction: column;
+  width: 100%;
+  height: auto;
+}
+
+.comment_frame {
+  display: flex;
+  width: 100%;
   height: 100px;
   border: 1px solid lightgray;
+  overflow: hidden;
+}
+
+.comment_holder {
+  width: 100%;
+  height: auto;
+  padding-left: 20px;
+  background-color: ghostwhite;
 }
 
 .comment .comments_profile {
@@ -279,7 +299,9 @@
 }
 
 .comment p {
-  width: 880px;
+  display: flex;
+  flex-grow: 1;
+  width: auto;
   height: auto;
   padding: 10px 10px;
   margin-top: 10px;

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import spring.dto.CategoryDTO;
+import spring.dto.CommentDTO;
 import spring.dto.PostDTO;
 import spring.vo.CommentVO;
 import spring.vo.PageVO;
@@ -28,6 +29,7 @@ public class PageDao {
         return jt.queryForList(queryString);
     }
 
+    // Category
     public List<CategoryDTO> getCategoryList(PageVO data) {
         String queryString = "SELECT categories.*, COUNT(posts.category) AS posts, IFNULL(SUM(posts.loved), 0) AS loved FROM categories " +
                 "LEFT JOIN posts " +
@@ -55,6 +57,30 @@ public class PageDao {
         return result;
     }
 
+    public CategoryDTO getCategoryData(int id) {
+        String queryString = String.format("SELECT * FROM categories WHERE id = %s", id);
+        List<Map<String, Object>> queryResult = getRows(queryString);
+        if (queryResult.size() >= 1) {
+            return mapper.convertValue(queryResult.get(0), CategoryDTO.class);
+        } else {
+            return null;
+        }
+    }
+
+    public boolean hasCategory(int id) {
+        boolean result = false;
+        String queryString = "SELECT id FROM categories;";
+        List<Map<String, Object>> query = getRows(queryString);
+        for (Map<String, Object> map : query) {
+            if ((int)map.get("id") == id) {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
+
+    // Post
     public List<PostDTO> getPostList(PageVO data) {
         String queryString = "SELECT id, category, postname, author, postdate, content, IFNULL(loved, 0) - IFNULL(hated, 0) AS loved, IFNULL(viewers, 0) AS viewers, taglist FROM posts ";
         queryString += String.format("WHERE category = %s ", data.getCategory());
@@ -91,16 +117,6 @@ public class PageDao {
         return result;
     }
 
-    public CategoryDTO getCategoryData(int id) {
-        String queryString = String.format("SELECT * FROM categories WHERE id = %s", id);
-        List<Map<String, Object>> queryResult = getRows(queryString);
-        if (queryResult.size() >= 1) {
-            return mapper.convertValue(queryResult.get(0), CategoryDTO.class);
-        } else {
-            return null;
-        }
-    }
-
     public PostDTO getPostData(int id) {
         String queryString = String.format("SELECT * FROM posts WHERE id = %s", id);
         List<Map<String, Object>> result = getRows(queryString);
@@ -109,19 +125,6 @@ public class PageDao {
         } else {
             return null;
         }
-    }
-
-    public boolean hasCategory(int id) {
-        boolean result = false;
-        String queryString = "SELECT id FROM categories;";
-        List<Map<String, Object>> query = getRows(queryString);
-        for (Map<String, Object> map : query) {
-            if ((int)map.get("id") == id) {
-                result = true;
-                break;
-            }
-        }
-        return result;
     }
 
     public boolean hasPost(int id) {
@@ -137,6 +140,18 @@ public class PageDao {
         return result;
     }
 
+    public int post(PostVO vo) {String queryString = "INSERT INTO posts VALUES(";
+        int idCurrent = getIdCurrent("posts");
+        queryString += String.format("%s, %s, '%s', '%s', '%s', '%s', %s, %s, %s, %s);", idCurrent + 1, vo.getCategory(), vo.getTitle(), vo.getAuthor(), LocalDate.now(), vo.getContent(), 0, 0, 0, vo.getTags());
+        return jt.update(queryString);
+    }
+
+    public int addToPost(int id, String target, int add) {
+        String queryString = String.format("UPDATE posts SET %s = %s + %s WHERE id = %s", target, target, add, id);
+        return jt.update(queryString);
+    }
+
+    // Comment
     public boolean hasComment(int id) {
         boolean result = false;
         String queryString = "SELECT id FROM comments;";
@@ -150,6 +165,24 @@ public class PageDao {
         return result;
     }
 
+    public int uploadComment(CommentVO vo) {
+        String queryString = "INSERT INTO comments VALUES(";
+        int idCurrent = getIdCurrent("comments");
+        queryString += String.format("%s, %s, '%s', %s, '%s', '%s');", idCurrent + 1, vo.getPost(), vo.getAuthor(), vo.getReplyTarget(), vo.getContent(), LocalDate.now());
+        return jt.update(queryString);
+    }
+
+    public List<CommentDTO> getCommentsFromPost(int id) {
+        String queryString = String.format("SELECT * FROM comments WHERE post = %s", id);
+        List<Map<String, Object>> queryResult = getRows(queryString);
+        List<CommentDTO> result = new ArrayList<>();
+        for (Map<String, Object> map : queryResult) {
+            result.add(mapper.convertValue(map, CommentDTO.class));
+        }
+        return result;
+    }
+
+    // Misc
     public int getIdCurrent(String search) {
         int idCurrent = 0;
         List<Map<String, Object>> result = getRows(String.format("SELECT MAX(id) AS maxid FROM %s", search));
@@ -157,18 +190,5 @@ public class PageDao {
             idCurrent = (int)result.get(0).get("maxid");
         }
         return idCurrent;
-    }
-
-    public int post(PostVO vo) {String queryString = "INSERT INTO posts VALUES(";
-        int idCurrent = getIdCurrent("posts");
-        queryString += String.format("%s, %s, '%s', '%s', '%s', '%s', %s, %s, %s, %s);", idCurrent + 1, vo.getCategory(), vo.getTitle(), vo.getAuthor(), LocalDate.now(), vo.getContent(), 0, 0, 0, vo.getTags());
-        return jt.update(queryString);
-    }
-
-    public int uploadComment(CommentVO vo) {
-        String queryString = "INSERT INTO comments VALUES(";
-        int idCurrent = getIdCurrent("comments");
-        queryString += String.format("%s, %s, '%s', %s, '%s', '%s'", idCurrent + 1, vo.getPost(), vo.getAuthor(), vo.getReplyTarget(), vo.getContent(), LocalDate.now());
-        return jt.update(queryString);
     }
 }

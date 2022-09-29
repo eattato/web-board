@@ -46,7 +46,7 @@
                 <div class="post_info_top">게시일</div>
                 <div
                   class="post_info_bottom"
-                  th:text="|${post.postdate}|"
+                  th:text="|${post.getPostdate()}|"
                 ></div>
               </div>
 
@@ -54,7 +54,7 @@
                 <div class="post_info_top">조회수</div>
                 <div
                   class="post_info_bottom"
-                  th:text="|${post.viewers}회|"
+                  th:text="|${post.getViewers()}회|"
                 ></div>
               </div>
 
@@ -62,7 +62,7 @@
                 <div class="post_info_top">좋아요</div>
                 <div
                   class="post_info_bottom"
-                  th:text="|${post.viewers}회|"
+                  th:text="|${post.getRecommend()}회|"
                 ></div>
               </div>
             </div>
@@ -93,8 +93,16 @@
           <div class="comments_frame">
             <div class="comments_top">
               <div class="comments_profile">
-                <div class="comments_name">작성자</div>
-                <div class="comments_img_frame"></div>
+                <div class="comments_name" th:text="${author.getNickname()}">
+                  작성자
+                </div>
+                <div class="comments_img_frame">
+                  <img
+                    th:src="|http://localhost:8888/images/${profile.getFaceimg()}|"
+                    src=""
+                    alt=""
+                  />
+                </div>
               </div>
               <div class="comments_input_frame">
                 <div class="comments_input">
@@ -113,25 +121,43 @@
               </div>
             </div>
             <div class="comments_bottom">
-              <div class="comment">
-                <div class="comments_profile">
-                  <div class="comments_name">작성자</div>
-                  <div class="comments_img_frame"></div>
-                </div>
-                <p>댓글 내용</p>
-                <div class="comment_ellipsis">
-                  <button type="button" class="comment_ellipsis_button">
-                    ...
-                  </button>
-                  <div class="comment_ellipsis_menu">
-                    <button type="button" class="comment_ellipsis_reply">
-                      답글 달기
+              <div
+                class="comment"
+                th:each="comment : ${comments}"
+                th:classappend="|id${comment.getId()} reply${comment.getReply()}|"
+              >
+                <div class="comment_frame">
+                  <div class="comments_profile">
+                    <div
+                      class="comments_name"
+                      th:text="${comment.authorInfo.getNickname()}"
+                    >
+                      작성자
+                    </div>
+                    <div class="comments_img_frame">
+                      <img
+                        th:src="|http://localhost:8888/images/${comment.authorInfo.getFaceimg()}|"
+                        src=""
+                        alt=""
+                      />
+                    </div>
+                  </div>
+                  <p th:text="${comment.getContent()}">댓글 내용</p>
+                  <div class="comment_ellipsis">
+                    <button type="button" class="comment_ellipsis_button">
+                      ...
                     </button>
-                    <button type="button" class="comment_ellipsis_report">
-                      신고
-                    </button>
+                    <div class="comment_ellipsis_menu">
+                      <button type="button" class="comment_ellipsis_reply">
+                        답글 달기
+                      </button>
+                      <button type="button" class="comment_ellipsis_report">
+                        신고
+                      </button>
+                    </div>
                   </div>
                 </div>
+                <ul class="comment_holder"></ul>
               </div>
             </div>
           </div>
