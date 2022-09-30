@@ -14,7 +14,7 @@ public class AccountDataDTO {
     private int verify = 0;
     private String faceimg;
     private String about;
-    private String isadmin;
+    private boolean isadmin;
 
     public String getNickname() {
         if (nickname != null) {

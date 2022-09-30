@@ -37,7 +37,7 @@ public class PageDao {
         if (data.hasSearch()) {
             Map<String, String> search = data.getSearch();
             if (search.get("title") != null) {
-                queryString += "WHERE " + String.format("category LIKE '%%%s%%' ", search.get("title"));
+                queryString += "WHERE " + String.format("categories.category LIKE '%%%s%%' ", search.get("title"));
             }
         }
 
@@ -151,6 +151,11 @@ public class PageDao {
         return jt.update(queryString);
     }
 
+    public int removePost(int id) {
+        String queryString = String.format("DELETE FROM posts WHERE id = %s", id);
+        return jt.update(queryString);
+    }
+
     // Comment
     public boolean hasComment(int id) {
         boolean result = false;
@@ -180,6 +185,31 @@ public class PageDao {
             result.add(mapper.convertValue(map, CommentDTO.class));
         }
         return result;
+    }
+
+    public CommentDTO getCommentData(int id) {
+        String queryString = String.format("SELECT * FROM comments WHERE id = %s", id);
+        List<Map<String, Object>> queryResult = getRows(queryString);
+        if (queryResult.size() >= 1) {
+            return mapper.convertValue(queryResult.get(0), CommentDTO.class);
+        } else {
+            return null;
+        }
+    }
+
+    public int removeCommentsOfPost(int id) { // 해당 포스트의 모든 댓글을 삭제하기 때문에 대댓글 삭제 필요 없음
+        String queryString = String.format("DELETE FROM comments WHERE post = %s", id);
+        return jt.update(queryString);
+    }
+
+    public int removeComment(int id) { // ID로 댓글 삭제
+        String queryString = String.format("DELETE FROM comments WHERE id = %s", id);
+        return jt.update(queryString);
+    }
+
+    public int removeReplyComment(int id) { // 해당 ID 댓글의 대댓글 모두 삭제
+        String queryString = String.format("DELETE FROM comments WHERE reply = %s", id);
+        return jt.update(queryString);
     }
 
     // Misc

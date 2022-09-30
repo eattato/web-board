@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.jaxb.SpringDataJaxb;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import spring.dao.PageDao;
@@ -104,13 +105,35 @@ public class PageService {
         }
     }
 
-    public boolean addView(int id) {
+    public boolean addView(int id) { // 조회수 추가
         PostDTO postData = pageDao.getPostData(id);
         if (postData != null) {
             pageDao.addToPost(id, "viewers", 1);
             return true;
         } else {
             return false;
+        }
+    }
+
+    public String removePost(HttpServletRequest request, int id) {
+        HttpSession session = request.getSession();
+        String sessionData = accountService.getSession(session);
+        if (sessionData != null) {
+            AccountDataDTO userData = accountService.getProfile(sessionData);
+            PostDTO postData = pageDao.getPostData(id);
+            if (postData != null) {
+                if (postData.getAuthor() == sessionData || userData.isIsadmin() == true) {
+                    pageDao.removePost(id);
+                    pageDao.removeCommentsOfPost(id);
+                    return "ok";
+                } else {
+                    return "no access";
+                }
+            } else {
+                return "couldn't find post";
+            }
+        } else {
+            return "no session";
         }
     }
 
@@ -150,6 +173,28 @@ public class PageService {
             comment.setAuthorInfo(accountService.getProfile(comment.getAuthor()));
         }
         return result;
+    }
+
+    public String removeComment(HttpServletRequest request, int id) {
+        HttpSession session = request.getSession();
+        String sessionData = accountService.getSession(session);
+        if (sessionData != null) {
+            AccountDataDTO userData = accountService.getProfile(sessionData);
+            CommentDTO commentData = pageDao.getCommentData(id);
+            if (commentData != null) {
+                if (commentData.getAuthor() == sessionData || userData.isIsadmin() == true) {
+                    pageDao.removeComment(id);
+                    pageDao.removeReplyComment(id);
+                    return "ok";
+                } else {
+                    return "no access";
+                }
+            } else {
+                return "couldn't find comment";
+            }
+        } else {
+            return "no session";
+        }
     }
 
 //    public String removeComment(HttpServletRequest request, int id) {
