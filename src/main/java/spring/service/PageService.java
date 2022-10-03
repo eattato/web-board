@@ -71,6 +71,11 @@ public class PageService {
             model.addAttribute("tags", postData.getTaglist());
             model.addAttribute("author", accountService.getProfile(postData.getAuthor()));
             model.addAttribute("comments", commentData);
+            if (postData.getAuthor().equals(sessionData)) {
+                model.addAttribute("owned", true);
+            } else {
+                model.addAttribute("owned", false);
+            }
             return true;
         } else {
             return false;
@@ -122,7 +127,7 @@ public class PageService {
             AccountDataDTO userData = accountService.getProfile(sessionData);
             PostDTO postData = pageDao.getPostData(id);
             if (postData != null) {
-                if (postData.getAuthor() == sessionData || userData.isIsadmin() == true) {
+                if (postData.getAuthor().equals(sessionData) || userData.isIsadmin() == true) {
                     pageDao.removePost(id);
                     pageDao.removeCommentsOfPost(id);
                     return "ok";
@@ -182,7 +187,7 @@ public class PageService {
             AccountDataDTO userData = accountService.getProfile(sessionData);
             CommentDTO commentData = pageDao.getCommentData(id);
             if (commentData != null) {
-                if (commentData.getAuthor() == sessionData || userData.isIsadmin() == true) {
+                if (commentData.getAuthor().equals(sessionData) || userData.isIsadmin() == true) {
                     pageDao.removeComment(id);
                     pageDao.removeReplyComment(id);
                     return "ok";
@@ -196,26 +201,4 @@ public class PageService {
             return "no session";
         }
     }
-
-//    public String removeComment(HttpServletRequest request, int id) {
-//        HttpSession session = request.getSession();
-//        String sessionData = accountService.getSession(session);
-//        if (sessionData != null) {
-//            Map<String, Object> commentData = pageDao.getCommentData();
-//            Map<String, Object> accountData = accountService.accountDao.getUserData(sessionData);
-//            if ( || (Boolean) accountData.get("isadmin") == true) {
-//
-//            } else {
-//                return "no access";
-//            }
-//        } else {
-//            return "no session";
-//        }
-//
-//        if (pageDao.hasComment(id) == true) {
-//
-//        } else {
-//            return "comment does not exist";
-//        }
-//    }
 }
