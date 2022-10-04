@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  </head>
+  <body>
+    <div>
+      <img
+        style="width: 300px; height: auto"
+        src="http://localhost:8888/images/official/boardarc.png"
+        alt=""
+      />
+    </div>
+    <span style="margin-top: 20px" th:text="|${name}님, 안녕하십니까?|"></span>
+    <p style="margin-top: 10px; margin-bottom: 10px">
+      하단의 코드를 입력해 Boardarc 회원가입을 완료하세요.<br />
+      만약 회원가입을 시도하지 않았다면 이 메일을 무시하세요.<br />
+      <br />
+      감사합니다.
+    </p>
+    <span
+      style="font-size: 20px; font-weight: bold"
+      class="code"
+      th:text="${code}"
+    ></span>
+  </body>
+</html>

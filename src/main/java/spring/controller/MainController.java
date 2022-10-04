@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import spring.service.FileService;
+import spring.service.MailService;
 import spring.service.PageService;
 import spring.vo.PageVO;
 import spring.vo.ProfileVO;
@@ -29,6 +30,9 @@ public class MainController {
 
     @Autowired
     PageService pageService;
+
+    @Autowired
+    MailService mailService;
 
     @GetMapping("/")
     public String main(
@@ -182,5 +186,11 @@ public class MainController {
         } else {
             return "redirect:login";
         }
+    }
+
+    @GetMapping("/tryemail/{sendTo}")
+    public String tryEmail(@PathVariable String sendTo) {
+        mailService.sendVerifyMessage(sendTo);
+        return "main";
     }
 }
