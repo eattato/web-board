@@ -15,6 +15,7 @@ import spring.service.AccountService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.websocket.server.PathParam;
 
 import spring.service.FileService;
 import spring.service.MailService;
@@ -53,6 +54,8 @@ public class MainController {
         // 카테고리에서 클라이언트가 볼 필요 없는 내용 삭제, 근데 다 공개해도 상관 없는 내용이라 그냥 줌
         model.addAttribute("categoryList", result);
         model.addAttribute("page", vo.getPage());
+        model.addAttribute("page", vo.getPage());
+        model.addAttribute("pageCount", Math.ceil((float)result.size() / postPerPage));
         return "main";
     }
 
@@ -117,7 +120,7 @@ public class MainController {
                 model.addAttribute("posts", posts);
                 model.addAttribute("categoryData", categoryData);
                 model.addAttribute("page", vo.getPage());
-                model.addAttribute("pageCount", Math.ceil(posts.size() / postPerPage));
+                model.addAttribute("pageCount", Math.ceil((float)posts.size() / postPerPage));
                 return "category";
             } else {
                 log.info("redirect - no category data");

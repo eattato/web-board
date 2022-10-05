@@ -130,15 +130,26 @@
             </ul>
 
             <ul class="paging">
-              <li class="post_move"><a href="#">&lt;</a></li>
+              <li class="post_move">
+                <a th:href="|http://localhost:8888/category/${page - 1}|"
+                  >&lt;</a
+                >
+              </li>
               <li
                 class="post_button"
                 th:each="num : ${#numbers.sequence(1, pageCount)}"
                 th:classappend="${page} == num ? current : ''"
               >
-                <a href="#" th:text="${num}"></a>
+                <a
+                  th:href="|http://localhost:8888/category/${num}|"
+                  th:text="${num}"
+                ></a>
               </li>
-              <li class="post_move"><a href="#">&gt;</a></li>
+              <li class="post_move">
+                <a th:href="|http://localhost:8888/category/${page + 1}|"
+                  >&gt;</a
+                >
+              </li>
             </ul>
           </div>
 

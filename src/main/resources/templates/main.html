@@ -72,7 +72,11 @@
                       카테고리 제목
                     </div>
                     <div class="post_info">
-                      <img src="" alt="" th:src="${category.getImg()}" />
+                      <img
+                        src=""
+                        alt=""
+                        th:src="|http://localhost:8888/images/${category.getImg()}|"
+                      />
                       <p th:text="${category.getAbout()}">카테고리 설명</p>
                     </div>
                   </div>
@@ -98,11 +102,22 @@
             </ul>
 
             <ul class="paging">
-              <li class="page_move"><a href="#">&lt;</a></li>
-              <li class="page_button"><a href="#">1</a></li>
-              <li class="page_button"><a href="#">2</a></li>
-              <li class="page_button"><a href="#">3</a></li>
-              <li class="page_move"><a href="#">&gt;</a></li>
+              <li class="post_move">
+                <a th:href="|http://localhost:8888/?page=${page - 1}|">&lt;</a>
+              </li>
+              <li
+                class="post_button"
+                th:each="num : ${#numbers.sequence(1, pageCount)}"
+                th:classappend="${page} == num ? current : ''"
+              >
+                <a
+                  th:href="|http://localhost:8888/?page=${num}|"
+                  th:text="${num}"
+                ></a>
+              </li>
+              <li class="post_move">
+                <a th:href="|http://localhost:8888/?page=${page + 1}|">&gt;</a>
+              </li>
             </ul>
           </div>
 

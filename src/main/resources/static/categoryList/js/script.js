@@ -18,7 +18,6 @@ $(window).on("load", () => {
   $(".post_exact p").each((ind, obj) => {
     let previewText = $(obj);
     let textValue = previewText.text();
-    textValue = removeHTML(textValue);
 
     let limit = 140;
     if (textValue.length > limit) {
@@ -29,15 +28,5 @@ $(window).on("load", () => {
     }
     previewText.text(textValue);
     previewText.css({ display: "block" });
-
-    // let longHeight = 120;
-    // if (previewText.height() > longHeight) {
-    //   while (previewText.height() > longHeight) {
-    //     textValue = textValue.substring(0, textValue.length - 1);
-    //     previewText.text(textValue + "..");
-    //   }
-    // } else {
-    //   console.log("passed, " + previewText.height());
-    // }
   });
 });
