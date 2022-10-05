@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.jaxb.SpringDataJaxb;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -42,6 +43,10 @@ public class PageService {
         return pageDao.getCategoryList(data);
     }
 
+    public int getCategoryCount() {
+        return pageDao.getCategoryCount();
+    }
+
     public CategoryDTO getCategoryData(int id) {
         return pageDao.getCategoryData(id);
     }
@@ -57,6 +62,10 @@ public class PageService {
             }
         }
         return result;
+    }
+
+    public int getPostCount() {
+        return pageDao.getPostCount();
     }
 
     public boolean getPost(HttpServletRequest request, int id, Model model) {

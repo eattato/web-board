@@ -131,7 +131,8 @@
 
             <ul class="paging">
               <li class="post_move">
-                <a th:href="|http://localhost:8888/category/${page - 1}|"
+                <a
+                  th:href="|http://localhost:8888/category/${id}?page=${page - 1}|"
                   >&lt;</a
                 >
               </li>
@@ -141,12 +142,13 @@
                 th:classappend="${page} == num ? current : ''"
               >
                 <a
-                  th:href="|http://localhost:8888/category/${num}|"
+                  th:href="|http://localhost:8888/category/${id}?page=${num}|"
                   th:text="${num}"
                 ></a>
               </li>
               <li class="post_move">
-                <a th:href="|http://localhost:8888/category/${page + 1}|"
+                <a
+                  th:href="|http://localhost:8888/category/${id}?page=${page + 1}|"
                   >&gt;</a
                 >
               </li>

@@ -57,6 +57,28 @@ $(() => {
   let sortType = $.cookie("sorttype");
   let sortMode = $.cookie("sortmode");
 
+  const sendSearch = () => {
+    let filterResult = {};
+    for (key in searchFilters) {
+      if (searchFilters[key] == true) {
+        filterResult[key] = "on";
+      } else {
+        filterResult[key] = null;
+      }
+    }
+
+    search({
+      viewmode: viewMode,
+      search: $(".search_input").val(),
+      title: filterResult["title"],
+      author: filterResult["author"],
+      content: filterResult["content"],
+      date: filterResult["date"],
+      sort: sortType,
+      direction: sortMode,
+    });
+  };
+
   // 보기 모드 쿠키 설정
   if (viewMode == "exact") {
     $("#view_simple").prop("checked", false);
@@ -68,14 +90,7 @@ $(() => {
   $("input[name='view_mode']").change(() => {
     let changedValue = $("input[name='view_mode']:checked").val();
     setViewMode(changedValue);
-    search({
-      viewmode: viewMode,
-      search: $(".search_input").val(),
-      title: $("#search_filter").find("input[value='title']").val(),
-      author: $("#search_filter").find("input[value='author']").val(),
-      content: $("#search_filter").find("input[value='content']").val(),
-      date: $("#search_filter").find("input[value='date']").val(),
-    });
+    sendSearch();
   });
   setViewMode(viewMode);
 
@@ -102,21 +117,7 @@ $(() => {
         $.cookie("searchFilter", JSON.stringify(searchFilters), {
           expires: 2147483647,
         });
-
-        search({
-          viewmode: viewMode,
-          search: $(".search_input").val(),
-          title: $("#search_filter")
-            .find("input[value='title']")
-            .attr("checked"),
-          author: $("#search_filter")
-            .find("input[value='author']")
-            .attr("checked"),
-          content: $("#search_filter")
-            .find("input[value='content']")
-            .attr("checked"),
-          date: $("#search_filter").find("input[value='date']").attr("checked"),
-        });
+        sendSearch();
       });
     });
 
@@ -131,14 +132,7 @@ $(() => {
   $("input[name='sort']").change(() => {
     let changedValue = $("input[name='sort']:checked").val();
     setSortType(changedValue);
-    search({
-      viewmode: viewMode,
-      search: $(".search_input").val(),
-      title: $("#search_filter").find("input[value='title']").val(),
-      author: $("#search_filter").find("input[value='author']").val(),
-      content: $("#search_filter").find("input[value='content']").val(),
-      date: $("#search_filter").find("input[value='date']").val(),
-    });
+    sendSearch();
   });
 
   if (sortMode == "down") {
@@ -151,14 +145,7 @@ $(() => {
   $("input[name='direction']").change(() => {
     let changedValue = $("input[name='direction']:checked").val();
     setSortMode(changedValue);
-    search({
-      viewmode: viewMode,
-      search: $(".search_input").val(),
-      title: $("#search_filter").find("input[value='title']").val(),
-      author: $("#search_filter").find("input[value='author']").val(),
-      content: $("#search_filter").find("input[value='content']").val(),
-      date: $("#search_filter").find("input[value='date']").val(),
-    });
+    sendSearch();
   });
   setSortMode(sortMode);
 });

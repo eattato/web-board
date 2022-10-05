@@ -55,7 +55,7 @@ public class MainController {
         model.addAttribute("categoryList", result);
         model.addAttribute("page", vo.getPage());
         model.addAttribute("page", vo.getPage());
-        model.addAttribute("pageCount", Math.ceil((float)result.size() / postPerPage));
+        model.addAttribute("pageCount", Math.ceil((float)pageService.getCategoryCount() / postPerPage));
         return "main";
     }
 
@@ -119,8 +119,9 @@ public class MainController {
                 }
                 model.addAttribute("posts", posts);
                 model.addAttribute("categoryData", categoryData);
+                model.addAttribute("id", vo.getCategoryIndex());
                 model.addAttribute("page", vo.getPage());
-                model.addAttribute("pageCount", Math.ceil((float)posts.size() / postPerPage));
+                model.addAttribute("pageCount", Math.ceil((float)pageService.getPostCount() / postPerPage));
                 return "category";
             } else {
                 log.info("redirect - no category data");
