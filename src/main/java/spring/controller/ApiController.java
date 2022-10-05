@@ -141,4 +141,24 @@ public class ApiController {
     public String uploadComment(HttpServletRequest request, @RequestBody CommentVO vo) {
         return pageService.comment(request, vo);
     }
+
+    @PostMapping("/verify")
+    public String verify(HttpServletRequest request, @RequestBody VerifyVO vo) {
+        return accountService.verify(request, vo, null);
+    }
+
+    @PostMapping("/reset")
+    public String reset(HttpServletRequest request, @RequestBody VerifyVO vo) {
+        return accountService.reset(request, vo);
+    }
+
+    @PostMapping("/cancel")
+    public String resetCancel(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        Object hasData = session.getAttribute("reset");
+        if (hasData != null) {
+            session.setAttribute("reset", null);
+        }
+        return "ok";
+    }
 }

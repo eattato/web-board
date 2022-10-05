@@ -1,9 +1,7 @@
 package spring.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import spring.dao.AccountDao;
@@ -11,18 +9,13 @@ import spring.dto.AccountDataDTO;
 import spring.vo.AccountCreateVO;
 import spring.vo.LoginVO;
 import spring.vo.ProfileVO;
+import spring.vo.VerifyVO;
 
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -33,6 +26,9 @@ public class AccountService {
 
     @Autowired
     FileService fileService;
+
+    @Autowired
+    MailService mailService;
 
     // Public Methods
     public boolean checkEmail(String check) {
@@ -213,12 +209,114 @@ public class AccountService {
             result.setEmail(userData.getEmail());
             result.setNickname(userData.getNickname());
             result.setFaceimg(userData.getFaceimg());
+            result.setVerify(userData.isVerify());
             return result;
         } else {
             AccountDataDTO result = new AccountDataDTO();
             result.setNickname("삭제된 유저");
             result.setFaceimg("profiles/deleted.png");
             return result;
+        }
+    }
+
+    public String verify(HttpServletRequest request, VerifyVO vo, Model model) {
+        HttpSession session = request.getSession();
+        String sessionData = getSession(session);
+        if (sessionData != null) {
+            AccountDataDTO userData = accountDao.getUserData(sessionData);
+            if (userData != null) {
+                if (userData.isVerify() == false) {
+                    if (vo == null) {
+                        String vcode = accountDao.generateVerifyCode(userData);
+                        userData.setVcode(vcode);
+                        mailService.sendVerifyMessage(userData);
+                        model.addAttribute("email", sessionData);
+                        return "ok";
+                    } else {
+                        String vcode = accountDao.getVerifyCode(userData);
+                        if (vcode != null && vo.getVcode() != null) {
+                            if (vcode.equals(vo.getVcode())) {
+                                int success = accountDao.finishVerify(userData);
+                                if (success == 1) {
+                                    return "ok";
+                                } else {
+                                    return "failed";
+                                }
+                            } else {
+                                return "code does not match";
+                            }
+                        } else {
+                            return "code or code input is null";
+                        }
+                    }
+                } else {
+                    return "user is already verified";
+                }
+            } else {
+                return "no user data";
+            }
+        } else {
+            return "no session";
+        }
+    }
+
+    public String reset(HttpServletRequest request, VerifyVO vo) {
+        if (vo != null) {
+            if (vo.getEmail() != null) {
+                AccountDataDTO userData = accountDao.getUserData(vo.getEmail());
+                if (userData != null) {
+                    if (userData.isVerify() == true) {
+                        if (vo.getVcode() == null) { // 인증 코드 없이 제출했으면 코드 발급
+                            String vcode = accountDao.generateVerifyCode(userData);
+                            userData.setVcode(vcode);
+                            mailService.sendResetMessage(userData);
+                            return "ok";
+                        } else { // 인증 코드 제출했으면 코드 인증 및 세션 발급
+                            String vcode = accountDao.getVerifyCode(userData);
+                            if (vcode != null) {
+                                if (vcode.equals(vo.getVcode())) {
+                                    HttpSession session = request.getSession();
+                                    session.setAttribute("reset", userData.getEmail()); // 비밀번호를 바꿀 수 있는 세션
+                                    return "ok";
+                                } else {
+                                    return "code does not match";
+                                }
+                            } else {
+                                return "verify code not found";
+                            }
+                        }
+                    } else {
+                        return "email is not verified";
+                    }
+                } else {
+                    return "could not find user";
+                }
+            } else { // 이메일을 제출 안 했다면
+                if (vo.getPassword() != null) { // 대신 비밀번호를 제출했으면 세션 확인
+                    HttpSession session = request.getSession();
+                    Object hasData = session.getAttribute("reset");
+                    if (hasData != null) {
+                        String pwError = checkPassword(vo.getPassword());
+                        if (pwError == null) {
+                            vo.setPassword(shaEncrypt(vo.getPassword()));
+                            int success = accountDao.resetPassword(hasData.toString(), vo.getPassword());
+                            if (success == 1) {
+                                return "ok";
+                            } else {
+                                return "failed";
+                            }
+                        } else {
+                            return pwError;
+                        }
+                    } else {
+                        return "no access";
+                    }
+                } else {
+                    return "no email";
+                }
+            }
+        } else {
+            return "no data";
         }
     }
 

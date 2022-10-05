@@ -11,7 +11,8 @@ public class AccountDataDTO {
     private String email;
     private String pw;
     private String nickname;
-    private int verify = 0;
+    private boolean verify;
+    private String vcode;
     private String faceimg;
     private String about;
     private boolean isadmin;
@@ -25,7 +26,6 @@ public class AccountDataDTO {
     }
 
     public String getFaceimg() {
-        log.info("face get");
         if (faceimg != null) {
             return faceimg;
         } else {

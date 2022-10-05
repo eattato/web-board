@@ -188,9 +188,25 @@ public class MainController {
         }
     }
 
-    @GetMapping("/tryemail/{sendTo}")
-    public String tryEmail(@PathVariable String sendTo) {
-        mailService.sendVerifyMessage(sendTo);
-        return "main";
+    @GetMapping("/verify")
+    public String verify(HttpServletRequest request, Model model) {
+        String result = accountService.verify(request, null, model);
+        if (result.equals("ok")) {
+            return "verify";
+        } else {
+            return "redirect:/";
+        }
+    }
+
+    @GetMapping("/reset")
+    public String reset(HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession();
+        Object hasData = session.getAttribute("reset");
+        if (hasData != null) {
+            model.addAttribute("email", hasData.toString());
+            return "pwreset";
+        } else {
+            return "reset";
+        }
     }
 }

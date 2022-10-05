@@ -1,0 +1,26 @@
+.info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 20px;
+  margin-bottom: 50px;
+}
+
+.form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form_input_cover {
+  width: 300px;
+  margin-bottom: 30px;
+}
+
+.form_cancel {
+  margin-left: 20px;
+  width: 100px;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
+}

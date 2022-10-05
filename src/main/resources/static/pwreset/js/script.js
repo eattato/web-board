@@ -1,24 +1,3 @@
-function httpGet(url) {
-  var xmlHttp = new XMLHttpRequest();
-  xmlHttp.open("GET", url, false); // false for synchronous request
-  xmlHttp.send(null);
-  return xmlHttp.responseText;
-}
-
-function httpRequest(reqType, url, data, dataType) {
-  var xmlHttp = new XMLHttpRequest();
-  xmlHttp.open(reqType, url, false); // false for synchronous request
-  if (reqType == "GET") {
-    xmlHttp.send(null);
-  } else if (reqType == "POST") {
-    if (dataType != null) {
-      xmlHttp.setRequestHeader("Content-Type", dataType);
-    }
-    xmlHttp.send(data);
-  }
-  return xmlHttp.responseText;
-}
-
 const inputField = (field, error) => {
   if (error == null) {
     field.find(".form_input").addClass("correct");
@@ -33,7 +12,7 @@ const inputField = (field, error) => {
 };
 
 const inputBack = (field) => {
-  field.find(".form_input").removeClass("correct");
+  // field.find(".form_input").removeClass("correct");
   field.find(".form_input").removeClass("error");
   field.find(".form_input").removeClass("error");
   field.find(".form_error").removeClass("error");
@@ -53,53 +32,12 @@ const encode = (target) => {
 };
 
 $(() => {
-  var email = $("#email");
   var password = $("#password");
   var pwCheck = $("#pwCheck");
-  var nickname = $("#nickname");
   var commit = $(".form_button");
-  var emailChecking = false;
+  var cancel = $(".form_cancel");
   let postable = true;
 
-  const emailChanged = function () {
-    let input = email.find(".form_input").val();
-    let error = null;
-
-    emailChecking = false;
-    let split = input.split("@");
-    if (split.length == 2) {
-      if (split[0].length < 1 || split[1].length < 1) {
-        error = "올바른 이메일 형태가 아닙니다!";
-      }
-    } else {
-      error = "올바른 이메일 형태가 아닙니다!";
-    }
-
-    if (error == null && input.length > 320) {
-      error = "이메일이 너무 깁니다!";
-    }
-
-    if (error == null) {
-      inputBack(email);
-      setTimeout(() => {
-        if (input == email.find(".form_input").val()) {
-          // 1초 지나도 일치하면 서버로 동일한 이메일 존재하는지 서버에서 확인
-          emailChecking = true;
-          let result = httpGet("http://localhost:8888/check?target=" + input);
-          emailChecking = false;
-          if (result == "false") {
-            error = "해당 이메일을 이미 사용하는 계정이 존재합니다!";
-          } else if (result != "true") {
-            error = "알 수 없는 에러입니다!";
-          }
-          inputField(email, error);
-        }
-      }, 1000);
-    } else {
-      inputField(email, error);
-    }
-    return error;
-  };
   const passwordChanged = function () {
     let input = password.find(".form_input").val();
     let error = null;
@@ -144,28 +82,20 @@ $(() => {
     inputField(pwCheck, error);
     return error;
   };
-  const nicknameChanged = function () {
-    let input = nickname.find(".form_input").val();
-    let error = null;
+  const changedEvents = [passwordChanged, pwCheckChanged];
 
-    if (input.length < 1 || input.length > 50) {
-      error = "닉네임은 최소 1자, 최대 50자 입니다!";
-    }
-
-    inputField(nickname, error);
-    return error;
-  };
-  const changedEvents = [
-    emailChanged,
-    passwordChanged,
-    pwCheckChanged,
-    nicknameChanged,
-  ];
-
-  email.find(".form_input").change(emailChanged);
   password.find(".form_input").change(passwordChanged);
   pwCheck.find(".form_input").change(pwCheckChanged);
-  nickname.find(".form_input").change(nicknameChanged);
+
+  cancel.click(() => {
+    postable = false;
+    fetch("http://localhost:8888/cancel", {
+      method: "POST",
+    }).finally(() => {
+      postable = true;
+      window.location.href = "http://localhost:8888/reset";
+    });
+  });
 
   commit.click(() => {
     let foundError = false;
@@ -173,18 +103,16 @@ $(() => {
       let error = changedEvents[ind]();
       if (error != null) {
         foundError = true;
+        console.log(error);
       }
     }
 
     if (foundError == false) {
-      //let bodyData = encodeURI("email=" + email.find(".form_input").val() + "&password=" + password.find(".form_input").val() + "&nickname=" + nickname.find(".form_input").val());
       let data = {
-        email: email.find(".form_input").val(),
         password: password.find(".form_input").val(),
-        nickname: nickname.find(".form_input").val(),
       };
       postable = false;
-      fetch("http://localhost:8888/account", {
+      fetch("http://localhost:8888/reset", {
         method: "POST",
         body: JSON.stringify(data),
         headers: {
@@ -194,18 +122,18 @@ $(() => {
         .then((response) => response.text())
         .then((result) => {
           if (result == "ok") {
-            window.location.replace("http://localhost:8888");
+            //window.location.replace("https://localhost:8888");
+            alert("비밀번호를 변경했습니다!");
+            window.location.href = "http://localhost:8888/login";
           } else if (result == "password is invalid") {
             inputField(password, "사용할 수 없는 비밀번호입니다!");
+          } else if (result == "failed") {
+            inputField(password, "비밀번호 변경에 실패하였습니다!");
           }
         })
         .finally(() => {
           postable = true;
         });
-      // let result = httpRequest("POST", "http://localhost:8888/account", encode(data), "application/x-www-form-urlencoded");
-      // if (result == "ok") {
-      // window.location.replace("http://localhost:8888");
-      // }
     }
   });
 });

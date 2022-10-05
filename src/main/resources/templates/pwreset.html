@@ -2,11 +2,11 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <title>BOARDARC - 비밀번호 찾기</title>
+    <title>BOARDARC - 비밀번호 변경</title>
     <link rel="icon" href="http://localhost:8888/images/official/icon.png" />
     <link rel="stylesheet" href="components/css/style.css" />
     <link rel="stylesheet" href="components/css/form.css" />
-    <link rel="stylesheet" href="reset/css/style.css" />
+    <link rel="stylesheet" href="pwreset/css/style.css" />
     <!-- <link rel="stylesheet" th:href="@{/components/css/style.css}"> -->
     <!-- <link rel="stylesheet" th:href="@{/components/css/form.css}"> -->
     <script
@@ -15,7 +15,7 @@
     ></script>
     <script src="components/js/jquery.js"></script>
     <script src="components/js/jquery.cookie.js"></script>
-    <script src="reset/js/script.js"></script>
+    <script src="pwreset/js/script.js"></script>
   </head>
   <body>
     <div class="wrap">
@@ -27,39 +27,32 @@
           />
         </a>
       </div>
-      <div class="act">비밀번호 찾기</div>
+      <div class="act">비밀번호 변경</div>
       <form class="form">
-        <div class="info">
-          <div>비밀번호를 잊어버리셨나요?</div>
-          <div>이메일로 비밀번호를 변경해보세요.</div>
-        </div>
+        <div class="info" th:text="|${email}의 비밀번호를 변경합니다.|"></div>
 
-        <div class="form_input_cover" id="email">
-          <div class="form_label">이메일</div>
+        <div class="form_input_cover" id="password">
+          <div class="form_label">비밀번호</div>
           <input
             class="form_input"
-            type="email"
-            placeholder="이메일을 입력하세요."
+            type="password"
+            placeholder="비밀번호를 입력하세요."
           />
           <div class="form_error"></div>
-          <button class="form_send" type="button">인증 코드 전송</button>
         </div>
-
-        <div class="form_blank"></div>
-
-        <div class="form_input_cover" id="code">
-          <div class="form_label">인증 코드</div>
+        <div class="form_input_cover" id="pwCheck">
+          <div class="form_label">비밀번호 확인</div>
           <input
             class="form_input"
-            type="text"
-            maxlength="6"
-            placeholder="인증 코드를 입력하세요."
+            type="password"
+            placeholder="비밀번호를 다시 입력하세요."
           />
           <div class="form_error"></div>
         </div>
 
         <div class="commit">
           <button class="form_button" type="button">다음</button>
+          <button class="form_cancel" type="button">취소</button>
           <a href="http://localhost:8888/login">로그인 페이지로 이동</a>
         </div>
       </form>

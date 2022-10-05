@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>BOARDARC - 이메일 인증</title>
+    <link rel="icon" href="http://localhost:8888/images/official/icon.png" />
+    <link rel="stylesheet" th:href="@{/components/css/style.css}" />
+    <link rel="stylesheet" th:href="@{/components/css/form.css}" />
+    <link rel="stylesheet" th:href="@{/verify/css/style.css}" />
+    <script
+      src="https://kit.fontawesome.com/d5e5d975b2.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="components/js/jquery.js"></script>
+    <script src="verify/js/script.js"></script>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="logo">
+        <a href="http://localhost:8888">
+          <img
+            src="http://localhost:8888/images/official/boardarc.png"
+            alt=""
+          />
+        </a>
+      </div>
+      <div class="act">이메일 인증</div>
+      <form class="form">
+        <div class="info">
+          <span th:text="|${email}으로 코드를 전송했습니다.|"></span>
+          <span>해당 코드를 입력해 이메일을 인증해주세요.</span>
+        </div>
+
+        <div class="form_input_cover" id="code">
+          <div class="form_label">코드 입력</div>
+          <input
+            class="form_input"
+            type="text"
+            maxlength="6"
+            placeholder="코드를 입력하세요."
+          />
+          <div class="form_error"></div>
+        </div>
+
+        <div class="commit">
+          <button class="form_button" type="button">다음</button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

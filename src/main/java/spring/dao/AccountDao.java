@@ -3,6 +3,7 @@ package spring.dao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import spring.dto.AccountDataDTO;
 import spring.dto.PostDTO;
 import spring.vo.AccountCreateVO;
+import spring.vo.VerifyVO;
 
 @Repository
 @Slf4j
@@ -25,6 +27,8 @@ public class AccountDao {
     private List<Map<String, Object>> getRows(String queryString) { // List<Map<String, Object>> 형태로 모든 선택된 열을 리턴
         return jt.queryForList(queryString);
     }
+
+    private Random random = new Random();
 
     // 이메일 중복 확인 함수
     public boolean emailAvailable(String email) {
@@ -74,5 +78,37 @@ public class AccountDao {
 
     public int setProfileImage(String email, String path) { // 프로필 이미지 변경
         return jt.update(String.format("UPDATE members SET faceimg = '%s' WHERE email = '%s'", path, email));
+    }
+
+    public String generateVerifyCode(AccountDataDTO userData) {
+        String vcode = "";
+        for (int ind = 1; ind <= 6; ind++) {
+            int textOrInt = random.nextInt(2);
+            if (textOrInt == 0) {
+                vcode += (char)(random.nextInt(26) + 97);
+            } else {
+                vcode += (char)(random.nextInt(10) + 48);
+            }
+        }
+
+        jt.update(String.format("UPDATE members SET vcode = '%s' WHERE email = '%s'", vcode, userData.getEmail()));
+        return vcode;
+    }
+
+    public String getVerifyCode(AccountDataDTO userData) {
+        List<Map<String, Object>> queryResult = getRows(String.format("SELECT vcode FROM members WHERE email = '%s'", userData.getEmail()));
+        if (queryResult.size() >= 1) {
+            return queryResult.get(0).get("vcode").toString();
+        } else {
+            return null;
+        }
+    }
+
+    public int finishVerify(AccountDataDTO userData) {
+        return jt.update(String.format("UPDATE members SET verify = true, vcode = NULL WHERE email = '%s'", userData.getEmail()));
+    }
+
+    public int resetPassword(String email, String password) {
+        return jt.update(String.format("UPDATE members SET pw = '%s' WHERE email = '%s'", password, email));
     }
 }
