@@ -116,6 +116,8 @@ public class MainController {
                 }
                 model.addAttribute("posts", posts);
                 model.addAttribute("categoryData", categoryData);
+                model.addAttribute("page", vo.getPage());
+                model.addAttribute("pageCount", Math.ceil(posts.size() / postPerPage));
                 return "category";
             } else {
                 log.info("redirect - no category data");

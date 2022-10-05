@@ -2,12 +2,14 @@ package spring.vo;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
+@Slf4j
 public class PageVO {
     private int categoryIndex;
     private int startIndex;
@@ -20,6 +22,8 @@ public class PageVO {
     private boolean author = false;
     private boolean content = false;
     private boolean date = false;
+    private String sort = "loved";
+    private String direction = "up";
 
     // getter
     public int getStart() {

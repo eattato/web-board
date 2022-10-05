@@ -16,6 +16,7 @@
     <script src="../components/js/jquery.cookie.js"></script>
     <script src="../components/js/header.js"></script>
     <script src="../category/js/script.js"></script>
+    <script src="../category/js/search.js"></script>
     <script src="../components/js/sidebar.js"></script>
   </head>
   <body>
@@ -130,9 +131,13 @@
 
             <ul class="paging">
               <li class="post_move"><a href="#">&lt;</a></li>
-              <li class="post_button"><a href="#">1</a></li>
-              <li class="post_button"><a href="#">2</a></li>
-              <li class="post_button"><a href="#">3</a></li>
+              <li
+                class="post_button"
+                th:each="num : ${#numbers.sequence(1, pageCount)}"
+                th:classappend="${page} == num ? current : ''"
+              >
+                <a href="#" th:text="${num}"></a>
+              </li>
               <li class="post_move"><a href="#">&gt;</a></li>
             </ul>
           </div>
@@ -191,13 +196,19 @@
                 <label
                   ><input
                     name="sort"
+                    id="view_loved"
                     type="radio"
                     value="loved"
                     checked
                   />인기순</label
                 >
                 <label
-                  ><input name="sort" type="radio" value="new" />최신순</label
+                  ><input
+                    name="sort"
+                    id="view_new"
+                    type="radio"
+                    value="new"
+                  />최신순</label
                 >
               </div>
 
@@ -206,6 +217,7 @@
                 <label
                   ><input
                     name="direction"
+                    id="view_up"
                     type="radio"
                     value="up"
                     checked
@@ -214,6 +226,7 @@
                 <label
                   ><input
                     name="direction"
+                    id="view_down"
                     type="radio"
                     value="down"
                   />내림차순</label

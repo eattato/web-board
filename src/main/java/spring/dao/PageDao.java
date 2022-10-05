@@ -38,12 +38,16 @@ public class PageDao {
             queryString += "WHERE " + String.format("categories.category LIKE '%%%s%%' ", data.getSearch());
         }
 
+        queryString += "GROUP BY categories.id ORDER BY id ";
+        if (data.getDirection().equals("down")) {
+            queryString += "DESC ";
+        } else {
+            queryString += "ASC ";
+        }
         if (data.getEnd() != -1) {
-            queryString += "GROUP BY categories.id " +
-                    String.format("ORDER BY id OFFSET %s ROWS FETCH NEXT %s ROWS ONLY;", data.getStart(), data.getEnd() - data.getStart());
+            queryString += String.format("OFFSET %s ROWS FETCH NEXT %s ROWS ONLY;", data.getStart(), data.getEnd() - data.getStart());
         } else { // 끝이 -1이면 전부 다 로드
-            queryString += "GROUP BY categories.id " +
-                    String.format("ORDER BY id OFFSET %s ROWS;", data.getStart());
+            queryString += String.format("OFFSET %s ROWS;", data.getStart());
         }
 
         List<Map<String, Object>> queryResult = getRows(queryString);
@@ -114,7 +118,17 @@ public class PageDao {
                 queryString += ") ";
             }
         }
-        queryString += "GROUP BY id;";
+        queryString += "GROUP BY id ";
+        if (data.getSort() == "loved") {
+            queryString += "ORDER BY loved ";
+        } else {
+            queryString += "ORDER BY id ";
+        }
+        if (data.getDirection().equals("down")) {
+            queryString += "DESC;";
+        } else {
+            queryString += "ASC;";
+        }
 
         List<Map<String, Object>> queryResult = getRows(queryString);
         List<PostDTO> result = new ArrayList<>();
