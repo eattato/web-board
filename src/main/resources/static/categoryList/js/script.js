@@ -5,55 +5,39 @@ function httpGet(url) {
   return xmlHttp.responseText;
 }
 
-const setViewMode = (viewMode) => {
-  if (viewMode == "simple" || viewMode == "exact") {
-    $.cookie("viewmode", viewMode, { expires: 2147483647 });
-    if (viewMode == "simple") {
-      $(".post_simple").css({ display: "block" });
-      $(".post_exact").css({ display: "none" });
-    } else if (viewMode == "exact") {
-      $(".post_simple").css({ display: "none" });
-      $(".post_exact").css({ display: "block" });
-    }
-  }
-};
-
 $(() => {
-  // 보기 모드 쿠키 읽기
-  let viewMode = $.cookie("viewmode");
-  if (viewMode == "exact") {
-    $("#view_simple").prop("checked", false);
-    $("#view_exact ").prop("checked", true);
-  }
-
-  if (viewMode == undefined || (viewMode != "simple" && viewMode != "exact")) {
-    viewMode = "simple";
-  }
-  $("input[name='view_mode']").change(() => {
-    let changedValue = $("input[name='view_mode']:checked").val();
-    setViewMode(changedValue);
-  });
-  setViewMode(viewMode);
-
-  $(".post_exact p").each((ind, obj) => {
-    let previewText = $(obj);
-    let textValue = previewText.text();
-    textValue = removeHTML(textValue);
-
-    let longHeight = 120;
-    previewText.text(textValue);
-    if (previewText.height() > longHeight) {
-      while (previewText.height() > longHeight) {
-        textValue = textValue.substring(0, textValue.length - 1);
-        previewText.text(textValue + "..");
-      }
-    }
-    previewText.css({ display: "block" });
-  });
-
   // 카테고리 원본 가져오고 로딩 표시
   var postSimple = $(".post_simple origin"); // 카테고리 버튼 원본
   var postExact = $(".post_exact origin");
 
   // httpRequest("GET", "http://localhost:8888/getcategory?page=")
+});
+
+$(window).on("load", () => {
+  // 자세히 보기 내용 HTML 태그 제거
+  $(".post_exact p").each((ind, obj) => {
+    let previewText = $(obj);
+    let textValue = previewText.text();
+    textValue = removeHTML(textValue);
+
+    let limit = 140;
+    if (textValue.length > limit) {
+      while (textValue.length > limit) {
+        textValue = textValue.substring(0, textValue.length - 1);
+      }
+      textValue += "..";
+    }
+    previewText.text(textValue);
+    previewText.css({ display: "block" });
+
+    // let longHeight = 120;
+    // if (previewText.height() > longHeight) {
+    //   while (previewText.height() > longHeight) {
+    //     textValue = textValue.substring(0, textValue.length - 1);
+    //     previewText.text(textValue + "..");
+    //   }
+    // } else {
+    //   console.log("passed, " + previewText.height());
+    // }
+  });
 });

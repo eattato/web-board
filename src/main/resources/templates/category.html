@@ -16,6 +16,7 @@
     <script src="../components/js/jquery.cookie.js"></script>
     <script src="../components/js/header.js"></script>
     <script src="../category/js/script.js"></script>
+    <script src="../components/js/sidebar.js"></script>
   </head>
   <body>
     <div class="wrap">
@@ -141,7 +142,12 @@
             <form class="sidebar_search">
               <div class="search_box">
                 <div class="search_wrap"></div>
-                <input class="search_input" type="text" placeholder="검색" />
+                <input
+                  class="search_input"
+                  type="search"
+                  name="search"
+                  placeholder="검색"
+                />
                 <i class="fa-solid fa-magnifying-glass"></i>
               </div>
 
@@ -167,38 +173,17 @@
               </div>
 
               <div class="sidebar_title">검색 필터</div>
-              <div class="select_box">
+              <div class="select_box" id="search_filter">
                 <label
-                  ><input
-                    name="filter"
-                    type="checkbox"
-                    value="title"
-                    checked
-                  />제목</label
+                  ><input name="title" type="checkbox" checked />제목</label
                 >
                 <label
-                  ><input
-                    name="filter"
-                    type="checkbox"
-                    value="author"
-                    checked
-                  />작성자</label
+                  ><input name="author" type="checkbox" checked />작성자</label
                 >
                 <label
-                  ><input
-                    name="filter"
-                    type="checkbox"
-                    value="content"
-                    checked
-                  />내용</label
+                  ><input name="content" type="checkbox" checked />내용</label
                 >
-                <label
-                  ><input
-                    name="filter"
-                    type="checkbox"
-                    value="date"
-                  />날짜</label
-                >
+                <label><input name="date" type="checkbox" />날짜</label>
               </div>
 
               <div class="sidebar_title"></div>

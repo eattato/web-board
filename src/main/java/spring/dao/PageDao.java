@@ -34,11 +34,8 @@ public class PageDao {
         String queryString = "SELECT categories.*, COUNT(posts.category) AS posts, IFNULL(SUM(posts.loved), 0) AS loved FROM categories " +
                 "LEFT JOIN posts " +
                 "ON (categories.id = posts.category) ";
-        if (data.hasSearch()) {
-            Map<String, String> search = data.getSearch();
-            if (search.get("title") != null) {
-                queryString += "WHERE " + String.format("categories.category LIKE '%%%s%%' ", search.get("title"));
-            }
+        if (data.getSearch() != null) {
+            queryString += "WHERE " + String.format("categories.category LIKE '%%%s%%' ", data.getSearch());
         }
 
         if (data.getEnd() != -1) {
@@ -81,28 +78,38 @@ public class PageDao {
     }
 
     // Post
+    private String queryConnect(boolean firstQuestion) {
+        String result = "";
+        if (firstQuestion == true) {
+            result = "AND (";
+        } else {
+            result = "OR ";
+        }
+        return result;
+    }
+
     public List<PostDTO> getPostList(PageVO data) {
         String queryString = "SELECT id, category, postname, author, postdate, content, IFNULL(loved, 0) - IFNULL(hated, 0) AS loved, IFNULL(viewers, 0) AS viewers, taglist FROM posts ";
-        queryString += String.format("WHERE category = %s ", data.getCategory());
-        if (data.hasSearch() == true) {
-            Map<String, String> search = data.getSearch();
+        queryString += String.format("WHERE category = %s ", data.getCategoryIndex());
+        if (data.getSearch() != null) {
             boolean firstQuestion = true;
-            for (String key : search.keySet()) {
-                if (search.get(key) != null) {
-                    if (firstQuestion == true) {
-                        queryString += "AND (";
-                    } else {
-                        queryString += "OR ";
-                    }
-                }
-                if (key == "title") {
-                    queryString += String.format("postname LIKE '%%%s%%' ", search.get(key));
-                } else if (key == "desc") {
-                    queryString += String.format("content LIKE '%%%s%%' ", search.get(key));
-                } else if (key == "author") {
-                    queryString += String.format("author LIKE '%%%s%%' ", search.get(key));
-                }
+            if (data.isTitle()) {
+                queryString += queryConnect(firstQuestion) + String.format("postname LIKE '%%%s%%' ", data.getSearch());
+                firstQuestion = false;
             }
+            if (data.isAuthor()) {
+                queryString += queryConnect(firstQuestion) + String.format("author LIKE '%%%s%%' ", data.getSearch());
+                firstQuestion = false;
+            }
+            if (data.isContent()) {
+                queryString += queryConnect(firstQuestion) + String.format("content LIKE '%%%s%%' ", data.getSearch());
+                firstQuestion = false;
+            }
+            if (data.isDate()) {
+                queryString += queryConnect(firstQuestion) + String.format("postdate LIKE '%%%s%%' ", data.getSearch());
+                firstQuestion = false;
+            }
+
             if (firstQuestion == false) {
                 queryString += ") ";
             }
