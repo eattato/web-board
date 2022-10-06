@@ -64,6 +64,7 @@
   padding-left: 15px;
   padding-right: 15px;
   font-size: 14px;
+  white-space: nowrap;
 }
 
 /* post simple */
@@ -133,8 +134,12 @@
 }
 
 .post_exact .post_title {
+  width: auto;
+  max-width: fit-content;
   height: 30px;
   margin-bottom: 10px;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .post_exact a {
