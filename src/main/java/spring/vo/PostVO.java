@@ -10,32 +10,13 @@ public class PostVO {
     private String title;
     private String content;
     private int category = -1;
-    private String tags;
+    private String tags = "";
     private String author;
 
     private boolean remove = false;
     private int id = -1;
 
-    // Setter
-    public void setAuthor(String target) {
-        if (author == null) {
-            author = target;
-        }
-    }
-
     // Getter
-    public String getTitle() {
-        return title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public int getCategory() {
-        return category;
-    }
-
     public boolean isValid() {
         if (title != null && content != null && category != -1) {
             return true;
@@ -44,11 +25,48 @@ public class PostVO {
         }
     }
 
-    public String getTags() {
-        return tags;
+    public int[] getTagsAsInt() {
+        String[] split = tags.split(" ");
+        int[] result = new int[split.length];
+        for (int ind = 0; ind < split.length; ind++) {
+            try {
+                result[ind] = Integer.parseInt(split[ind]);
+            } catch (Exception e) {
+                break;
+            }
+        }
+        return result;
     }
 
-    public String getAuthor() {
-        return author;
+    // Setter
+    public void setAuthor(String target) {
+        if (author == null) {
+            author = target;
+        }
+    }
+
+    public void setTags(String target) {
+        if (target != null) {
+            String[] split = target.split(" ");
+            if (split.length >= 1) {
+
+            } else {
+                split = new String[1];
+                split[0] = target;
+            }
+
+            boolean available = true;
+            for (String tag : split) {
+                try {
+                    Integer.parseInt(tag);
+                } catch (Exception e) {
+                    available = false;
+                    break;
+                }
+            }
+            if (available == true) {
+                tags = target;
+            }
+        }
     }
 }

@@ -267,16 +267,7 @@ public class PageDao {
         return jt.update(queryString);
     }
 
-    // Misc
-    public int getIdCurrent(String search) {
-        int idCurrent = 0;
-        List<Map<String, Object>> result = getRows(String.format("SELECT MAX(id) AS maxid FROM %s", search));
-        if (result.size() >= 1 && result.get(0).get("maxid") != null) {
-            idCurrent = (int)result.get(0).get("maxid");
-        }
-        return idCurrent;
-    }
-
+    // Tags
     public List<TagDTO> getTagData(int[] tagIds) {
         log.info(tagIds.toString());
         List<TagDTO> result = new ArrayList<>();
@@ -287,5 +278,24 @@ public class PageDao {
             }
         }
         return result;
+    }
+
+    public List<TagDTO> getAllTags() {
+        List<TagDTO> result = new ArrayList<>();
+        List<Map<String, Object>> queryResult = getRows("SELECT * FROM tags;");
+        for (Map<String, Object> map : queryResult) {
+            result.add(mapper.convertValue(map, TagDTO.class));
+        }
+        return result;
+    }
+
+    // Misc
+    public int getIdCurrent(String search) {
+        int idCurrent = 0;
+        List<Map<String, Object>> result = getRows(String.format("SELECT MAX(id) AS maxid FROM %s", search));
+        if (result.size() >= 1 && result.get(0).get("maxid") != null) {
+            idCurrent = (int)result.get(0).get("maxid");
+        }
+        return idCurrent;
     }
 }

@@ -44,9 +44,25 @@
             </div>
             <div class="editor_bottom">
               <ul>
-                <li class="editor_tag">
-                  <div class="editor_tag_name">태그</div>
-                  <div class="editor_tag_close">x</div>
+                <li class="editor_tag_add">
+                  <div class="editor_tag_display">+</div>
+                  <input
+                    class="editor_tag_input"
+                    type="text"
+                    placeholder="태그를 검색하세요."
+                  />
+                  <ul class="editor_tag_recommend">
+                    <div
+                      th:each="tag : ${tags}"
+                      th:text="${tag.getTagname()}"
+                      th:title="${tag.getTagdesc()}"
+                      th:style="|color: #${tag.getTagcolor()}|"
+                      th:id="|tag${tag.getId()}|"
+                      class="editor_tag_name"
+                    >
+                      태그 이름
+                    </div>
+                  </ul>
                 </li>
               </ul>
             </div>

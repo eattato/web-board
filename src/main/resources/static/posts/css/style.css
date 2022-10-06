@@ -69,9 +69,25 @@
 
 .post_tags {
   display: inline-flex;
-  height: 35px;
+  align-items: center;
+  width: auto;
+  height: 50px;
   margin-left: 30px;
-  margin-bottom: 10px;
+}
+
+.post_tag {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: auto;
+  height: 35px;
+  border-radius: 20px;
+  border: 1px solid lightgray;
+  background-color: white;
+  padding-left: 15px;
+  padding-right: 15px;
+  font-size: 14px;
+  margin: 5px 0;
 }
 
 .post_ellipsis {
@@ -117,31 +133,6 @@
   background-color: transparent;
   border: 0px;
   cursor: pointer;
-}
-
-/* tag */
-.tag {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  width: auto;
-  height: 35px;
-  border-radius: 20px;
-  border: 1px solid lightgray;
-  background-color: white;
-  padding-left: 15px;
-  padding-right: 15px;
-  margin-right: 10px;
-}
-
-.tag_name {
-  font-size: 14px;
-  margin-right: 10px;
-}
-
-.tag_close {
-  font-size: 14px;
-  right: 10px;
 }
 
 /* author */

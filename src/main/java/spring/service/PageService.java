@@ -11,10 +11,7 @@ import org.springframework.data.domain.jaxb.SpringDataJaxb;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import spring.dao.PageDao;
-import spring.dto.AccountDataDTO;
-import spring.dto.CategoryDTO;
-import spring.dto.CommentDTO;
-import spring.dto.PostDTO;
+import spring.dto.*;
 import spring.vo.CommentVO;
 import spring.vo.PageVO;
 import spring.vo.PostVO;
@@ -22,6 +19,7 @@ import spring.vo.ProfileVO;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -96,12 +94,30 @@ public class PageService {
             if (data.isValid() == true) {
                 if (data.getTitle().length() > 0 && data.getTitle().length() <= 100) {
                     if (pageDao.hasCategory(data.getCategory()) == true) {
-                        data.setAuthor(sessionData);
-                        int result = pageDao.post(data);
-                        if (result == 1) {
-                            return Integer.toString(pageDao.getIdCurrent("posts"));
+                        boolean tagNormal = true;
+                        if (data.getTags().length() >= 1) {
+                            List<TagDTO> tagDataList = getAllTags();
+                            List<Integer> tags = new ArrayList<>();
+                            for (int ind = 0; ind < tagDataList.size(); ind++) {
+                                tags.add(tagDataList.get(ind).getId());
+                            }
+                            for (int tag : data.getTagsAsInt()) {
+                                if (tags.contains(tag) == false) {
+                                    tagNormal = false;
+                                }
+                            }
+                        }
+
+                        if (tagNormal == true) {
+                            data.setAuthor(sessionData);
+                            int result = pageDao.post(data);
+                            if (result == 1) {
+                                return Integer.toString(pageDao.getIdCurrent("posts"));
+                            } else {
+                                return "data save failed";
+                            }
                         } else {
-                            return "data save failed";
+                            return "tag not found";
                         }
                     } else {
                         return "category does not exist";
@@ -207,5 +223,10 @@ public class PageService {
         } else {
             return "no session";
         }
+    }
+
+    // Tag
+    public List<TagDTO> getAllTags() {
+        return pageDao.getAllTags();
     }
 }

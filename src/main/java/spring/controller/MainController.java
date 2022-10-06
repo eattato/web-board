@@ -170,6 +170,7 @@ public class MainController {
             vo.setStartIndex(0);
             vo.setEndIndex(-1);
             model.addAttribute("categoryList", pageService.getCategoryList(vo));
+            model.addAttribute("tags", pageService.getAllTags());
 
             if (profile == true) {
                 return "editor";

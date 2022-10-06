@@ -64,4 +64,29 @@ public class PostDTO {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         postdate = dateFormat.format(current).toString();
     }
+
+//    public void setTaglist(String target) {
+//        if (target != null) {
+//            String[] split = target.split(" ");
+//            if (split.length >= 1) {
+//
+//            } else {
+//                split = new String[1];
+//                split[0] = target;
+//            }
+//
+//            boolean available = true;
+//            for (String tag : split) {
+//                try {
+//                    Integer.parseInt(tag);
+//                } catch (Exception e) {
+//                    available = false;
+//                    break;
+//                }
+//            }
+//            if (available == true) {
+//                taglist = target;
+//            }
+//        }
+//    }
 }

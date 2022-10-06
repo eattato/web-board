@@ -26,7 +26,7 @@
       <div class="body">
         <div class="title">
           <div class="category_name" th:text="${category.getCategory()}">
-            카테고리 목록
+            게시된 카테고리
           </div>
         </div>
 
@@ -35,9 +35,14 @@
             <div class="post_top_left">
               <div class="post_title" th:text="${post.postname}">제목</div>
               <div class="post_tags">
-                <li class="tag" th:each="tag : ${tags}">
-                  <div class="tag_name" th:text="tag">태그</div>
-                  <div class="tag_close">x</div>
+                <li
+                  th:each="tag : ${post.getTagdataList()}"
+                  th:text="${tag.getTagname()}"
+                  th:title="${tag.getTagdesc()}"
+                  th:style="|color: #${tag.getTagcolor()}|"
+                  class="post_tag"
+                >
+                  <!-- <a href="#" th:text="${tag}"></a> -->
                 </li>
               </div>
             </div>

@@ -44,7 +44,68 @@ $(() => {
   let category = $("#editor_category");
   let title = $("#editor_title");
   let post = $("#editor_post");
+  let addTag = $(".editor_tag_add");
+  let tagRecommends = $(".editor_tag_recommend .editor_tag_name");
+  let tagInput = $(".editor_tag_input");
+  let tagIncluded = {};
   let canPost = true;
+
+  // 태그 추가 버튼
+  $(".editor_tag_display").click(() => {
+    let enabled = addTag.hasClass("activated");
+    if (enabled == false) {
+      addTag.addClass("activated");
+    } else {
+      addTag.removeClass("activated");
+    }
+  });
+
+  // 태그 추천으로 추가
+  tagRecommends.each((ind, obj) => {
+    let tag = $(obj);
+    let idstr = tag.attr("id");
+    let id = -1;
+    if (idstr.includes("tag") == true) {
+      id = Number(idstr.replace("tag", ""));
+    }
+
+    if (id != -1) {
+      tag.click(() => {
+        if (id in tagIncluded == false) {
+          let newTag = $("<li class='editor_tag'></li>");
+          tagIncluded[id] = newTag;
+          tag.clone().appendTo(newTag);
+          let closeButton = $("<div class='editor_tag_close'>x</div>");
+          newTag.append(closeButton);
+          newTag.detach().prependTo(".editor_bottom > ul");
+
+          closeButton.click(() => {
+            if (id in tagIncluded) {
+              tagIncluded[id].remove();
+              delete tagIncluded[id];
+            }
+          });
+        }
+      });
+    }
+  });
+
+  // 태그 입력 추천
+  tagInput.change(() => {
+    let inputValue = tagInput.val();
+    if (inputValue == null) {
+      inputValue = "";
+    }
+    tagRecommends.each((ind, obj) => {
+      let tag = $(obj);
+      let tagName = tag.text();
+      if (tagName.includes(inputValue)) {
+        tag.css({ display: "block" });
+      } else {
+        tag.css({ display: "none" });
+      }
+    });
+  });
 
   post.click(() => {
     if (canPost == true) {
@@ -58,7 +119,7 @@ $(() => {
             title: title.val(),
             content: content,
             category: category.val(),
-            tag: "",
+            tags: Object.keys(tagIncluded).join(" "),
           };
 
           let errors = [
