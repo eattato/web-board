@@ -1,7 +1,9 @@
 package spring.vo;
 
+import lombok.Getter;
 import lombok.Setter;
 
+@Getter
 @Setter
 public class CommentVO {
     // Properties
@@ -9,6 +11,9 @@ public class CommentVO {
     private int at;
     private int to = -1;
     private String author;
+
+    private boolean remove = false;
+    private int id = -1;
 
 
     // Getter

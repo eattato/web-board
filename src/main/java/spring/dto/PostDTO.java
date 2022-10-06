@@ -5,7 +5,9 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,20 +25,37 @@ public class PostDTO {
     private String taglist;
     private AccountDataDTO authorInfo;
 
+    private List<TagDTO> tagdataList;
+
     public int getRecommend() {
         return loved - hated;
     }
 
-    public String[] getTaglist() {
+    public int[] getTaglist() {
         if (taglist != null) {
-            String[] result = taglist.split(" ");;
+            String[] tags = taglist.split(" ");;
+            int[] result = new int[tags.length];
+            for (int ind = 0; ind < tags.length; ind++) {
+                try {
+                    result[ind] = Integer.parseInt(tags[ind]);
+                } catch (Exception e) {
+
+                }
+            }
+
             if (result.length == 0) {
-                return null;
+                try {
+                    result = new int[1];
+                    result[0] = Integer.parseInt(taglist);
+                    return result;
+                } catch (Exception e) {
+                    return new int[0];
+                }
             } else {
                 return result;
             }
         } else {
-            return null;
+            return new int[0];
         }
     }
 

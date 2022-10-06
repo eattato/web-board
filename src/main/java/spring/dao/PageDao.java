@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import spring.dto.CategoryDTO;
 import spring.dto.CommentDTO;
 import spring.dto.PostDTO;
+import spring.dto.TagDTO;
 import spring.vo.CommentVO;
 import spring.vo.PageVO;
 import spring.vo.PostVO;
@@ -257,6 +258,11 @@ public class PageDao {
     }
 
     public int removeReplyComment(int id) { // 해당 ID 댓글의 대댓글 모두 삭제
+        List<Map<String, Object>> queryResult = getRows(String.format("SELECT * FROM comments WHERE reply = %s", id));
+        for (Map<String, Object> map : queryResult) {
+            CommentDTO commentData = mapper.convertValue(map, CommentDTO.class);
+            removeReplyComment(commentData.getId()); // 그 밑의 대댓글을 모두 재귀함수로 제거
+        }
         String queryString = String.format("DELETE FROM comments WHERE reply = %s", id);
         return jt.update(queryString);
     }
@@ -269,5 +275,17 @@ public class PageDao {
             idCurrent = (int)result.get(0).get("maxid");
         }
         return idCurrent;
+    }
+
+    public List<TagDTO> getTagData(int[] tagIds) {
+        log.info(tagIds.toString());
+        List<TagDTO> result = new ArrayList<>();
+        for (int id : tagIds) {
+            List<Map<String, Object>> queryResult = getRows(String.format("SELECT * FROM tags WHERE id = %s", id));
+            if (queryResult.size() >= 1) {
+                result.add(mapper.convertValue(queryResult.get(0), TagDTO.class));
+            }
+        }
+        return result;
     }
 }

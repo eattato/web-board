@@ -1,6 +1,8 @@
 package spring.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -29,6 +31,10 @@ public class AccountService {
 
     @Autowired
     MailService mailService;
+
+    private final Marker auditDone = MarkerFactory.getMarker("AUDIT_DONE");
+    private final Marker auditTry = MarkerFactory.getMarker("AUDIT_TRY");
+    private final Marker auditError = MarkerFactory.getMarker("AUDIT_ERROR");
 
     // Public Methods
     public boolean checkEmail(String check) {
@@ -77,6 +83,7 @@ public class AccountService {
                         } else {
                             HttpSession session = request.getSession();
                             session.setAttribute("email", accountData.getEmail()); // 세션에 계정 정보 저장
+                            log.info(auditDone, String.format("%s created new account %s", request.getRemoteAddr(), accountData.getEmail()));
                         }
                     } else {
                         result = "nickname is invalid";
@@ -86,6 +93,7 @@ public class AccountService {
                 result = "email invalid";
             }
         }
+        log.info(auditTry, String.format("%s account create try: %s", request.getRemoteAddr(), result));
         return result;
     }
 
@@ -99,6 +107,7 @@ public class AccountService {
                 if (shaEncrypt(loginData.getPassword()).equals(accountDao.getPassword(loginData.getEmail()))) {
                     result = "ok";
                     session.setAttribute("email", loginData.getEmail()); // 세션에 로그인한 계정 정보 저장
+                    log.info(auditDone, String.format("%s logged in to %s", request.getRemoteAddr(), loginData.getEmail()));
                 } else {
                     result = "password invalid";
                 }
@@ -109,15 +118,28 @@ public class AccountService {
         return result;
     }
 
+    // DEBUG PURPOSE ONLY
+    public String loginWithoutPassword(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        String sessionData = getSession(session);
+        session.setAttribute("email", "eattato0804@naver.com"); // 세션에 로그인한 계정 정보 저장
+        log.info(auditDone, String.format("%s logged in to master account", request.getRemoteAddr()));
+        return "ok";
+    }
+
     public String logout(HttpServletRequest request) {
+        String result = null;
         HttpSession session = request.getSession();
         String sessionData = getSession(session);
         if (sessionData != null) {
             session.invalidate();
-            return "ok";
+            log.info(auditDone, String.format("%s logged out from %s", request.getRemoteAddr(), sessionData));
+            result = "ok";
         } else {
-            return "session not found";
+            result = "session not found";
         }
+        log.info(auditTry, String.format("%s log out try: %s", request.getRemoteAddr(), result));
+        return result;
     }
 
     public String updateProfile(HttpServletRequest request, ProfileVO data) {
@@ -133,6 +155,8 @@ public class AccountService {
                         if (nameLength > 0 && nameLength < 50) {
                             if (accountDao.setNickname(sessionData, data.getNickname()) == 0) {
                                 result = "failed";
+                            } else {
+                                log.info(auditDone, String.format("%s changed %s nickname to %s", request.getRemoteAddr(), sessionData, data.getNickname()));
                             }
                         } else {
                             result = "nickname is invalid";
@@ -150,6 +174,7 @@ public class AccountService {
 
                             File image = fileService.uploadImage(data.getImage());
                             if (image != null && image.exists() == true) {
+                                log.info(auditDone, String.format("%s uploaded profile image %s", request.getRemoteAddr(), image.getAbsolutePath()));
 //                                log.info(image.toString());
                                 String[] fullLink = image.toString().split("\\\\");
                                 String directory = "";
@@ -170,6 +195,7 @@ public class AccountService {
 
                     if (result == null) {
                         result = "ok";
+                        log.info(auditDone, String.format("%s changed profile of %s", request.getRemoteAddr(), sessionData));
                     }
                 } else {
                     result = "password wrong";
@@ -180,6 +206,7 @@ public class AccountService {
         } else {
             result = "no session";
         }
+        log.info(auditTry, String.format("%s profile change try: %s", request.getRemoteAddr(), result));
         return result;
     }
 
@@ -210,6 +237,7 @@ public class AccountService {
             result.setNickname(userData.getNickname());
             result.setFaceimg(userData.getFaceimg());
             result.setVerify(userData.isVerify());
+            result.setIsadmin(userData.isIsadmin());
             return result;
         } else {
             AccountDataDTO result = new AccountDataDTO();
@@ -222,6 +250,7 @@ public class AccountService {
     public String verify(HttpServletRequest request, VerifyVO vo, Model model) {
         HttpSession session = request.getSession();
         String sessionData = getSession(session);
+        String result = null;
         if (sessionData != null) {
             AccountDataDTO userData = accountDao.getUserData(sessionData);
             if (userData != null) {
@@ -231,36 +260,39 @@ public class AccountService {
                         userData.setVcode(vcode);
                         mailService.sendVerifyMessage(userData);
                         model.addAttribute("email", sessionData);
-                        return "ok";
+                        result = "ok";
                     } else {
                         String vcode = accountDao.getVerifyCode(userData);
                         if (vcode != null && vo.getVcode() != null) {
                             if (vcode.equals(vo.getVcode())) {
                                 int success = accountDao.finishVerify(userData);
                                 if (success == 1) {
-                                    return "ok";
+                                    result = "ok";
                                 } else {
-                                    return "failed";
+                                    result = "failed";
                                 }
                             } else {
-                                return "code does not match";
+                                result = "code does not match";
                             }
                         } else {
-                            return "code or code input is null";
+                            result = "code or code input is null";
                         }
                     }
                 } else {
-                    return "user is already verified";
+                    result = "user is already verified";
                 }
             } else {
-                return "no user data";
+                result = "no user data";
             }
         } else {
-            return "no session";
+            result = "no session";
         }
+        log.info(auditTry, String.format("%s account verify try: %s", request.getRemoteAddr(), result));
+        return result;
     }
 
     public String reset(HttpServletRequest request, VerifyVO vo) {
+        String result = null;
         if (vo != null) {
             if (vo.getEmail() != null) {
                 AccountDataDTO userData = accountDao.getUserData(vo.getEmail());
@@ -270,26 +302,26 @@ public class AccountService {
                             String vcode = accountDao.generateVerifyCode(userData);
                             userData.setVcode(vcode);
                             mailService.sendResetMessage(userData);
-                            return "ok";
+                            result = "ok";
                         } else { // 인증 코드 제출했으면 코드 인증 및 세션 발급
                             String vcode = accountDao.getVerifyCode(userData);
                             if (vcode != null) {
                                 if (vcode.equals(vo.getVcode())) {
                                     HttpSession session = request.getSession();
                                     session.setAttribute("reset", userData.getEmail()); // 비밀번호를 바꿀 수 있는 세션
-                                    return "ok";
+                                    result = "ok";
                                 } else {
-                                    return "code does not match";
+                                    result = "code does not match";
                                 }
                             } else {
-                                return "verify code not found";
+                                result = "verify code not found";
                             }
                         }
                     } else {
-                        return "email is not verified";
+                        result = "email is not verified";
                     }
                 } else {
-                    return "could not find user";
+                    result = "could not find user";
                 }
             } else { // 이메일을 제출 안 했다면
                 if (vo.getPassword() != null) { // 대신 비밀번호를 제출했으면 세션 확인
@@ -301,23 +333,25 @@ public class AccountService {
                             vo.setPassword(shaEncrypt(vo.getPassword()));
                             int success = accountDao.resetPassword(hasData.toString(), vo.getPassword());
                             if (success == 1) {
-                                return "ok";
+                                result = "ok";
                             } else {
-                                return "failed";
+                                result = "failed";
                             }
                         } else {
-                            return pwError;
+                            result = pwError;
                         }
                     } else {
-                        return "no access";
+                        result = "no access";
                     }
                 } else {
-                    return "no email";
+                    result = "no email";
                 }
             }
         } else {
-            return "no data";
+            result = "no data";
         }
+        log.info(auditTry, String.format("%s password reset try: %s", request.getRemoteAddr(), result));
+        return result;
     }
 
     // Private Methods

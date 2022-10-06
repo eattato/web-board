@@ -65,6 +65,27 @@
                   th:text="|${post.getRecommend()}회|"
                 ></div>
               </div>
+
+              <div class="post_ellipsis">
+                <button type="button" class="post_ellipsis_button">
+                  <i class="fa-solid fa-ellipsis"></i>
+                </button>
+                <div class="post_ellipsis_menu">
+                  <button type="button" class="post_ellipsis_share">
+                    공유
+                  </button>
+                  <button type="button" class="post_ellipsis_report">
+                    신고
+                  </button>
+                  <button
+                    th:if="${profile != null && (#strings.equals(post.getAuthor(), email) || profile.isIsadmin() == true)}"
+                    type="button"
+                    class="post_ellipsis_delete"
+                  >
+                    삭제
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
           <div class="post_author">
@@ -152,7 +173,7 @@
                   <p th:text="${comment.getContent()}">댓글 내용</p>
                   <div class="comment_ellipsis">
                     <button type="button" class="comment_ellipsis_button">
-                      ...
+                      <i class="fa-solid fa-ellipsis"></i>
                     </button>
                     <div class="comment_ellipsis_menu">
                       <button type="button" class="comment_ellipsis_reply">
@@ -160,6 +181,13 @@
                       </button>
                       <button type="button" class="comment_ellipsis_report">
                         신고
+                      </button>
+                      <button
+                        th:if="${profile != null && (#strings.equals(comment.getAuthor(), email) || profile.isIsadmin() == true)}"
+                        type="button"
+                        class="comment_ellipsis_delete"
+                      >
+                        삭제
                       </button>
                     </div>
                   </div>

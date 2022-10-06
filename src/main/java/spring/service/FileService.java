@@ -1,6 +1,8 @@
 package spring.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Base64Utils;
@@ -20,6 +22,10 @@ import java.util.UUID;
 public class FileService {
     @Autowired
     AccountService accountService;
+
+    private final Marker auditDone = MarkerFactory.getMarker("AUDIT_DONE");
+    private final Marker auditTry = MarkerFactory.getMarker("AUDIT_TRY");
+    private final Marker auditError = MarkerFactory.getMarker("AUDIT_ERROR");
 
     public String addTempImage(HttpServletRequest request) {
         HttpSession session = request.getSession();
@@ -41,8 +47,10 @@ public class FileService {
         }
 
         if (error == null) {
+            log.info(auditDone, request.getRemoteAddr() + " downloaded image " + image);
             return result;
         } else {
+            log.info(auditError, request.getRemoteAddr() + " failed image download " + image);
             return error;
         }
     }
@@ -56,9 +64,11 @@ public class FileService {
                 BufferedImage bufferedImage = ImageIO.read(byteArrayInput);
                 ImageIO.write(bufferedImage, "png", image);
                 ImageIO.read(image);
+                log.info(auditDone, "Image " + image.getAbsolutePath() + " uploaded");
                 return image;
             } catch (IOException e) {
 //                log.info("image is not valid");
+                log.info(auditError, "Image " + image.getAbsolutePath() + " upload failed");
                 image.delete();
                 return null;
             }

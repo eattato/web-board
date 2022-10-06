@@ -66,6 +66,9 @@ public class MainController {
 
     @GetMapping("/login")
     public String login(HttpServletRequest request) {
+        // DEBUG PURPOSE ONLY
+        accountService.loginWithoutPassword(request);
+
         HttpSession session = request.getSession();
         String sessionData = accountService.getSession(session);
         if (sessionData == null) { // 로그인 정보가 없다면 들여보내줌

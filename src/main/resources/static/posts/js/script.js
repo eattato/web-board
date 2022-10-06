@@ -22,11 +22,64 @@ const getId = (comment) => {
   return [commentId, replyId];
 };
 
+const clipboard = (text) => {
+  var $temp = $("<input>");
+  $("body").append($temp);
+  $temp.val(text).select();
+  document.execCommand("copy");
+  $temp.remove();
+};
+
 $(() => {
   let main = $(".post_main");
   let content = $.parseHTML(main.text());
   main.text("");
   main.append(content);
+
+  // 게시물 오픈 메뉴
+  let postMenu = $(".post_ellipsis_menu");
+  const PostMenuDisplay = () => {
+    if (postMenu.hasClass("activated") == false) {
+      postMenu.addClass("activated");
+    } else {
+      postMenu.removeClass("activated");
+    }
+  };
+  $(".post_ellipsis_button").click(() => {
+    PostMenuDisplay();
+  });
+  postMenu.find(".post_ellipsis_share").click(() => {
+    clipboard(window.location.href);
+    alert("게시물 링크를 복사했습니다!");
+    PostMenuDisplay();
+  });
+  postMenu.find(".post_ellipsis_report").click(() => {
+    PostMenuDisplay();
+  });
+  postMenu.find(".post_ellipsis_delete").click(() => {
+    let postId = getPathParameter(1);
+    if (!isNaN(parseInt(postId))) {
+      let data = {
+        remove: true,
+        id: Number(postId),
+      };
+      fetch("http://localhost:8888/post", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+        .then(() => {
+          alert("게시물을 삭제했습니다.");
+          window.location.href = "http://localhost:8888";
+        })
+        .catch(() => {
+          alert("게시물 삭제에 실패했습니다!");
+        });
+    }
+    PostMenuDisplay();
+  });
 
   // 댓글 작성
   let sendable = true;
@@ -112,6 +165,7 @@ $(() => {
     let menu = comment.find(".comment_ellipsis_menu");
     let reply = menu.find(".comment_ellipsis_reply");
     let report = menu.find(".comment_ellipsis_report");
+    let remove = menu.find(".comment_ellipsis_delete");
 
     let menuDisplay = () => {
       if (menuActivated == true) {
@@ -146,6 +200,31 @@ $(() => {
     });
 
     report.click(() => {
+      menuActivated = false;
+      menuDisplay();
+    });
+
+    remove.click(() => {
+      let ids = getId(comment);
+      let commentId = ids[0];
+      let data = {
+        remove: true,
+        id: commentId,
+      };
+      fetch("http://localhost:8888/comment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+        .then(() => {
+          alert("삭제되었습니다.");
+          window.location.href = window.location.href;
+        })
+        .catch(() => {
+          alert("삭제 도중 오류가 발생했습니다.");
+        });
       menuActivated = false;
       menuDisplay();
     });

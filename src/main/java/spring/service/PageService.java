@@ -55,6 +55,9 @@ public class PageService {
     public List<PostDTO> getPostList(PageVO data) {
         List<PostDTO> result = pageDao.getPostList(data);
         for (PostDTO post : result) {
+            post.setTagdataList(pageDao.getTagData(post.getTaglist()));
+
+
             if (post.getContent().contains("{image}")) {
 //                map.put("mainImage", );
             } else {
@@ -77,14 +80,9 @@ public class PageService {
         if (postData != null) {
             model.addAttribute("post", postData);
             model.addAttribute("category", getCategoryData(postData.getCategory()));
-            model.addAttribute("tags", postData.getTaglist());
             model.addAttribute("author", accountService.getProfile(postData.getAuthor()));
             model.addAttribute("comments", commentData);
-            if (postData.getAuthor().equals(sessionData)) {
-                model.addAttribute("owned", true);
-            } else {
-                model.addAttribute("owned", false);
-            }
+            postData.setTagdataList(pageDao.getTagData(postData.getTaglist()));
             return true;
         } else {
             return false;

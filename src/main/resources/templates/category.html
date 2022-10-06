@@ -42,10 +42,18 @@
             <ul class="post_list">
               <li class="post_simple" th:each="post : ${posts}">
                 <a th:href="|http://localhost:8888/posts/${post.getId()}|">
-                  <div class="post_name" th:text="${post.getPostname()}">
-                    글 제목
+                  <div class="post_left">
+                    <div class="post_name" th:text="${post.getPostname()}">
+                      글 제목
+                    </div>
                   </div>
                   <div class="post_right">
+                    <ul class="post_tags">
+                      <li th:each="tag : ${post.getTagdataList()}" th:text="${tag.getTagname()}" th:title="${tag.getTagdesc()}" th:style="|color: #${tag.getTagcolor()}|" class="post_tag">
+                        <!-- <a href="#" th:text="${tag}"></a> -->
+                      </li>
+                    </ul>
+
                     <div class="post_wrap">
                       <div
                         class="post_top"
@@ -85,6 +93,11 @@
                       <div class="post_name" th:text="${post.getPostname()}">
                         글 제목
                       </div>
+                      <ul class="post_tags">
+                        <li th:each="tag : ${post.getTagdataList()}" th:text="${tag.getTagname()}" th:title="${tag.getTagdesc()}" th:style="|color: #${tag.getTagcolor()}|" class="post_tag">
+                          <!-- <a href="#" th:text="${tag}"></a> -->
+                        </li>
+                      </ul>
                       <div
                         class="post_data"
                         th:text="|조회수 ${post.getViewers()}회|"

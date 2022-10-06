@@ -133,13 +133,21 @@ public class ApiController {
     }
 
     @PostMapping("/post")
-    public String uploadPost(HttpServletRequest request, @RequestBody PostVO postData) {
-        return pageService.post(request, postData);
+    public String uploadPost(HttpServletRequest request, @RequestBody PostVO vo) {
+        if (vo.isRemove() == false) {
+            return pageService.post(request, vo);
+        } else {
+            return pageService.removePost(request, vo.getId());
+        }
     }
 
     @PostMapping("/comment")
     public String uploadComment(HttpServletRequest request, @RequestBody CommentVO vo) {
-        return pageService.comment(request, vo);
+        if (vo.isRemove() == false) {
+            return pageService.comment(request, vo);
+        } else {
+            return pageService.removeComment(request, vo.getId());
+        }
     }
 
     @PostMapping("/verify")
