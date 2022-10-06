@@ -66,12 +66,9 @@ $(() => {
     $("#view_simple").prop("checked", false);
     $("#view_exact ").prop("checked", true);
   }
-  if (viewMode == undefined || (viewMode != "simple" && viewMode != "exact")) {
-    viewMode = "simple";
-  }
   $("input[name='view_mode']").change(() => {
-    let changedValue = $("input[name='view_mode']:checked").val();
-    setViewMode(changedValue);
+    viewMode = $("input[name='view_mode']:checked").val();
+    setViewMode(viewMode);
     sendSearch();
   });
   setViewMode(viewMode);

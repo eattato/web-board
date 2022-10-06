@@ -37,8 +37,8 @@
               <div class="post_tags">
                 <li
                   th:each="tag : ${post.getTagdataList()}"
-                  th:text="${tag.getTagname()}"
                   th:title="${tag.getTagdesc()}"
+                  th:text="${tag.getTagname()}"
                   th:style="|color: #${tag.getTagcolor()}|"
                   class="post_tag"
                 >
