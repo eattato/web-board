@@ -12,18 +12,6 @@ const setViewMode = (viewMode) => {
   }
 };
 
-const setSortType = (sortType) => {
-  if (sortType == "loved" || sortType == "new") {
-    $.cookie("sorttype", sortType, { expires: 2147483647 });
-  }
-};
-
-const setSortMode = (sortMode) => {
-  if (sortMode == "up" || sortMode == "down") {
-    $.cookie("sortmode", sortMode, { expires: 2147483647 });
-  }
-};
-
 const setSearchFilter = (searchFilter) => {
   for (key in searchFilter) {
     $("#search_filter")
@@ -32,12 +20,35 @@ const setSearchFilter = (searchFilter) => {
   }
 };
 
+const saveCookie = (data) => {
+  $.cookie("boardarc", JSON.stringify(data), { expires: 2147483647 });
+};
+
 $(() => {
   // 쿠키 읽기
   let viewMode = $.cookie("viewmode");
   let searchFilters = $.cookie("searchFilter");
   let sortType = $.cookie("sorttype");
   let sortMode = $.cookie("sortmode");
+
+  let cookieData = $.cookie("boardarc");
+  let originData = {
+    viewMode: "simple",
+    searchFilters: {
+      title: true,
+      author: true,
+      content: true,
+      date: false,
+    },
+    sortType: "loved",
+    sortMode: "down",
+  };
+
+  if (cookieData == null) {
+    cookieData = originData;
+  } else {
+    cookieData = JSON.parse(cookieData);
+  }
 
   const sendSearch = () => {
     let filterResult = {};
@@ -62,69 +73,47 @@ $(() => {
   };
 
   // 보기 모드 쿠키 설정
-  if (viewMode == "exact") {
+  if (cookieData.viewMode == "exact") {
     $("#view_simple").prop("checked", false);
-    $("#view_exact ").prop("checked", true);
+    $("#view_exact").prop("checked", true);
   }
   $("input[name='view_mode']").change(() => {
-    viewMode = $("input[name='view_mode']:checked").val();
-    setViewMode(viewMode);
+    cookieData.viewMode = $("input[name='view_mode']:checked").val();
+    saveCookie(cookieData);
+    setViewMode(cookieData.viewMode);
     sendSearch();
   });
-  setViewMode(viewMode);
+  setViewMode(cookieData.viewMode);
 
   // 검색 필터 쿠키 설정
-  if (searchFilters == null) {
-    searchFilters = {
-      title: true,
-      author: true,
-      content: true,
-      date: false,
-    };
-    $.cookie("searchFilter", JSON.stringify(searchFilters), {
-      expires: 2147483647,
-    });
-  } else {
-    searchFilters = JSON.parse(searchFilters);
-  }
-  setSearchFilter(searchFilters);
+  setSearchFilter(cookieData.searchFilters);
   $("#search_filter")
     .find("input")
     .each((ind, obj) => {
       $(obj).change(() => {
-        searchFilters[$(obj).attr("name")] = $(obj).is(":checked");
-        $.cookie("searchFilter", JSON.stringify(searchFilters), {
-          expires: 2147483647,
-        });
+        cookieData.searchFilters[$(obj).attr("name")] = $(obj).is(":checked");
+        saveCookie(cookieData);
         sendSearch();
       });
     });
 
-  if (sortType == "new") {
+  if (cookieData.sortType == "new") {
     $("#view_loved").prop("checked", false);
     $("#view_new").prop("checked", true);
   }
-  if (sortType == undefined || (sortType != "loved" && sortType != "new")) {
-    sortType = "loved";
-  }
-  setSortType(sortType);
   $("input[name='sort']").change(() => {
-    let changedValue = $("input[name='sort']:checked").val();
-    setSortType(changedValue);
+    cookieData.sortType = $("input[name='sort']:checked").val();
+    saveCookie(cookieData);
     sendSearch();
   });
 
-  if (sortMode == "down") {
+  if (cookieData.sortMode == "down") {
     $("#view_up").prop("checked", false);
     $("#view_down").prop("checked", true);
   }
-  if (sortMode == undefined || (sortMode != "up" && sortMode != "down")) {
-    sortMode = "up";
-  }
   $("input[name='direction']").change(() => {
-    let changedValue = $("input[name='direction']:checked").val();
-    setSortMode(changedValue);
+    cookieData.sortMode = $("input[name='direction']:checked").val();
+    saveCookie(cookieData);
     sendSearch();
   });
-  setSortMode(sortMode);
 });

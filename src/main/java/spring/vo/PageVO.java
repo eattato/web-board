@@ -59,6 +59,14 @@ public class PageVO {
         return targets;
     }
 
+    public String getDirection() {
+        if (direction.equals("up")) {
+            return "ASC";
+        } else {
+            return "DESC";
+        }
+    }
+
     // setter
     public void setTitle(String to) {
         if (to.equals("on")) {
@@ -98,5 +106,11 @@ public class PageVO {
 
     public void setViewmode(String to) {
         viewmode = to;
+    }
+
+    public void setDirection(String target) {
+        if (target.equals("up") || target.equals("down")) {
+            direction = target;
+        }
     }
 }

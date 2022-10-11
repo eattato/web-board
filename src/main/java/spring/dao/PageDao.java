@@ -134,15 +134,10 @@ public class PageDao {
             }
         }
         queryString += "GROUP BY id ";
-        if (data.getSort() == "loved") {
-            queryString += "ORDER BY loved, postdate ";
+        if (data.getSort().equals("loved")) {
+            queryString += String.format("ORDER BY loved %s, viewers %s;", data.getDirection(), data.getDirection());
         } else {
-            queryString += "ORDER BY postdate ";
-        }
-        if (data.getDirection().equals("down")) {
-            queryString += "DESC;";
-        } else {
-            queryString += "ASC;";
+            queryString += String.format("ORDER BY postdate %s;", data.getDirection());
         }
 
         List<Map<String, Object>> queryResult = getRows(queryString);
