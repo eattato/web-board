@@ -45,24 +45,14 @@ $(window).on("load", () => {
     let textValue = previewText.text();
     textValue = removeHTML(textValue);
 
-    let limit = 140;
-    if (textValue.length > limit) {
-      while (textValue.length > limit) {
-        textValue = textValue.substring(0, textValue.length - 1);
-      }
-      textValue += "..";
-    }
-    previewText.text(textValue);
-    previewText.css({ display: "block" });
-
-    // let longHeight = 120;
-    // if (previewText.height() > longHeight) {
-    //   while (previewText.height() > longHeight) {
+    // let limit = 140;
+    // if (textValue.length > limit) {
+    //   while (textValue.length > limit) {
     //     textValue = textValue.substring(0, textValue.length - 1);
-    //     previewText.text(textValue + "..");
     //   }
-    // } else {
-    //   console.log("passed, " + previewText.height());
+    //   textValue += "..";
     // }
+    previewText.text(textValue);
+    previewText.addClass("activate");
   });
 });

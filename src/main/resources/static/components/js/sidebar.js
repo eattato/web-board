@@ -50,26 +50,29 @@ $(() => {
     cookieData = JSON.parse(cookieData);
   }
 
+  const getCookieUri = () => {
+    return {
+      viewmode: cookieData.viewMode,
+      search: $(".search_input").val(),
+      title: filterResult["title"],
+      author: filterResult["author"],
+      content: filterResult["content"],
+      date: filterResult["date"],
+      sort: cookieData.sortType,
+      direction: cookieData.sortMode,
+    };
+  };
+
   const sendSearch = () => {
     let filterResult = {};
-    for (key in searchFilters) {
+    for (key in cookieData.searchFilters) {
       if (searchFilters[key] == true) {
         filterResult[key] = "on";
       } else {
         filterResult[key] = null;
       }
     }
-
-    search({
-      viewmode: viewMode,
-      search: $(".search_input").val(),
-      title: filterResult["title"],
-      author: filterResult["author"],
-      content: filterResult["content"],
-      date: filterResult["date"],
-      sort: sortType,
-      direction: sortMode,
-    });
+    search(getCookieUri());
   };
 
   // 보기 모드 쿠키 설정
@@ -116,4 +119,6 @@ $(() => {
     saveCookie(cookieData);
     sendSearch();
   });
+
+  $(".applyCookie").each((ind, obj) => {});
 });

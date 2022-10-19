@@ -26,3 +26,10 @@ const getPathParameter = (index) => {
   split.splice(0, 3);
   return split[index];
 };
+
+// $(".auto_scale").each((ind, obj) => {
+//   let element = $(obj);
+//   while (element[0].scrollWidth > element.innerWidth()) {
+
+//   }
+// });

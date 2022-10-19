@@ -7,9 +7,13 @@
   <body>
     <div class="menu" th:fragment="header">
       <ul>
-        <li><a href="http://localhost:8888">메인</a></li>
-        <li><a href="#">신규글</a></li>
-        <li><a href="#">인기글</a></li>
+        <li><a class="applyCookie" href="http://localhost:8888">메인</a></li>
+        <li>
+          <a class="applyCookie" href="http://localhost:8888/new">신규글</a>
+        </li>
+        <li>
+          <a class="applyCookie" href="http://localhost:8888/hot">인기글</a>
+        </li>
         <li><a href="http://localhost:8888/editor">글 작성</a></li>
         <li class="menu_login" th:if="${profile == null}">
           <a href="http://localhost:8888/login">로그인</a>

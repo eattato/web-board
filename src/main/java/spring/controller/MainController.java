@@ -115,7 +115,7 @@ public class MainController {
 
             CategoryDTO categoryData = pageService.getCategoryData(intid);
             if (categoryData != null) {
-                List<PostDTO> posts = pageService.getPostList(vo);
+                List<PostDTO> posts = pageService.getPostList(vo, 0);
                 for (PostDTO post : posts) {
                     AccountDataDTO authorInfo = accountService.getProfile(post.getAuthor());
                     post.setAuthorInfo(authorInfo);
@@ -134,6 +134,38 @@ public class MainController {
             log.info("redirect - couldn't get id, got " + id);
             return "redirect:/";
         }
+    }
+
+    @GetMapping("/hot")
+    public String hotPosts(HttpServletRequest request, Model model, PageVO vo) {
+        accountService.sendProfileBySession(request, model);
+        if (vo.getPage() < 1) {
+            vo.setPage(1);
+        }
+
+        int postPerPage = 0;
+        if (vo.getViewmode().equals("exact")) {
+            postPerPage = 10;
+        } else {
+            postPerPage = 25;
+        }
+        vo.setStartIndex((vo.getPage() - 1) * postPerPage);
+        vo.setEndIndex(vo.getPage() * postPerPage);
+
+        CategoryDTO categoryData = new CategoryDTO();
+        categoryData.setCategory("인기글");
+        categoryData.setAbout("카테고리 구분없이 좋아요와 조회수가 높은 게시물입니다.");
+        List<PostDTO> posts = pageService.getPostList(vo, 1);
+        for (PostDTO post : posts) {
+            AccountDataDTO authorInfo = accountService.getProfile(post.getAuthor());
+            post.setAuthorInfo(authorInfo);
+        }
+        model.addAttribute("posts", posts);
+        model.addAttribute("categoryData", categoryData);
+        model.addAttribute("id", vo.getCategoryIndex());
+        model.addAttribute("page", vo.getPage());
+        model.addAttribute("pageCount", Math.ceil((float)pageService.getPostCount() / postPerPage));
+        return "category";
     }
 
     @GetMapping("/posts/{id}")

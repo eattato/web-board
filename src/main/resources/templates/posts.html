@@ -33,7 +33,6 @@
         <div class="main">
           <div class="post_top">
             <div class="post_top_left">
-              <div class="post_title" th:text="${post.postname}">제목</div>
               <div class="post_tags">
                 <li
                   th:each="tag : ${post.getTagdataList()}"
@@ -93,6 +92,7 @@
               </div>
             </div>
           </div>
+          <div class="post_title" th:text="${post.postname}">제목</div>
           <div class="post_author">
             <div class="author_img_frame">
               <a

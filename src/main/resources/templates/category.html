@@ -49,7 +49,13 @@
                   </div>
                   <div class="post_right">
                     <ul class="post_tags">
-                      <li th:each="tag : ${post.getTagdataList()}" th:text="${tag.getTagname()}" th:title="${tag.getTagdesc()}" th:style="|color: #${tag.getTagcolor()}|" class="post_tag">
+                      <li
+                        th:each="tag : ${post.getTagdataList()}"
+                        th:text="${tag.getTagname()}"
+                        th:title="${tag.getTagdesc()}"
+                        th:style="|color: #${tag.getTagcolor()}|"
+                        class="post_tag"
+                      >
                         <!-- <a href="#" th:text="${tag}"></a> -->
                       </li>
                     </ul>
@@ -88,16 +94,24 @@
 
               <li class="post_exact" th:each="post : ${posts}">
                 <a th:href="|http://localhost:8888/posts/${post.getId()}|">
-                  <div class="post_left">
-                    <div class="post_title">
+                  <div class="post_top">
+                    <div class="post_top_left">
                       <div class="post_name" th:text="${post.getPostname()}">
                         글 제목
                       </div>
                       <ul class="post_tags">
-                        <li th:each="tag : ${post.getTagdataList()}" th:text="${tag.getTagname()}" th:title="${tag.getTagdesc()}" th:style="|color: #${tag.getTagcolor()}|" class="post_tag">
+                        <li
+                          th:each="tag : ${post.getTagdataList()}"
+                          th:text="${tag.getTagname()}"
+                          th:title="${tag.getTagdesc()}"
+                          th:style="|color: #${tag.getTagcolor()}|"
+                          class="post_tag"
+                        >
                           <!-- <a href="#" th:text="${tag}"></a> -->
                         </li>
                       </ul>
+                    </div>
+                    <div class="post_top_right">
                       <div
                         class="post_data"
                         th:text="|조회수 ${post.getViewers()}회|"
@@ -107,35 +121,39 @@
                         th:text="|추천 ${post.getRecommend()}개|"
                       ></div>
                     </div>
-                    <div class="post_info">
-                      <img src="" alt="" />
-                      <p th:text="${post.getContent()}">글 내용</p>
-                    </div>
                   </div>
-                  <div class="post_right">
-                    <div
-                      class="post_top"
-                      th:text="|게시자 - ${post.authorInfo.getNickname()}|"
-                    >
-                      게시자
+                  <div class="post_bottom">
+                    <div class="post_left">
+                      <div class="post_info">
+                        <img src="" alt="" />
+                        <p th:text="${post.getContent()}">글 내용</p>
+                      </div>
                     </div>
-                    <div
-                      class="post_top"
-                      th:text="|게시일 - ${post.getPostdate()}|"
-                    >
-                      게시일
-                    </div>
-                    <div class="author_image_frame">
-                      <img
-                        th:if="${post.authorInfo.getFaceimg() == null}"
-                        alt=""
-                        th:src="http://localhost:8888/images/profiles/default.png"
-                      />
-                      <img
-                        th:if="${post.authorInfo.getFaceimg() != null}"
-                        alt=""
-                        th:src="|http://localhost:8888/images/${post.authorInfo.getFaceimg()}|"
-                      />
+                    <div class="post_right">
+                      <div
+                        class="post_right_info"
+                        th:text="|게시자 - ${post.authorInfo.getNickname()}|"
+                      >
+                        게시자
+                      </div>
+                      <div
+                        class="post_right_info"
+                        th:text="|게시일 - ${post.getPostdate()}|"
+                      >
+                        게시일
+                      </div>
+                      <div class="author_image_frame">
+                        <img
+                          th:if="${post.authorInfo.getFaceimg() == null}"
+                          alt=""
+                          th:src="http://localhost:8888/images/profiles/default.png"
+                        />
+                        <img
+                          th:if="${post.authorInfo.getFaceimg() != null}"
+                          alt=""
+                          th:src="|http://localhost:8888/images/${post.authorInfo.getFaceimg()}|"
+                        />
+                      </div>
                     </div>
                   </div>
                 </a>

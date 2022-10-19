@@ -50,8 +50,8 @@ public class PageService {
     }
 
     // Post
-    public List<PostDTO> getPostList(PageVO data) {
-        List<PostDTO> result = pageDao.getPostList(data);
+    public List<PostDTO> getPostList(PageVO data, int actType) {
+        List<PostDTO> result = pageDao.getPostList(data, actType);
         for (PostDTO post : result) {
             post.setTagdataList(pageDao.getTagData(post.getTaglist()));
 

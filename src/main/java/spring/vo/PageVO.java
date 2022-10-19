@@ -15,7 +15,7 @@ public class PageVO {
     private int startIndex;
     private int endIndex;
 
-    private int page;
+    private int page = -1;
     private String search;
     private String viewmode = "simple";
     private boolean title = false;
@@ -23,7 +23,7 @@ public class PageVO {
     private boolean content = false;
     private boolean date = false;
     private String sort = "loved";
-    private String direction = "up";
+    private String direction = "down";
 
     // getter
     public int getStart() {

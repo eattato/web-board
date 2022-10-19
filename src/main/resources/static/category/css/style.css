@@ -85,6 +85,9 @@
   font-size: 18px;
   margin-left: 10px;
   margin-right: 20px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .post_simple .post_left {
@@ -133,33 +136,34 @@
   border-bottom: 1px solid lightgray;
 }
 
-.post_exact .post_title {
+/* .post_exact .post_title {
   width: auto;
   max-width: fit-content;
   height: 30px;
   margin-bottom: 10px;
   white-space: nowrap;
   overflow: hidden;
-}
+} */
 
 .post_exact a {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
 }
 
 .post_exact .post_left {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  height: 150px;
+  height: 120px;
 }
 
 .post_exact .post_name {
   font-size: 18px;
   margin-left: 10px;
-  margin-bottom: 5px;
   margin-right: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .post_exact .post_info {
@@ -190,14 +194,27 @@
 .post_exact p {
   display: none;
   width: 400px;
+  height: 96px;
+  line-height: 1.2;
   margin-left: 10px;
   color: gray;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.post_exact p.activate {
+  display: -webkit-box;
 }
 
 .post_exact .post_right {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  width: 250px;
+  height: 120px;
+  padding-right: 10px;
+  align-items: flex-end;
 }
 
 .post_exact .post_wrap {
@@ -205,12 +222,33 @@
 }
 
 .post_exact .post_top {
-  text-align: right;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: 30px;
+}
+
+.post_exact .post_top_left {
+  display: flex;
+  width: 550px;
+  height: 25px;
+  margin-top: 5px;
+}
+
+.post_exact .post_top_right {
+  display: flex;
+}
+
+.post_right_info {
+  color: gray;
+  font-size: 14px;
 }
 
 .post_exact .post_bottom {
-  text-align: right;
-  color: gray;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: 120px;
 }
 
 .no_post {
@@ -320,10 +358,6 @@
   font-size: 18px;
 }
 
-.post_title {
-  display: flex;
-}
-
 .post_data {
   color: gray;
   margin: 0 10px;
@@ -337,7 +371,7 @@
   height: 70px;
   overflow: hidden;
   border-radius: 35px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   margin-right: 10px;
   border: 1px solid lightgray;
 }
@@ -345,16 +379,4 @@
 .author_image_frame img {
   width: 70px;
   height: auto;
-}
-
-.post_exact .post_right {
-  padding-right: 10px;
-  padding-top: 10px;
-  height: 100%;
-  align-items: flex-end;
-}
-
-.post_top {
-  color: gray;
-  font-size: 14px;
 }

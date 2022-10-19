@@ -107,9 +107,12 @@ public class PageDao {
         return result;
     }
 
-    public List<PostDTO> getPostList(PageVO data) {
+    public List<PostDTO> getPostList(PageVO data, int actType) {
         String queryString = "SELECT id, category, postname, author, postdate, content, IFNULL(loved, 0) - IFNULL(hated, 0) AS loved, IFNULL(viewers, 0) AS viewers, taglist FROM posts ";
-        queryString += String.format("WHERE category = %s ", data.getCategoryIndex());
+        if (actType == 0) {
+            queryString += String.format("WHERE category = %s ", data.getCategoryIndex());
+        }
+
         if (data.getSearch() != null) {
             boolean firstQuestion = true;
             if (data.isTitle()) {
@@ -134,10 +137,14 @@ public class PageDao {
             }
         }
         queryString += "GROUP BY id ";
-        if (data.getSort().equals("loved")) {
-            queryString += String.format("ORDER BY loved %s, viewers %s;", data.getDirection(), data.getDirection());
-        } else {
-            queryString += String.format("ORDER BY postdate %s;", data.getDirection());
+        if (actType == 0) {
+            if (data.getSort().equals("loved")) {
+                queryString += String.format("ORDER BY loved %s, viewers %s;", data.getDirection(), data.getDirection());
+            } else {
+                queryString += String.format("ORDER BY postdate %s;", data.getDirection());
+            }
+        } else if (actType == 1) {
+            queryString += "ORDER BY loved ASC, viewers ASC;";
         }
 
         List<Map<String, Object>> queryResult = getRows(queryString);
@@ -187,7 +194,7 @@ public class PageDao {
 
     public int post(PostVO vo) {String queryString = "INSERT INTO posts VALUES(";
         int idCurrent = getIdCurrent("posts");
-        queryString += String.format("%s, %s, '%s', '%s', '%s', '%s', %s, %s, %s, %s);", idCurrent + 1, vo.getCategory(), vo.getTitle(), vo.getAuthor(), LocalDate.now(), vo.getContent(), 0, 0, 0, vo.getTags());
+        queryString += String.format("%s, %s, '%s', '%s', '%s', '%s', %s, %s, %s, '%s');", idCurrent + 1, vo.getCategory(), vo.getTitle(), vo.getAuthor(), LocalDate.now(), vo.getContent(), 0, 0, 0, vo.getTags());
         return jt.update(queryString);
     }
 

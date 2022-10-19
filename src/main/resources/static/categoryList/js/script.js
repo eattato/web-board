@@ -19,13 +19,13 @@ $(window).on("load", () => {
     let previewText = $(obj);
     let textValue = previewText.text();
 
-    let limit = 140;
-    if (textValue.length > limit) {
-      while (textValue.length > limit) {
-        textValue = textValue.substring(0, textValue.length - 1);
-      }
-      textValue += "..";
-    }
+    // let limit = 140;
+    // if (textValue.length > limit) {
+    //   while (textValue.length > limit) {
+    //     textValue = textValue.substring(0, textValue.length - 1);
+    //   }
+    //   textValue += "..";
+    // }
     previewText.text(textValue);
     previewText.css({ display: "block" });
   });
