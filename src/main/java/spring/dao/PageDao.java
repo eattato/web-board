@@ -151,10 +151,10 @@ public class PageDao {
         }
 
         if (data.getEnd() != -1) {
-            log.info(String.format("loaded %s ~ %s (total %s) posts", data.getStart(), data.getEnd(), data.getEnd() - data.getStart()));
+            //log.info(String.format("loaded %s ~ %s (total %s) posts", data.getStart(), data.getEnd(), data.getEnd() - data.getStart()));
             queryString += String.format("OFFSET %s ROWS FETCH NEXT %s ROWS ONLY;", data.getStart(), data.getEnd() - data.getStart());
         } else { // 끝이 -1이면 전부 다 로드
-            log.info("loaded all posts");
+            //log.info("loaded all posts");
             queryString += String.format("OFFSET %s ROWS;", data.getStart());
         }
 
@@ -293,7 +293,7 @@ public class PageDao {
 
     // Tags
     public List<TagDTO> getTagData(Integer[] tagIds) {
-        log.info(tagIds.toString());
+        //log.info(tagIds.toString());
         List<TagDTO> result = new ArrayList<>();
         for (int id : tagIds) {
             List<Map<String, Object>> queryResult = getRows(String.format("SELECT * FROM tags WHERE id = %s", id));

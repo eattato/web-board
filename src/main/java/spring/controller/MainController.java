@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import spring.dto.AccountDataDTO;
 import spring.dto.CategoryDTO;
 import spring.dto.PostDTO;
+import spring.dto.SidebarMenu;
 import spring.service.AccountService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,6 +39,8 @@ public class MainController {
     @GetMapping("/")
     public String main(HttpServletRequest request, Model model, PageVO vo) {
         accountService.sendProfileBySession(request, model);
+        SidebarMenu sidebar = accountService.loadSidebarMenu(request, model, vo);
+
         if (vo.getPage() < 1) {
             vo.setPage(1);
         }
@@ -97,7 +100,11 @@ public class MainController {
 
     @GetMapping("/category/{id}")
     public String category(HttpServletRequest request, Model model, PageVO vo, @PathVariable String id) {
+        log.info(vo.getSearch());
         accountService.sendProfileBySession(request, model);
+        SidebarMenu sidebar = accountService.loadSidebarMenu(request, model, vo);
+        model.addAttribute("sidebarMode", "category");
+
         if (vo.getPage() < 1) {
             vo.setPage(1);
         }
@@ -124,6 +131,8 @@ public class MainController {
     @GetMapping("/popular")
     public String popularPosts(HttpServletRequest request, Model model, PageVO vo) {
         accountService.sendProfileBySession(request, model);
+        SidebarMenu sidebar = accountService.loadSidebarMenu(request, model, vo);
+        model.addAttribute("sidebarMode", "popular");
         int postPerPage = markPageListToVO(vo);
 
         CategoryDTO categoryData = new CategoryDTO();
@@ -131,7 +140,6 @@ public class MainController {
         categoryData.setAbout("카테고리 구분없이 좋아요와 조회수가 높은 게시물들을 모았습니다.");
         List<PostDTO> posts = pageService.getPostList(vo, 1);
         markPageListToView(model, posts, categoryData, vo, postPerPage);
-        model.addAttribute("sidebarMode", "popular");
         return "category";
     }
 

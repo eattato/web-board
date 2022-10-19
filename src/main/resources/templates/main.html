@@ -36,7 +36,7 @@
         <div class="main">
           <div class="main_posts">
             <ul class="post_list">
-              <li class="post_simple" th:each="category : ${categoryList}">
+              <li class="post_simple" th:if="${#strings.equals(sidebar.getViewmode(), 'simple')}" th:each="category : ${categoryList}">
                 <a
                   th:href="|http://localhost:8888/category/${category.getId()}|"
                 >
@@ -63,7 +63,7 @@
                 </a>
               </li>
 
-              <li class="post_exact" th:each="category: ${categoryList}">
+              <li class="post_exact" th:if="${#strings.equals(sidebar.getViewmode(), 'exact')}" th:each="category: ${categoryList}">
                 <a
                   th:href="|http://localhost:8888/category/${category.getId()}|"
                 >
@@ -121,42 +121,7 @@
             </ul>
           </div>
 
-          <div class="sidebar">
-            <div class="sidebar_title">카테고리 검색</div>
-            <form class="sidebar_search">
-              <div class="search_box">
-                <div class="search_wrap"></div>
-                <input
-                  class="search_input"
-                  type="search"
-                  name="search"
-                  placeholder="검색"
-                />
-                <i class="fa-solid fa-magnifying-glass"></i>
-              </div>
-
-              <div class="sidebar_title">보기 모드</div>
-              <div class="select_box">
-                <label
-                  ><input
-                    name="view_mode"
-                    id="view_simple"
-                    type="radio"
-                    value="simple"
-                    checked
-                  />간략히</label
-                >
-                <label
-                  ><input
-                    name="view_mode"
-                    id="view_exact"
-                    type="radio"
-                    value="exact"
-                  />자세히</label
-                >
-              </div>
-            </form>
-          </div>
+          <div class="sidebar" th:replace="fragments/common :: sidebar"></div>
         </div>
       </div>
     </div>

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.*;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.imageio.ImageIO;
@@ -20,6 +21,7 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 
+import spring.dto.SidebarMenu;
 import spring.service.AccountService;
 import spring.service.FileService;
 import spring.service.MailService;
@@ -167,6 +169,12 @@ public class ApiController {
         if (hasData != null) {
             session.setAttribute("reset", null);
         }
+        return "ok";
+    }
+
+    @PostMapping("/sidebar")
+    public String updateSidebar(HttpServletRequest request, Model model, @RequestBody SidebarMenu target) {
+        accountService.setSidebarMenu(request, model, target);
         return "ok";
     }
 }

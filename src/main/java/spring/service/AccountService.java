@@ -8,13 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import spring.dao.AccountDao;
 import spring.dto.AccountDataDTO;
-import spring.vo.AccountCreateVO;
-import spring.vo.LoginVO;
-import spring.vo.ProfileVO;
-import spring.vo.VerifyVO;
+import spring.dto.SidebarMenu;
+import spring.vo.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.websocket.Session;
 import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -352,6 +351,37 @@ public class AccountService {
         }
         log.info(auditTry, String.format("%s password reset try: %s", request.getRemoteAddr(), result));
         return result;
+    }
+
+    public SidebarMenu loadSidebarMenu(HttpServletRequest request, Model model, PageVO vo) {
+        HttpSession session = request.getSession();
+        Object sideObj = session.getAttribute("sidebar");
+        SidebarMenu sidebar;
+        if (sideObj != null) { // 기존 접속 시, 로드
+            sidebar = (SidebarMenu) sideObj;
+        } else { // 처음 접속 시
+            sidebar = new SidebarMenu();
+            session.setAttribute("sidebar", sidebar);
+        }
+        model.addAttribute("sidebar", sidebar);
+
+        if (vo != null) {
+            vo.setViewmode(sidebar.getViewmode());
+            vo.setSort(sidebar.getSort());
+            vo.setDirection(sidebar.getDirection());
+            vo.setTitle(sidebar.titleGet());
+            vo.setAuthor(sidebar.authorGet());
+            vo.setContent(sidebar.contentGet());
+            vo.setDate(sidebar.dateGet());
+        }
+
+        return sidebar;
+    }
+
+    public void setSidebarMenu(HttpServletRequest request, Model model, SidebarMenu menu) {
+        SidebarMenu sidebar = loadSidebarMenu(request, model, null);
+        HttpSession session = request.getSession();
+        session.setAttribute("sidebar", menu);
     }
 
     // Private Methods

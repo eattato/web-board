@@ -40,7 +40,7 @@
         <div class="main">
           <div class="main_posts">
             <ul class="post_list">
-              <li class="post_simple" th:each="post : ${posts}">
+              <li class="post_simple" th:if="${#strings.equals(sidebar.getViewmode(), 'simple')}" th:each="post : ${posts}">
                 <a th:href="|http://localhost:8888/posts/${post.getId()}|">
                   <div class="post_left">
                     <div class="post_name" th:text="${post.getPostname()}">
@@ -92,7 +92,7 @@
                 </a>
               </li>
 
-              <li class="post_exact" th:each="post : ${posts}">
+              <li class="post_exact" th:if="${#strings.equals(sidebar.getViewmode(), 'exact')}" th:each="post : ${posts}">
                 <a th:href="|http://localhost:8888/posts/${post.getId()}|">
                   <div class="post_top">
                     <div class="post_top_left">
@@ -198,98 +198,7 @@
             </ul>
           </div>
 
-          <div class="sidebar" th:classappend="${sidebarMode != null && !sidebarMode.equals('default')} ? shorten : ''">
-            <div class="sidebar_title">카테고리 검색</div>
-            <form class="sidebar_search">
-              <div class="search_box">
-                <div class="search_wrap"></div>
-                <input
-                  class="search_input"
-                  type="search"
-                  name="search"
-                  placeholder="검색"
-                />
-                <i class="fa-solid fa-magnifying-glass"></i>
-              </div>
-
-              <div class="sidebar_title">보기 모드</div>
-              <div class="select_box">
-                <label
-                  ><input
-                    name="view_mode"
-                    id="view_simple"
-                    type="radio"
-                    value="simple"
-                    checked
-                  />간략히</label
-                >
-                <label
-                  ><input
-                    name="view_mode"
-                    id="view_exact"
-                    type="radio"
-                    value="exact"
-                  />자세히</label
-                >
-              </div>
-
-              <div class="sidebar_title">검색 필터</div>
-              <div class="select_box" id="search_filter">
-                <label
-                  ><input name="title" type="checkbox" checked />제목</label
-                >
-                <label
-                  ><input name="author" type="checkbox" checked />작성자</label
-                >
-                <label
-                  ><input name="content" type="checkbox" checked />내용</label
-                >
-                <label><input name="date" type="checkbox" />날짜</label>
-              </div>
-
-              <div class="sidebar_title" th:if="${sidebarMode == null || sidebarMode.equals('default')}"></div>
-              <div class="select_box" th:if="${sidebarMode == null || sidebarMode.equals('default')}">
-                <label
-                  ><input
-                    name="sort"
-                    id="view_loved"
-                    type="radio"
-                    value="loved"
-                    checked
-                  />인기순</label
-                >
-                <label
-                  ><input
-                    name="sort"
-                    id="view_new"
-                    type="radio"
-                    value="new"
-                  />최신순</label
-                >
-              </div>
-
-              <div class="sidebar_title" th:if="${sidebarMode == null || sidebarMode.equals('default')}"></div>
-              <div class="select_box" th:if="${sidebarMode == null || sidebarMode.equals('default')}">
-                <label
-                  ><input
-                    name="direction"
-                    id="view_up"
-                    type="radio"
-                    value="up"
-                    checked
-                  />오름차순</label
-                >
-                <label
-                  ><input
-                    name="direction"
-                    id="view_down"
-                    type="radio"
-                    value="down"
-                  />내림차순</label
-                >
-              </div>
-            </form>
-          </div>
+          <div class="sidebar" th:replace="fragments/common :: sidebar"></div>
         </div>
       </div>
     </div>
