@@ -104,27 +104,12 @@ public class MainController {
         try {
             int intid = Integer.parseInt(id);
             vo.setCategory(intid);
-            int postPerPage = 0;
-            if (vo.getViewmode().equals("exact")) {
-                postPerPage = 10;
-            } else {
-                postPerPage = 25;
-            }
-            vo.setStartIndex((vo.getPage() - 1) * postPerPage);
-            vo.setEndIndex(vo.getPage() * postPerPage);
+            int postPerPage = markPageListToVO(vo);
 
             CategoryDTO categoryData = pageService.getCategoryData(intid);
             if (categoryData != null) {
                 List<PostDTO> posts = pageService.getPostList(vo, 0);
-                for (PostDTO post : posts) {
-                    AccountDataDTO authorInfo = accountService.getProfile(post.getAuthor());
-                    post.setAuthorInfo(authorInfo);
-                }
-                model.addAttribute("posts", posts);
-                model.addAttribute("categoryData", categoryData);
-                model.addAttribute("id", vo.getCategoryIndex());
-                model.addAttribute("page", vo.getPage());
-                model.addAttribute("pageCount", Math.ceil((float)pageService.getPostCount() / postPerPage));
+                markPageListToView(model, posts, categoryData, vo, postPerPage);
                 return "category";
             } else {
                 log.info("redirect - no category data");
@@ -136,35 +121,16 @@ public class MainController {
         }
     }
 
-    @GetMapping("/hot")
+    @GetMapping("/popular")
     public String hotPosts(HttpServletRequest request, Model model, PageVO vo) {
         accountService.sendProfileBySession(request, model);
-        if (vo.getPage() < 1) {
-            vo.setPage(1);
-        }
-
-        int postPerPage = 0;
-        if (vo.getViewmode().equals("exact")) {
-            postPerPage = 10;
-        } else {
-            postPerPage = 25;
-        }
-        vo.setStartIndex((vo.getPage() - 1) * postPerPage);
-        vo.setEndIndex(vo.getPage() * postPerPage);
+        int postPerPage = markPageListToVO(vo);
 
         CategoryDTO categoryData = new CategoryDTO();
         categoryData.setCategory("인기글");
         categoryData.setAbout("카테고리 구분없이 좋아요와 조회수가 높은 게시물입니다.");
         List<PostDTO> posts = pageService.getPostList(vo, 1);
-        for (PostDTO post : posts) {
-            AccountDataDTO authorInfo = accountService.getProfile(post.getAuthor());
-            post.setAuthorInfo(authorInfo);
-        }
-        model.addAttribute("posts", posts);
-        model.addAttribute("categoryData", categoryData);
-        model.addAttribute("id", vo.getCategoryIndex());
-        model.addAttribute("page", vo.getPage());
-        model.addAttribute("pageCount", Math.ceil((float)pageService.getPostCount() / postPerPage));
+        markPageListToView(model, posts, categoryData, vo, postPerPage);
         return "category";
     }
 
@@ -234,5 +200,34 @@ public class MainController {
         } else {
             return "reset";
         }
+    }
+
+    // Private Methods
+    private int markPageListToVO(PageVO vo) {
+        if (vo.getPage() < 1) {
+            vo.setPage(1);
+        }
+
+        int postPerPage = 0;
+        if (vo.getViewmode().equals("exact")) {
+            postPerPage = 10;
+        } else {
+            postPerPage = 25;
+        }
+        vo.setStartIndex((vo.getPage() - 1) * postPerPage);
+        vo.setEndIndex(vo.getPage() * postPerPage);
+        return postPerPage;
+    }
+
+    private void markPageListToView(Model model, List<PostDTO> posts, CategoryDTO categoryData, PageVO vo, int postPerPage) {
+        for (PostDTO post : posts) {
+            AccountDataDTO authorInfo = accountService.getProfile(post.getAuthor());
+            post.setAuthorInfo(authorInfo);
+        }
+        model.addAttribute("posts", posts);
+        model.addAttribute("categoryData", categoryData);
+        model.addAttribute("id", vo.getCategoryIndex());
+        model.addAttribute("page", vo.getPage());
+        model.addAttribute("pageCount", Math.ceil((float)pageService.getPostCount() / postPerPage));
     }
 }

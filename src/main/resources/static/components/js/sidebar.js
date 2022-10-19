@@ -50,7 +50,7 @@ $(() => {
     cookieData = JSON.parse(cookieData);
   }
 
-  const getCookieUri = () => {
+  const getCookieUri = (filterResult) => {
     return {
       viewmode: cookieData.viewMode,
       search: $(".search_input").val(),
@@ -66,13 +66,13 @@ $(() => {
   const sendSearch = () => {
     let filterResult = {};
     for (key in cookieData.searchFilters) {
-      if (searchFilters[key] == true) {
+      if (cookieData.searchFilters[key] == true) {
         filterResult[key] = "on";
       } else {
         filterResult[key] = null;
       }
     }
-    search(getCookieUri());
+    search(getCookieUri(filterResult));
   };
 
   // 보기 모드 쿠키 설정

@@ -15,9 +15,12 @@ const search = (parameters) => {
       }
     }
   }
-  let id = getUrlParameter("id");
-  if (id == false) {
-    id = 1;
+  //let id = getUrlParameterV2("id");
+  let id = getPathParameter(1);
+  if (id != null) {
+    //console.log("http://localhost:8888/category/" + id + queryString);
+    window.location.href = "http://localhost:8888/category/" + id + queryString;
+  } else {
+    window.location.href = "http://localhost:8888/" + getPathParameter(0) + queryString
   }
-  window.location.href = "http://localhost:8888/category/" + id + queryString;
 };

@@ -108,7 +108,7 @@ public class PageDao {
     }
 
     public List<PostDTO> getPostList(PageVO data, int actType) {
-        String queryString = "SELECT id, category, postname, author, postdate, content, IFNULL(loved, 0) - IFNULL(hated, 0) AS loved, IFNULL(viewers, 0) AS viewers, taglist FROM posts ";
+        String queryString = "SELECT id, category, postname, author, postdate, content, IFNULL(loved, 0) - IFNULL(hated, 0) AS loved, IFNULL(viewers, 0) AS viewers, viewers + loved AS interest, taglist FROM posts ";
         if (actType == 0) {
             queryString += String.format("WHERE category = %s ", data.getCategoryIndex());
         }
@@ -139,12 +139,13 @@ public class PageDao {
         queryString += "GROUP BY id ";
         if (actType == 0) {
             if (data.getSort().equals("loved")) {
-                queryString += String.format("ORDER BY loved %s, viewers %s;", data.getDirection(), data.getDirection());
+                //queryString += String.format("ORDER BY loved %s, viewers %s;", data.getDirection(), data.getDirection());
+                queryString += String.format("ORDER BY interest %s;", data.getDirection());
             } else {
                 queryString += String.format("ORDER BY postdate %s;", data.getDirection());
             }
         } else if (actType == 1) {
-            queryString += "ORDER BY loved ASC, viewers ASC;";
+            queryString += "ORDER BY interest DESC;";
         }
 
         List<Map<String, Object>> queryResult = getRows(queryString);

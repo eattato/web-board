@@ -17,6 +17,7 @@ public class PageVO {
 
     private int page = -1;
     private String search;
+    private String[] searchParams;
     private String viewmode = "simple";
     private boolean title = false;
     private boolean author = false;
@@ -111,6 +112,13 @@ public class PageVO {
     public void setDirection(String target) {
         if (target.equals("up") || target.equals("down")) {
             direction = target;
+        }
+    }
+
+    public void setSearch(String target) {
+        searchParams = target.split(" ");
+        if (searchParams.length == 0) {
+            searchParams = new String[] {target};
         }
     }
 }

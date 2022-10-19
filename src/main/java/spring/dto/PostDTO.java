@@ -23,9 +23,10 @@ public class PostDTO {
     private int hated;
     private int viewers;
     private String taglist;
-    private AccountDataDTO authorInfo;
 
+    private AccountDataDTO authorInfo;
     private List<TagDTO> tagdataList;
+    private int interest;
 
     public int getRecommend() {
         return loved - hated;

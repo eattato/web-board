@@ -19,9 +19,35 @@ const getUrlParameter = (sParam) => {
   return false;
 };
 
+const getUrlParameterV2 = (target) => {
+  let url = window.location.href;
+  let split = url.split("?");
+  if (split.length == 2) {
+    url = split[1];
+    split = url.split("&");
+    for (let ind = 0; ind < split.length; ind++) {
+      let param = split[ind];
+      let paramSplit = param.split("=");
+      if (paramSplit.length >= 2) {
+        if (paramSplit[0] == target) {
+          return paramSplit.slice(1).join("");
+        }
+      }
+    }
+    return null;
+  } else {
+    return null;
+  }
+}
+
 const getPathParameter = (index) => {
   //let url = window.location.search.substring(1);
   let url = window.location.href;
+  let paramCutter = url.split("?");
+  if (paramCutter.length >= 2) {
+    url = paramCutter[0];
+  }
+
   let split = url.split("/");
   split.splice(0, 3);
   return split[index];
