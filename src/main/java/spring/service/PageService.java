@@ -110,11 +110,29 @@ public class PageService {
 
                         if (tagNormal == true) {
                             data.setAuthor(sessionData);
-                            int result = pageDao.post(data);
-                            if (result == 1) {
-                                return Integer.toString(pageDao.getIdCurrent("posts"));
+                            if (data.getId() == -1) {
+                                int result = pageDao.post(data);
+                                if (result == 1) {
+                                    return Integer.toString(pageDao.getIdCurrent("posts"));
+                                } else {
+                                    return "data save failed";
+                                }
                             } else {
-                                return "data save failed";
+                                PostDTO postData = pageDao.getPostData(data.getId());
+                                if (postData != null) {
+                                    if (postData.getAuthor().equals(sessionData)) {
+                                        int result = pageDao.updatePost(data);
+                                        if (result == 1) {
+                                            return Integer.toString(data.getId());
+                                        } else {
+                                            return "data save failed";
+                                        }
+                                    } else {
+                                        return "no access";
+                                    }
+                                } else {
+                                    return "post not found";
+                                }
                             }
                         } else {
                             return "tag not found";
@@ -157,8 +175,12 @@ public class PageService {
 
                 if (editing != -1) {
                     PostDTO postData = pageDao.getPostData(editing);
-                    postData.setTagdataList(pageDao.getTagData(postData.getTaglist()));
-                    model.addAttribute("pastData", postData);
+                    if (postData.getAuthor().equals(sessionData)) {
+                        postData.setTagdataList(pageDao.getTagData(postData.getTaglist()));
+                        model.addAttribute("pastData", postData);
+                    } else {
+                        return "redirect:";
+                    }
                 }
                 return "editor";
             } else {

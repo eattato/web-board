@@ -151,6 +151,11 @@ $(() => {
             category: category.val(),
             tags: Object.keys(tagIncluded).join(" "),
           };
+          let id = null;
+          if (getPathParameter(1) != null) {
+            id = Number(getPathParameter(1));
+          }
+          data.id = id;
 
           let errors = [
             "no session",

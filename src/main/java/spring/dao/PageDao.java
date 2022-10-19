@@ -203,9 +203,20 @@ public class PageDao {
         return result;
     }
 
-    public int post(PostVO vo) {String queryString = "INSERT INTO posts VALUES(";
+    public int post(PostVO vo) {
+        String queryString = "INSERT INTO posts VALUES(";
         int idCurrent = getIdCurrent("posts");
         queryString += String.format("%s, %s, '%s', '%s', '%s', '%s', %s, %s, %s, '%s');", idCurrent + 1, vo.getCategory(), vo.getTitle(), vo.getAuthor(), LocalDate.now(), vo.getContent(), 0, 0, 0, vo.getTags());
+        return jt.update(queryString);
+    }
+
+    public int updatePost(PostVO vo) {
+        String queryString = "UPDATE posts SET ";
+        queryString += String.format("category = %s, ", vo.getCategory());
+        queryString += String.format("postname = '%s', ", vo.getTitle());
+        queryString += String.format("content = '%s', ", vo.getContent());
+        queryString += String.format("taglist = '%s' ", vo.getTags());
+        queryString += String.format("WHERE id = %s;", vo.getId());
         return jt.update(queryString);
     }
 
