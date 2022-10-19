@@ -140,12 +140,22 @@ public class PageDao {
         if (actType == 0) {
             if (data.getSort().equals("loved")) {
                 //queryString += String.format("ORDER BY loved %s, viewers %s;", data.getDirection(), data.getDirection());
-                queryString += String.format("ORDER BY interest %s;", data.getDirection());
+                queryString += String.format("ORDER BY interest %s ", data.getDirection());
             } else {
-                queryString += String.format("ORDER BY postdate %s;", data.getDirection());
+                queryString += String.format("ORDER BY postdate %s ", data.getDirection());
             }
         } else if (actType == 1) {
-            queryString += "ORDER BY interest DESC;";
+            queryString += "ORDER BY interest DESC ";
+        } else if (actType == 2) {
+            queryString += "ORDER BY postdate DESC ";
+        }
+
+        if (data.getEnd() != -1) {
+            log.info(String.format("loaded %s ~ %s (total %s) posts", data.getStart(), data.getEnd(), data.getEnd() - data.getStart()));
+            queryString += String.format("OFFSET %s ROWS FETCH NEXT %s ROWS ONLY;", data.getStart(), data.getEnd() - data.getStart());
+        } else { // 끝이 -1이면 전부 다 로드
+            log.info("loaded all posts");
+            queryString += String.format("OFFSET %s ROWS;", data.getStart());
         }
 
         List<Map<String, Object>> queryResult = getRows(queryString);
@@ -271,7 +281,7 @@ public class PageDao {
     }
 
     // Tags
-    public List<TagDTO> getTagData(int[] tagIds) {
+    public List<TagDTO> getTagData(Integer[] tagIds) {
         log.info(tagIds.toString());
         List<TagDTO> result = new ArrayList<>();
         for (int id : tagIds) {

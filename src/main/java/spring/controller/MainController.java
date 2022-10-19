@@ -122,15 +122,30 @@ public class MainController {
     }
 
     @GetMapping("/popular")
-    public String hotPosts(HttpServletRequest request, Model model, PageVO vo) {
+    public String popularPosts(HttpServletRequest request, Model model, PageVO vo) {
         accountService.sendProfileBySession(request, model);
         int postPerPage = markPageListToVO(vo);
 
         CategoryDTO categoryData = new CategoryDTO();
         categoryData.setCategory("인기글");
-        categoryData.setAbout("카테고리 구분없이 좋아요와 조회수가 높은 게시물입니다.");
+        categoryData.setAbout("카테고리 구분없이 좋아요와 조회수가 높은 게시물들을 모았습니다.");
         List<PostDTO> posts = pageService.getPostList(vo, 1);
         markPageListToView(model, posts, categoryData, vo, postPerPage);
+        model.addAttribute("sidebarMode", "popular");
+        return "category";
+    }
+
+    @GetMapping("/new")
+    public String newPosts(HttpServletRequest request, Model model, PageVO vo) {
+        accountService.sendProfileBySession(request, model);
+        int postPerPage = markPageListToVO(vo);
+
+        CategoryDTO categoryData = new CategoryDTO();
+        categoryData.setCategory("최신글");
+        categoryData.setAbout("카테고리 구분없이 최근에 올라온 게시물들을 모았습니다.");
+        List<PostDTO> posts = pageService.getPostList(vo, 2);
+        markPageListToView(model, posts, categoryData, vo, postPerPage);
+        model.addAttribute("sidebarMode", "new");
         return "category";
     }
 
@@ -156,28 +171,9 @@ public class MainController {
         }
     }
 
-    @GetMapping("/editor")
-    public String editor(HttpServletRequest request, Model model) {
-        HttpSession session = request.getSession();
-        String sessionData = accountService.getSession(session);
-        if (sessionData != null) { // 로그인 세션이 존재하면
-            // 이메일로 계정 조회해서 정보를 모델로 전송
-            boolean profile = accountService.sendProfileBySession(request, model);
-
-            PageVO vo = new PageVO();
-            vo.setStartIndex(0);
-            vo.setEndIndex(-1);
-            model.addAttribute("categoryList", pageService.getCategoryList(vo));
-            model.addAttribute("tags", pageService.getAllTags());
-
-            if (profile == true) {
-                return "editor";
-            } else {
-                return "redirect:";
-            }
-        } else {
-            return "redirect:login";
-        }
+    @GetMapping(value = {"/editor", "/editor/{id}"})
+    public String editor(HttpServletRequest request, Model model, @PathVariable(required = false) String id) {
+        return pageService.editor(request, model, id);
     }
 
     @GetMapping("/verify")
@@ -210,9 +206,9 @@ public class MainController {
 
         int postPerPage = 0;
         if (vo.getViewmode().equals("exact")) {
-            postPerPage = 10;
+            postPerPage = 4;
         } else {
-            postPerPage = 25;
+            postPerPage = 9;
         }
         vo.setStartIndex((vo.getPage() - 1) * postPerPage);
         vo.setEndIndex(vo.getPage() * postPerPage);
@@ -228,6 +224,6 @@ public class MainController {
         model.addAttribute("categoryData", categoryData);
         model.addAttribute("id", vo.getCategoryIndex());
         model.addAttribute("page", vo.getPage());
-        model.addAttribute("pageCount", Math.ceil((float)pageService.getPostCount() / postPerPage));
+        model.addAttribute("pageCount", (int)Math.ceil((float)pageService.getPostCount() / postPerPage));
     }
 }

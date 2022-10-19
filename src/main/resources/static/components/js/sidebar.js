@@ -50,7 +50,16 @@ $(() => {
     cookieData = JSON.parse(cookieData);
   }
 
-  const getCookieUri = (filterResult) => {
+  const getCookieUri = () => {
+    let filterResult = {};
+    for (key in cookieData.searchFilters) {
+      if (cookieData.searchFilters[key] == true) {
+        filterResult[key] = "on";
+      } else {
+        filterResult[key] = null;
+      }
+    }
+
     return {
       viewmode: cookieData.viewMode,
       search: $(".search_input").val(),
@@ -64,15 +73,7 @@ $(() => {
   };
 
   const sendSearch = () => {
-    let filterResult = {};
-    for (key in cookieData.searchFilters) {
-      if (cookieData.searchFilters[key] == true) {
-        filterResult[key] = "on";
-      } else {
-        filterResult[key] = null;
-      }
-    }
-    search(getCookieUri(filterResult));
+    search(getCookieUri());
   };
 
   // 보기 모드 쿠키 설정
@@ -121,4 +122,15 @@ $(() => {
   });
 
   $(".applyCookie").each((ind, obj) => {});
+
+  $(".paging a").each((ind, obj) => {
+    let element = $(obj);
+    let link = element.attr("href");
+    let split = link.split("?");
+
+    let cookieData = getCookieUri();
+    cookieData.page = getUrlParameterV2("page", link);
+    console.log(split[0] + urlEncode(cookieData));
+    element.attr("http", split[0] + urlEncode(cookieData));
+  });
 });

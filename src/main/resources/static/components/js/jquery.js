@@ -19,8 +19,11 @@ const getUrlParameter = (sParam) => {
   return false;
 };
 
-const getUrlParameterV2 = (target) => {
+const getUrlParameterV2 = (target, originUrl) => {
   let url = window.location.href;
+  if (originUrl != null) {
+    url = originUrl;
+  }
   let split = url.split("?");
   if (split.length == 2) {
     url = split[1];

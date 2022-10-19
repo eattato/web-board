@@ -50,19 +50,7 @@ $(() => {
   let tagIncluded = {};
   let canPost = true;
 
-  // 태그 추가 버튼
-  $(".editor_tag_display").click(() => {
-    let enabled = addTag.hasClass("activated");
-    if (enabled == false) {
-      addTag.addClass("activated");
-    } else {
-      addTag.removeClass("activated");
-    }
-  });
-
-  // 태그 추천으로 추가
-  tagRecommends.each((ind, obj) => {
-    let tag = $(obj);
+  const addTagToTab = (tag) => {
     let idstr = tag.attr("id");
     let id = -1;
     if (idstr.includes("tag") == true) {
@@ -87,8 +75,50 @@ $(() => {
           });
         }
       });
+      console.log("done");
+    } else {
+      console.log("id wrong");
+    }
+  }
+
+  // 태그 추가 버튼
+  $(".editor_tag_display").click(() => {
+    let enabled = addTag.hasClass("activated");
+    if (enabled == false) {
+      addTag.addClass("activated");
+    } else {
+      addTag.removeClass("activated");
     }
   });
+
+  // 태그 추천으로 추가
+  tagRecommends.each((ind, obj) => {
+    let tag = $(obj);
+    addTagToTab(tag);
+  });
+  // 수정 시 예전에 있던 태그 추가
+  $(".past .editor_tag_name").each((ind, obj) => {
+    let tag = $(obj);
+    let idstr = tag.attr("id");
+    let id = -1;
+    if (idstr.includes("tag") == true) {
+      id = Number(idstr.replace("tag", ""));
+    }
+
+    let newTag = $("<li class='editor_tag'></li>");
+    tagIncluded[id] = newTag;
+    tag.detach().appendTo(newTag);
+    let closeButton = $("<div class='editor_tag_close'>x</div>");
+    newTag.append(closeButton);
+    newTag.detach().prependTo(".editor_bottom > ul");
+
+    closeButton.click(() => {
+      if (id in tagIncluded) {
+        tagIncluded[id].remove();
+        delete tagIncluded[id];
+      }
+    });
+  })
 
   // 태그 입력 추천
   tagInput.change(() => {

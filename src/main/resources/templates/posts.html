@@ -82,6 +82,13 @@
                     신고
                   </button>
                   <button
+                    th:if="${profile != null && #strings.equals(post.getAuthor(), email)}"
+                    type="button"
+                    class="post_ellipsis_edit"
+                  >
+                    <a th:href="|http://localhost:8888/editor/${post.getId()}|">수정</a>
+                  </button>
+                  <button
                     th:if="${profile != null && (#strings.equals(post.getAuthor(), email) || profile.isIsadmin() == true)}"
                     type="button"
                     class="post_ellipsis_delete"

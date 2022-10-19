@@ -459,6 +459,10 @@
   background-color: lightgray;
 }
 
+.past {
+  display: none;
+}
+
 #editor_text {
   width: 1000px;
   height: 200px;

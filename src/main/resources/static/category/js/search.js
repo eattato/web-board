@@ -1,4 +1,4 @@
-const search = (parameters) => {
+const urlEncode = (parameters) => {
   let queryString = "";
   let first = true;
   for (key in parameters) {
@@ -15,7 +15,11 @@ const search = (parameters) => {
       }
     }
   }
-  //let id = getUrlParameterV2("id");
+  return queryString;
+}
+
+const search = (parameters) => {
+  let queryString = urlEncode(parameters);
   let id = getPathParameter(1);
   if (id != null) {
     //console.log("http://localhost:8888/category/" + id + queryString);

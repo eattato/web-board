@@ -270,6 +270,9 @@
   height: 500px;
   border: 1px solid lightgray;
 }
+.sidebar.shorten {
+  height: 350px;
+}
 
 .sidebar_title {
   margin-left: 10px;

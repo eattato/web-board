@@ -161,7 +161,13 @@
             </ul>
 
             <ul class="paging">
-              <li class="post_move">
+              <li class="post_move" th:if="${page != 1}">
+                <a
+                  th:href="|http://localhost:8888/category/${id}?page=1|"
+                  >&lt;&lt;</a
+                >
+              </li>
+              <li class="post_move" th:if="${page != 1}">
                 <a
                   th:href="|http://localhost:8888/category/${id}?page=${page - 1}|"
                   >&lt;</a
@@ -177,16 +183,22 @@
                   th:text="${num}"
                 ></a>
               </li>
-              <li class="post_move">
+              <li class="post_move" th:if="${page &lt; pageCount}">
                 <a
                   th:href="|http://localhost:8888/category/${id}?page=${page + 1}|"
                   >&gt;</a
                 >
               </li>
+              <li class="post_move" th:if="${page &lt; pageCount}">
+                <a
+                  th:href="|http://localhost:8888/category/${id}?page=${pageCount}|"
+                  >&gt;&gt;</a
+                >
+              </li>
             </ul>
           </div>
 
-          <div class="sidebar">
+          <div class="sidebar" th:classappend="${sidebarMode != null && !sidebarMode.equals('default')} ? shorten : ''">
             <div class="sidebar_title">카테고리 검색</div>
             <form class="sidebar_search">
               <div class="search_box">
@@ -235,8 +247,8 @@
                 <label><input name="date" type="checkbox" />날짜</label>
               </div>
 
-              <div class="sidebar_title"></div>
-              <div class="select_box">
+              <div class="sidebar_title" th:if="${sidebarMode == null || sidebarMode.equals('default')}"></div>
+              <div class="select_box" th:if="${sidebarMode == null || sidebarMode.equals('default')}">
                 <label
                   ><input
                     name="sort"
@@ -256,8 +268,8 @@
                 >
               </div>
 
-              <div class="sidebar_title"></div>
-              <div class="select_box">
+              <div class="sidebar_title" th:if="${sidebarMode == null || sidebarMode.equals('default')}"></div>
+              <div class="select_box" th:if="${sidebarMode == null || sidebarMode.equals('default')}">
                 <label
                   ><input
                     name="direction"

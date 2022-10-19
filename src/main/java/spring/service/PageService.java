@@ -133,6 +133,42 @@ public class PageService {
         }
     }
 
+    public String editor(HttpServletRequest request, Model model, String id) {
+        HttpSession session = request.getSession();
+        String sessionData = accountService.getSession(session);
+        if (sessionData != null) { // 로그인 세션이 존재하면
+            int editing = -1;
+            try {
+                int intid = Integer.parseInt(id);
+                boolean result = getPost(request, intid, model);
+                if (result == true) {
+                    editing = intid;
+                }
+            } catch (Exception e) {}
+
+            // 이메일로 계정 조회해서 정보를 모델로 전송
+            boolean profile = accountService.sendProfileBySession(request, model);
+            if (profile == true) {
+                PageVO vo = new PageVO();
+                vo.setStartIndex(0);
+                vo.setEndIndex(-1);
+                model.addAttribute("categoryList", getCategoryList(vo));
+                model.addAttribute("tags", getAllTags());
+
+                if (editing != -1) {
+                    PostDTO postData = pageDao.getPostData(editing);
+                    postData.setTagdataList(pageDao.getTagData(postData.getTaglist()));
+                    model.addAttribute("pastData", postData);
+                }
+                return "editor";
+            } else {
+                return "redirect:";
+            }
+        } else {
+            return "redirect:/login";
+        }
+    }
+
     public boolean addView(int id) { // 조회수 추가
         PostDTO postData = pageDao.getPostData(id);
         if (postData != null) {
