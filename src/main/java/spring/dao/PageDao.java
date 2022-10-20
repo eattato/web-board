@@ -12,9 +12,11 @@ import spring.dto.TagDTO;
 import spring.vo.CommentVO;
 import spring.vo.PageVO;
 import spring.vo.PostVO;
+import spring.vo.RecommendVO;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -222,6 +224,27 @@ public class PageDao {
 
     public int addToPost(int id, String target, int add) {
         String queryString = String.format("UPDATE posts SET %s = %s + %s WHERE id = %s", target, target, add, id);
+        return jt.update(queryString);
+    }
+
+    public int pressRecommend(String email, RecommendVO vo) {
+        PostDTO postData = getPostData(vo.getId());
+        String queryString = null;
+        if (vo.isLove() == true) {
+            List<String> lovers = Arrays.asList(postData.getLovers().split(" "));
+            if (lovers.contains(email)) {
+                queryString = String.format("UPDATE posts SET loved = loved - 1 WHERE id = %s", vo.getId());
+            } else {
+                queryString = String.format("UPDATE posts SET loved = loved + 1 WHERE id = %s", vo.getId());
+            }
+        } else {
+            List<String> haters = Arrays.asList(postData.getHaters().split(" "));
+            if (haters.contains(email)) {
+                queryString = String.format("UPDATE posts SET hated = hated - 1 WHERE id = %s", vo.getId());
+            } else {
+                queryString = String.format("UPDATE posts SET hated = hated + 1 WHERE id = %s", vo.getId());
+            }
+        }
         return jt.update(queryString);
     }
 

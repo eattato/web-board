@@ -143,6 +143,11 @@ public class ApiController {
         }
     }
 
+    @PostMapping("/recommend")
+    public String recommend(HttpServletRequest request, @RequestBody RecommendVO vo) {
+        return pageService.pressRecommend(vo);
+    }
+
     @PostMapping("/comment")
     public String uploadComment(HttpServletRequest request, @RequestBody CommentVO vo) {
         if (vo.isRemove() == false) {

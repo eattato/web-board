@@ -81,6 +81,22 @@ $(() => {
     PostMenuDisplay();
   });
 
+  // 추천 기능
+  let loveButton = $(".recommend_love");
+  let hateButton = $(".recommend_hate");
+  loveButton.click(() => {
+    fetch("http://localhost:8888/recommend", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({love: true})
+    });
+  });
+  hateButton.click(() => {
+
+  });
+
   // 댓글 작성
   let sendable = true;
   let replyTo = -1;

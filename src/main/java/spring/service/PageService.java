@@ -12,10 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import spring.dao.PageDao;
 import spring.dto.*;
-import spring.vo.CommentVO;
-import spring.vo.PageVO;
-import spring.vo.PostVO;
-import spring.vo.ProfileVO;
+import spring.vo.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -213,20 +210,19 @@ public class PageService {
         }
     }
 
-    public boolean pressRecommend(boolean love, int id, String email) { // 좋아요 누르기
-        PostDTO postData = pageDao.getPostData(id);
-        if (postData != null) {
-            List<String> target = null;
-            if (love == true) {
-                target = postData.getLoverList();
-            } else {
-                target = postData.getHaterList();
-            }
+    public String pressRecommend(HttpServletRequest request, RecommendVO vo) { // 좋아요 누르기
+        HttpSession session = request.getSession();
+        String sessionData = accountService.getSession(session);
 
-            pageDao.addToPost(id, "viewers", 1);
-            return true;
+        if (sessionData != null) {
+            int result = pageDao.pressRecommend(sessionData, vo);
+            if (result == 1) {
+                return "ok";
+            } else {
+                return "failed";
+            }
         } else {
-            return false;
+            return "no session";
         }
     }
 
