@@ -126,10 +126,33 @@ $(() => {
     if (inputValue == null) {
       inputValue = "";
     }
+    let inputSplit = Hangul.disassemble(inputValue);
+
     tagRecommends.each((ind, obj) => {
       let tag = $(obj);
       let tagName = tag.text();
-      if (tagName.includes(inputValue)) {
+      let searched = true;
+
+      // fuzzy searching
+      let tagSplit = Hangul.disassemble(tagName);
+      for (let ind in inputSplit) {
+        let foundChar = false;
+        for (let tagInd in tagSplit) {
+          if (inputSplit[ind] === tagSplit[tagInd]) {
+            foundChar = true;
+            tagSplit.splice(tagInd, 1);
+            //console.log(tagName + ":" + inputSplit[ind] + "(" + ind + ")" + " == " + cutted + "(" + tagInd + ")" + + ", used " + tagSplit[tagInd] + ", now " + tagSplit.join(", ") + " current");
+            break;
+          }
+        }
+
+        if (foundChar == false) {
+          searched = false;
+          break;
+        }
+      }
+
+      if (searched == true) {
         tag.css({ display: "block" });
       } else {
         tag.css({ display: "none" });
