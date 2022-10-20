@@ -5,6 +5,12 @@
     <title>Fragments</title>
   </head>
   <body>
+    <div class="banner" th:fragment="banner">
+      <a th:href="@{/}">
+        <img th:src="@{/images/official/banner.png}">
+      </a>
+    </div>
+
     <div class="menu" th:fragment="header">
       <ul>
         <li><a class="applyCookie" th:href="@{/}">메인</a></li>
