@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <title th:text="|BOARDARC - 게시물: ${post.getPostname()}|"></title>
-    <link rel="icon" href="http://localhost:8888/images/official/icon.png" />
+    <link rel="icon" th:href="@{/images/official/icon.png}" />
     <link rel="stylesheet" th:href="@{/components/css/style.css}" />
     <link rel="stylesheet" th:href="@{/posts/css/style.css}" />
     <script
@@ -86,7 +86,7 @@
                     type="button"
                     class="post_ellipsis_edit"
                   >
-                    <a th:href="|http://localhost:8888/editor/${post.getId()}|">수정</a>
+                    <a th:href="@{/editor/{id}(id = ${post.getId()})}">수정</a>
                   </button>
                   <button
                     th:if="${profile != null && (#strings.equals(post.getAuthor(), email) || profile.isIsadmin() == true)}"
@@ -104,10 +104,10 @@
             <div class="author_img_frame">
               <a
                 href="#"
-                th:href="|http://localhost:8888/info/${post.getAuthor()}|"
+                th:href="@{/info/{author}(author = ${post.getAuthor()})}"
               >
                 <img
-                  th:src="|http://localhost:8888/images/${author.getFaceimg()}|"
+                  th:src="@{/images/{img}(img = ${author.getFaceimg()})}"
                   src=""
                   alt=""
                 />
@@ -138,7 +138,7 @@
                 </div>
                 <div class="comments_img_frame" th:if="${profile != null}">
                   <img
-                    th:src="|http://localhost:8888/images/${profile.getFaceimg()}|"
+                    th:src="@{/images/{img}(img = ${profile.getFaceimg()})}"
                     src=""
                     alt=""
                   />
@@ -176,7 +176,7 @@
                     </div>
                     <div class="comments_img_frame">
                       <img
-                        th:src="|http://localhost:8888/images/${comment.authorInfo.getFaceimg()}|"
+                        th:src="@{/images/{img}(img = ${comment.authorInfo.getFaceimg()})}"
                         src=""
                         alt=""
                       />

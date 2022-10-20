@@ -5,7 +5,7 @@
     <title th:text="|BOARDARC - 카테고리: ${categoryData.getCategory()}|">
       카테고리
     </title>
-    <link rel="icon" href="http://localhost:8888/images/official/icon.png" />
+    <link rel="icon" th:href="@{/images/official/icon.png}" />
     <link rel="stylesheet" th:href="@{/components/css/style.css}" />
     <link rel="stylesheet" th:href="@{/category/css/style.css}" />
     <script
@@ -41,7 +41,7 @@
           <div class="main_posts">
             <ul class="post_list">
               <li class="post_simple" th:if="${#strings.equals(sidebar.getViewmode(), 'simple')}" th:each="post : ${posts}">
-                <a th:href="|http://localhost:8888/posts/${post.getId()}|">
+                <a th:href="@{/posts/{id}(id = ${post.getId()})}">
                   <div class="post_left">
                     <div class="post_name" th:text="${post.getPostname()}">
                       글 제목
@@ -93,7 +93,7 @@
               </li>
 
               <li class="post_exact" th:if="${#strings.equals(sidebar.getViewmode(), 'exact')}" th:each="post : ${posts}">
-                <a th:href="|http://localhost:8888/posts/${post.getId()}|">
+                <a th:href="@{/posts/{id}(id = ${post.getId()})}">
                   <div class="post_top">
                     <div class="post_top_left">
                       <div class="post_name" th:text="${post.getPostname()}">
@@ -146,12 +146,12 @@
                         <img
                           th:if="${post.authorInfo.getFaceimg() == null}"
                           alt=""
-                          th:src="http://localhost:8888/images/profiles/default.png"
+                          th:src="@{/images/profiles/default.png}"
                         />
                         <img
                           th:if="${post.authorInfo.getFaceimg() != null}"
                           alt=""
-                          th:src="|http://localhost:8888/images/${post.authorInfo.getFaceimg()}|"
+                          th:src="@{/images/{img}(img = ${post.authorInfo.getFaceimg()})}"
                         />
                       </div>
                     </div>

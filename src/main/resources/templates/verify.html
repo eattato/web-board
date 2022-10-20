@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <title>BOARDARC - 이메일 인증</title>
-    <link rel="icon" href="http://localhost:8888/images/official/icon.png" />
+    <link rel="icon" th:href="@{/images/official/icon.png}" />
     <link rel="stylesheet" th:href="@{/components/css/style.css}" />
     <link rel="stylesheet" th:href="@{/components/css/form.css}" />
     <link rel="stylesheet" th:href="@{/verify/css/style.css}" />
@@ -17,9 +17,9 @@
   <body>
     <div class="wrap">
       <div class="logo">
-        <a href="http://localhost:8888">
+        <a th:href="@{/}">
           <img
-            src="http://localhost:8888/images/official/boardarc.png"
+            th:src="@{/images/official/boardarc.png}"
             alt=""
           />
         </a>

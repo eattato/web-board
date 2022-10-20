@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <title>BOARDARC - 프로필 설정</title>
-    <link rel="icon" href="http://localhost:8888/images/official/icon.png" />
+    <link rel="icon" th:href="@{/images/official/icon.png}" />
     <link rel="stylesheet" th:href="@{/components/css/style.css}" />
     <link rel="stylesheet" th:href="@{/profile/css/style.css}" />
     <link rel="stylesheet" th:href="@{/components/css/form.css}" />
@@ -30,7 +30,7 @@
             <div class="profile_title">프로필 이미지</div>
             <div class="profile_img_frame">
               <img
-                th:src="|http://localhost:8888/images/${profile.getFaceimg()}|"
+                th:src="@{/images/{img}(img = ${profile.getFaceimg()})}"
                 alt=""
               />
               <div class="profile_img_desc">클릭해서 이미지를 변경하세요.</div>
@@ -71,7 +71,7 @@
                 />
                 <div class="form_error"></div>
                 <div class="form_help">
-                  <a href="http://localhost:8888/reset"
+                  <a th:href="@{/reset}"
                     >비밀번호를 잊으셨나요?</a
                   >
                 </div>

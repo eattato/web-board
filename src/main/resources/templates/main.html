@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <title>BOARDARC - 카테고리</title>
-    <link rel="icon" href="http://localhost:8888/images/official/icon.png" />
+    <link rel="icon" th:href="@{/images/official/icon.png}" />
     <link rel="stylesheet" th:href="@{/components/css/style.css}" />
     <link rel="stylesheet" th:href="@{/categoryList/css/style.css}" />
     <script
@@ -38,7 +38,7 @@
             <ul class="post_list">
               <li class="post_simple" th:if="${#strings.equals(sidebar.getViewmode(), 'simple')}" th:each="category : ${categoryList}">
                 <a
-                  th:href="|http://localhost:8888/category/${category.getId()}|"
+                  th:href="@{/category/{id}(id = ${category.getId()})}"
                 >
                   <div class="post_name" th:text="${category.getCategory()}">
                     카테고리 제목
@@ -65,7 +65,7 @@
 
               <li class="post_exact" th:if="${#strings.equals(sidebar.getViewmode(), 'exact')}" th:each="category: ${categoryList}">
                 <a
-                  th:href="|http://localhost:8888/category/${category.getId()}|"
+                  th:href="@{/category/{id}(id = ${category.getId()})}"
                 >
                   <div class="post_left">
                     <div class="post_name" th:text="${category.getCategory()}">
@@ -75,7 +75,7 @@
                       <img
                         src=""
                         alt=""
-                        th:src="|http://localhost:8888/images/${category.getImg()}|"
+                        th:src="@{/images/{img}(img = ${category.getImg()})}"
                       />
                       <p th:text="${category.getAbout()}">카테고리 설명</p>
                     </div>
@@ -103,7 +103,7 @@
 
             <ul class="paging">
               <li class="post_move">
-                <a th:href="|http://localhost:8888/?page=${page - 1}|">&lt;</a>
+                <a th:href="@{/(page=${page - 1})}">&lt;</a>
               </li>
               <li
                 class="post_button"
@@ -111,12 +111,12 @@
                 th:classappend="${page} == num ? current : ''"
               >
                 <a
-                  th:href="|http://localhost:8888/?page=${num}|"
+                  th:href="@{/(page=${num})}"
                   th:text="${num}"
                 ></a>
               </li>
               <li class="post_move">
-                <a th:href="|http://localhost:8888/?page=${page + 1}|">&gt;</a>
+                <a th:href="@{/(page=${page + 1})}">&gt;</a>
               </li>
             </ul>
           </div>

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <title>BOARDARC - 로그인</title>
-    <link rel="icon" href="http://localhost:8888/images/official/icon.png" />
+    <link rel="icon" thhref="@{/images/official/icon.png}" />
     <link rel="stylesheet" th:href="@{/components/css/style.css}" />
     <link rel="stylesheet" th:href="@{/components/css/form.css}" />
     <script
@@ -17,9 +17,9 @@
   <body>
     <div class="wrap">
       <div class="logo">
-        <a href="http://localhost:8888">
+        <a th:href="@{/}">
           <img
-            src="http://localhost:8888/images/official/boardarc.png"
+            th:src="@{/images/official/boardarc.png}"
             alt=""
           />
         </a>
@@ -47,13 +47,13 @@
           />
           <div class="form_error"></div>
           <div class="form_help">
-            <a href="http://localhost:8888/reset">비밀번호를 잊으셨나요?</a>
+            <a th:href="@{/reset}">비밀번호를 잊으셨나요?</a>
           </div>
         </div>
 
         <div class="commit">
           <button class="form_button" type="button">다음</button>
-          <a href="http://localhost:8888/signup"
+          <a th:href="@{/signup}"
             >아직 회원가입을 하지 않으셨나요?</a
           >
         </div>

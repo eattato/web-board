@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <title>BOARDARC - 비밀번호 변경</title>
-    <link rel="icon" href="http://localhost:8888/images/official/icon.png" />
+    <link rel="icon" th:href="@{/images/official/icon.png}" />
     <link rel="stylesheet" href="components/css/style.css" />
     <link rel="stylesheet" href="components/css/form.css" />
     <link rel="stylesheet" href="pwreset/css/style.css" />
@@ -20,9 +20,9 @@
   <body>
     <div class="wrap">
       <div class="logo">
-        <a href="http://localhost:8888">
+        <a th:href="@{/}">
           <img
-            src="http://localhost:8888/images/official/boardarc.png"
+            th:src="@{/images/official/boardarc.png}"
             alt=""
           />
         </a>
@@ -53,7 +53,7 @@
         <div class="commit">
           <button class="form_button" type="button">다음</button>
           <button class="form_cancel" type="button">취소</button>
-          <a href="http://localhost:8888/login">로그인 페이지로 이동</a>
+          <a th:href="@{/login}">로그인 페이지로 이동</a>
         </div>
       </form>
     </div>
