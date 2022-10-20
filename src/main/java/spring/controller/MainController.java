@@ -36,6 +36,9 @@ public class MainController {
     @Autowired
     MailService mailService;
 
+    @Autowired
+    FileService fileService;
+
     @GetMapping("/")
     public String main(HttpServletRequest request, Model model, PageVO vo) {
         accountService.sendProfileBySession(request, model);
@@ -100,7 +103,6 @@ public class MainController {
 
     @GetMapping("/category/{id}")
     public String category(HttpServletRequest request, Model model, PageVO vo, @PathVariable String id) {
-        log.info(vo.getSearch());
         accountService.sendProfileBySession(request, model);
         SidebarMenu sidebar = accountService.loadSidebarMenu(request, model, vo);
         model.addAttribute("sidebarMode", "category");
@@ -123,6 +125,7 @@ public class MainController {
                 return "redirect:/";
             }
         } catch (Exception e) {
+            log.info(e.toString());
             log.info("redirect - couldn't get id, got " + id);
             return "redirect:/";
         }
@@ -203,6 +206,19 @@ public class MainController {
             return "pwreset";
         } else {
             return "reset";
+        }
+    }
+
+    @GetMapping("/imgupload")
+    public String uploadImage(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        String sessionData = accountService.getSession(session);
+        if (sessionData != null) {
+            log.info("img upload request!");
+            //fileService.uploadImage(data.getImage());
+            return "redirect:/images/profiles/default.png";
+        } else {
+            return "no session";
         }
     }
 

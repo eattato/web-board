@@ -32,10 +32,10 @@ public class PostDTO {
         return loved - hated;
     }
 
-    public Integer[] getTaglist() {
+    public int[] getTaglist() {
         if (taglist != null) {
             String[] tags = taglist.split(" ");;
-            Integer[] result = new Integer[tags.length];
+            int[] result = new int[tags.length];
             for (int ind = 0; ind < tags.length; ind++) {
                 try {
                     result[ind] = Integer.parseInt(tags[ind]);
@@ -46,17 +46,17 @@ public class PostDTO {
 
             if (result.length == 0) {
                 try {
-                    result = new Integer[1];
+                    result = new int[1];
                     result[0] = Integer.parseInt(taglist);
                     return result;
                 } catch (Exception e) {
-                    return new Integer[0];
+                    return new int[0];
                 }
             } else {
                 return result;
             }
         } else {
-            return new Integer[0];
+            return new int[0];
         }
     }
 

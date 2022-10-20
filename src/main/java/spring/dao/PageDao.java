@@ -292,7 +292,7 @@ public class PageDao {
     }
 
     // Tags
-    public List<TagDTO> getTagData(Integer[] tagIds) {
+    public List<TagDTO> getTagData(int[] tagIds) {
         //log.info(tagIds.toString());
         List<TagDTO> result = new ArrayList<>();
         for (int id : tagIds) {

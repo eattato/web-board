@@ -75,9 +75,9 @@ $(() => {
           });
         }
       });
-      console.log("done");
+      //console.log("done");
     } else {
-      console.log("id wrong");
+      //console.log("id wrong");
     }
   }
 
@@ -121,7 +121,7 @@ $(() => {
   })
 
   // 태그 입력 추천
-  tagInput.change(() => {
+  tagInput.on("input", () => {
     let inputValue = tagInput.val();
     if (inputValue == null) {
       inputValue = "";
@@ -154,16 +154,20 @@ $(() => {
           let id = null;
           if (getPathParameter(1) != null) {
             id = Number(getPathParameter(1));
+            data.id = id;
           }
-          data.id = id;
 
-          let errors = [
-            "no session",
-            "post not valid",
-            "title not valid",
-            "category does not exist",
-            "data save failed",
-          ];
+          let errors = {
+            "no session": "로그인이 필요합니다!",
+            "post not valid": "내용이 유효하지 않습니다!",
+            "title not valid": "제목이 유효하지 않습니다!",
+            "category does not exist": "존재하지 않는 카테고리입니다!",
+            "data save failed": "글을 게시하는 데 실패했습니다.",
+            "tag not found": "존재하지 않는 태그를 사용했습니다!",
+            "post not found": "수정할 글을 찾지 못했습니다!",
+            "no access": "해당 글의 수정 권한이 없습니다!"
+          };
+
           fetch("http://localhost:8888/post", {
             method: "POST",
             headers: {
@@ -174,13 +178,16 @@ $(() => {
             .then((response) => response.text())
             .then((result) => {
               canPost = true;
-              if (errors.indexOf(result) == -1) {
+              if (result in errors) {
+                alert(errors[result]);
+              } else {
                 let link = "http://localhost:8888/posts/" + result;
                 window.location.href = link;
               }
             })
             .catch((result) => {
               canPost = true;
+              console.log(result);
             });
         } else {
           alert("내용을 1자 이상 적어주세요.");

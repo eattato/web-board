@@ -55,7 +55,6 @@ public class PageService {
         for (PostDTO post : result) {
             post.setTagdataList(pageDao.getTagData(post.getTaglist()));
 
-
             if (post.getContent().contains("{image}")) {
 //                map.put("mainImage", );
             } else {
@@ -111,13 +110,17 @@ public class PageService {
                         if (tagNormal == true) {
                             data.setAuthor(sessionData);
                             if (data.getId() == -1) {
+                                //log.info("new post request!");
                                 int result = pageDao.post(data);
                                 if (result == 1) {
+                                    //log.info("successfully posted! id: " + pageDao.getIdCurrent("posts"));
                                     return Integer.toString(pageDao.getIdCurrent("posts"));
                                 } else {
+                                    //log.info("failed posting!!!");
                                     return "data save failed";
                                 }
                             } else {
+                                //log.info("post edit request!");
                                 PostDTO postData = pageDao.getPostData(data.getId());
                                 if (postData != null) {
                                     if (postData.getAuthor().equals(sessionData)) {
