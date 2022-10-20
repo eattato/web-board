@@ -149,6 +149,8 @@ public class MainController {
     @GetMapping("/new")
     public String newPosts(HttpServletRequest request, Model model, PageVO vo) {
         accountService.sendProfileBySession(request, model);
+        SidebarMenu sidebar = accountService.loadSidebarMenu(request, model, vo);
+        model.addAttribute("sidebarMode", "category");
         int postPerPage = markPageListToVO(vo);
 
         CategoryDTO categoryData = new CategoryDTO();
