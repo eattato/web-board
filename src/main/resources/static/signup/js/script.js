@@ -197,6 +197,10 @@ $(() => {
             window.location.replace("http://localhost:8888");
           } else if (result == "password is invalid") {
             inputField(password, "사용할 수 없는 비밀번호입니다!");
+          } else if (result == "email is already taken") {
+            inputField(email, "이미 사용되고 있는 이메일입니다!");
+          } else if (result == "email is invalid") {
+            inputField(password, "이메일 형식이 올바르지 않습니다!");
           }
         })
         .finally(() => {

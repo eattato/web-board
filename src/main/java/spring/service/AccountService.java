@@ -18,6 +18,7 @@ import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 @Service
 @Slf4j
@@ -67,29 +68,35 @@ public class AccountService {
         }
 
         if (result == null) {
-            // 이메일 안 겹치면
-            if (accountDao.emailAvailable(accountData.getEmail()) == true) {
-                // 비밀번호 검사
-                result = checkPassword(accountData.getPassword());
+            // 유효한 이메일인지 검사
+            String filterPattern = "^(?=.{1,320}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
+            if (Pattern.compile(filterPattern).matcher(accountData.getEmail()).matches()) {
+                // 이메일 안 겹치면
+                if (accountDao.emailAvailable(accountData.getEmail()) == true) {
+                    // 비밀번호 검사
+                    result = checkPassword(accountData.getPassword());
 
-                if (result == null) {
-                    int nameLength = accountData.getNickname().length();
-                    if (nameLength > 0 && nameLength < 50) {
-                        result = "ok";
-                        accountData.setPassword(shaEncrypt(accountData.getPassword()));
-                        if (accountDao.createAccount(accountData) == 0) {
-                            result = "failed";
+                    if (result == null) {
+                        int nameLength = accountData.getNickname().length();
+                        if (nameLength > 0 && nameLength < 50) {
+                            result = "ok";
+                            accountData.setPassword(shaEncrypt(accountData.getPassword()));
+                            if (accountDao.createAccount(accountData) == 0) {
+                                result = "failed";
+                            } else {
+                                HttpSession session = request.getSession();
+                                session.setAttribute("email", accountData.getEmail()); // 세션에 계정 정보 저장
+                                log.info(auditDone, String.format("%s created new account %s", request.getRemoteAddr(), accountData.getEmail()));
+                            }
                         } else {
-                            HttpSession session = request.getSession();
-                            session.setAttribute("email", accountData.getEmail()); // 세션에 계정 정보 저장
-                            log.info(auditDone, String.format("%s created new account %s", request.getRemoteAddr(), accountData.getEmail()));
+                            result = "nickname is invalid";
                         }
-                    } else {
-                        result = "nickname is invalid";
                     }
+                } else {
+                    result = "email is already taken";
                 }
             } else {
-                result = "email invalid";
+                result = "email is invalid";
             }
         }
         log.info(auditTry, String.format("%s account create try: %s", request.getRemoteAddr(), result));

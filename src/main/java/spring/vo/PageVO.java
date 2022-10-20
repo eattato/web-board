@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Setter
+@Setter//(makeFinal = true)
 @Slf4j
 public class PageVO {
     private int categoryIndex;

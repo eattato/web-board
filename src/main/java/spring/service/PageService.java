@@ -80,6 +80,15 @@ public class PageService {
             model.addAttribute("author", accountService.getProfile(postData.getAuthor()));
             model.addAttribute("comments", commentData);
             postData.setTagdataList(pageDao.getTagData(postData.getTaglist()));
+            if (sessionData != null) {
+                List<String> lovers = postData.getLoverList();
+                List<String> haters = postData.getHaterList();
+                model.addAttribute("loved", lovers.contains(sessionData));
+                model.addAttribute("hated", haters.contains(sessionData));
+            } else {
+                model.addAttribute("loved", false);
+                model.addAttribute("hated", false);
+            }
             return true;
         } else {
             return false;
@@ -197,6 +206,23 @@ public class PageService {
     public boolean addView(int id) { // 조회수 추가
         PostDTO postData = pageDao.getPostData(id);
         if (postData != null) {
+            pageDao.addToPost(id, "viewers", 1);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean pressRecommend(boolean love, int id, String email) { // 좋아요 누르기
+        PostDTO postData = pageDao.getPostData(id);
+        if (postData != null) {
+            List<String> target = null;
+            if (love == true) {
+                target = postData.getLoverList();
+            } else {
+                target = postData.getHaterList();
+            }
+
             pageDao.addToPost(id, "viewers", 1);
             return true;
         } else {

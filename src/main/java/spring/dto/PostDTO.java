@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -23,11 +24,14 @@ public class PostDTO {
     private int hated;
     private int viewers;
     private String taglist;
+    private String lovers;
+    private String haters;
 
     private AccountDataDTO authorInfo;
     private List<TagDTO> tagdataList;
     private int interest;
 
+    // getter
     public int getRecommend() {
         return loved - hated;
     }
@@ -60,12 +64,36 @@ public class PostDTO {
         }
     }
 
+    public List<String> getLoverList() {
+        return Arrays.asList(lovers.split(" "));
+    }
+
+    public List<String> getHaterList() {
+        return Arrays.asList(haters.split(" "));
+    }
+
+    // setter
     public void setPostdate(final String value) {
         Date current = new Date(Long.parseLong(value));
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         postdate = dateFormat.format(current).toString();
     }
 
+    public void setLovers(String value) {
+        if (value != null) {
+            lovers = value;
+        } else {
+            lovers = "";
+        }
+    }
+
+    public void setHaters(String value) {
+        if (value != null) {
+            haters = value;
+        } else {
+            haters = "";
+        }
+    }
 //    public void setTaglist(String target) {
 //        if (target != null) {
 //            String[] split = target.split(" ");
