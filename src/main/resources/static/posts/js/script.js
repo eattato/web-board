@@ -30,6 +30,38 @@ const clipboard = (text) => {
   $temp.remove();
 };
 
+const recommend = (canUseRecommend, isLove, button) => {
+  if (canUseRecommend == true) {
+    canUseRecommend = false;
+    fetch("http://localhost:8888/recommend", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id: getPathParameter(1), love: isLove }),
+    })
+      .then((response) => response.text())
+      .then((result) => {
+        canUseRecommend = true;
+        if (result == "failed") {
+          alert("요청 전송에 실패했습니다!");
+        } else if (result == "no session") {
+          alert("추천 기능을 사용하려면 로그인이 필요합니다!");
+        } else if (result == "ok") {
+          window.location.href = window.location.href;
+          // if (button.hasClass("activate")) {
+          //   button.removeClass("activate");
+          // } else {
+          //   button.addClass("activate");
+          // }
+        }
+      })
+      .finally(() => {
+        canUseRecommend = true;
+      });
+  }
+};
+
 $(() => {
   let main = $(".post_main");
   let content = $.parseHTML(main.text());
@@ -84,17 +116,12 @@ $(() => {
   // 추천 기능
   let loveButton = $(".recommend_love");
   let hateButton = $(".recommend_hate");
+  var canUseRecommend = true;
   loveButton.click(() => {
-    fetch("http://localhost:8888/recommend", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({love: true})
-    });
+    recommend(canUseRecommend, true, loveButton);
   });
   hateButton.click(() => {
-
+    recommend(canUseRecommend, false, hateButton);
   });
 
   // 댓글 작성

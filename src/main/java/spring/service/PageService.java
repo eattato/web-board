@@ -215,11 +215,16 @@ public class PageService {
         String sessionData = accountService.getSession(session);
 
         if (sessionData != null) {
-            int result = pageDao.pressRecommend(sessionData, vo);
-            if (result == 1) {
-                return "ok";
+            PostDTO postData = pageDao.getPostData(vo.getId());
+            if (postData != null) {
+                int result = pageDao.pressRecommend(sessionData, vo);
+                if (result == 1) {
+                    return "ok";
+                } else {
+                    return "failed";
+                }
             } else {
-                return "failed";
+                return "post not found";
             }
         } else {
             return "no session";

@@ -120,11 +120,11 @@
           <div class="post_main" th:text="${post.getContent()}">본문</div>
 
           <div class="recommend_frame">
-            <button class="recommend_love" th:classappend="${loved} ? 'activate' : '">
+            <button class="recommend_love" th:classappend="${loved} ? 'activate' : ''">
               <i class="fa-solid fa-thumbs-up"></i>
               <span th:text="|좋아요 ${post.getLoved()}|"></span>
             </button>
-            <button class="recommend_hate" th:classappend="${hated} ? 'activate' : '">
+            <button class="recommend_hate" th:classappend="${hated} ? 'activate' : ''">
               <i class="fa-solid fa-thumbs-down"></i>
               <span th:text="|싫어요 ${post.getHated()}|"></span>
             </button>

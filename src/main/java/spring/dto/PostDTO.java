@@ -65,11 +65,19 @@ public class PostDTO {
     }
 
     public List<String> getLoverList() {
-        return Arrays.asList(lovers.split(" "));
+        String[] list = lovers.split(" ");
+        if (list.length == 0 && lovers != null) {
+            list = new String[] {lovers};
+        }
+        return new ArrayList<>(Arrays.asList(list));
     }
 
     public List<String> getHaterList() {
-        return Arrays.asList(haters.split(" "));
+        String[] list = haters.split(" ");
+        if (list.length == 0 && haters != null) {
+            list = new String[] {haters};
+        }
+        return new ArrayList<>(Arrays.asList(list));
     }
 
     // setter

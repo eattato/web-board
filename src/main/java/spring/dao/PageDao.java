@@ -34,7 +34,7 @@ public class PageDao {
 
     // Category
     public List<CategoryDTO> getCategoryList(PageVO data) {
-        String queryString = "SELECT categories.*, COUNT(posts.category) AS posts, IFNULL(SUM(posts.loved), 0) AS loved FROM categories " +
+        String queryString = "SELECT categories.*, COUNT(posts.category) AS posts, SUM(IFNULL(posts.loved, 0)) - SUM(IFNULL(posts.hated, 0)) AS loved FROM categories " +
                 "LEFT JOIN posts " +
                 "ON (categories.id = posts.category) ";
         if (data.getSearch() != null) {
@@ -110,7 +110,7 @@ public class PageDao {
     }
 
     public List<PostDTO> getPostList(PageVO data, int actType) {
-        String queryString = "SELECT id, category, postname, author, postdate, content, IFNULL(loved, 0) - IFNULL(hated, 0) AS loved, IFNULL(viewers, 0) AS viewers, viewers + loved AS interest, taglist FROM posts ";
+        String queryString = "SELECT id, category, postname, author, postdate, content, IFNULL(loved, 0) - IFNULL(hated, 0) AS loved, IFNULL(viewers, 0) AS viewers, IFNULL(viewers, 0) + IFNULL(loved, 0) - IFNULL(hated, 0) AS interest, taglist FROM posts ";
         if (actType == 0) {
             queryString += String.format("WHERE category = %s ", data.getCategoryIndex());
         }
@@ -229,23 +229,35 @@ public class PageDao {
 
     public int pressRecommend(String email, RecommendVO vo) {
         PostDTO postData = getPostData(vo.getId());
-        String queryString = null;
-        if (vo.isLove() == true) {
-            List<String> lovers = Arrays.asList(postData.getLovers().split(" "));
-            if (lovers.contains(email)) {
-                queryString = String.format("UPDATE posts SET loved = loved - 1 WHERE id = %s", vo.getId());
+        if (postData != null) {
+            String queryString = null;
+            if (vo.isLove() == true) {
+                List<String> lovers = postData.getLoverList();
+                if (lovers == null) {
+                    log.info("lovers is null");
+                } else {
+                    if (lovers.contains(email)) {
+                        lovers.remove(email);
+                        queryString = String.format("UPDATE posts SET loved = loved - 1, lovers = '%s' WHERE id = %s", String.join(" ", lovers), vo.getId());
+                    } else {
+                        lovers.add(email);
+                        queryString = String.format("UPDATE posts SET loved = loved + 1, lovers = '%s' WHERE id = %s", String.join(" ", lovers), vo.getId());
+                    }
+                }
             } else {
-                queryString = String.format("UPDATE posts SET loved = loved + 1 WHERE id = %s", vo.getId());
+                List<String> haters = postData.getHaterList();
+                if (haters.contains(email)) {
+                    haters.remove(email);
+                    queryString = String.format("UPDATE posts SET hated = hated - 1, haters = '%s' WHERE id = %s", String.join(" ", haters), vo.getId());
+                } else {
+                    haters.add(email);
+                    queryString = String.format("UPDATE posts SET hated = hated + 1, haters = '%s' WHERE id = %s", String.join(" ", haters), vo.getId());
+                }
             }
+            return jt.update(queryString);
         } else {
-            List<String> haters = Arrays.asList(postData.getHaters().split(" "));
-            if (haters.contains(email)) {
-                queryString = String.format("UPDATE posts SET hated = hated - 1 WHERE id = %s", vo.getId());
-            } else {
-                queryString = String.format("UPDATE posts SET hated = hated + 1 WHERE id = %s", vo.getId());
-            }
+            return 0;
         }
-        return jt.update(queryString);
     }
 
     public int removePost(int id) {

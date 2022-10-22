@@ -145,7 +145,7 @@ public class ApiController {
 
     @PostMapping("/recommend")
     public String recommend(HttpServletRequest request, @RequestBody RecommendVO vo) {
-        return pageService.pressRecommend(vo);
+        return pageService.pressRecommend(request, vo);
     }
 
     @PostMapping("/comment")
