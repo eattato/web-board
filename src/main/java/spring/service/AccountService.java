@@ -156,13 +156,18 @@ public class AccountService {
         if (sessionData != null) {
             if (data.getPassword() != null) {
                 if (shaEncrypt(data.getPassword()).equals(accountDao.getPassword(sessionData))) {
-                    if (data.getNickname() != null) {
+                    if (data.getNickname() != null && data.getAbout() != null) {
                         int nameLength = data.getNickname().length();
-                        if (nameLength > 0 && nameLength < 50) {
-                            if (accountDao.setNickname(sessionData, data.getNickname()) == 0) {
-                                result = "failed";
+                        int aboutLength = data.getAbout().length();
+                        if (nameLength > 0 && nameLength <= 50) {
+                            if (aboutLength <= 60) {
+                                if (accountDao.updateProfile(sessionData, data) == 0) {
+                                    result = "failed";
+                                } else {
+                                    log.info(auditDone, String.format("%s changed %s nickname to %s", request.getRemoteAddr(), sessionData, data.getNickname()));
+                                }
                             } else {
-                                log.info(auditDone, String.format("%s changed %s nickname to %s", request.getRemoteAddr(), sessionData, data.getNickname()));
+                                result = "about is invalid";
                             }
                         } else {
                             result = "nickname is invalid";
@@ -242,6 +247,7 @@ public class AccountService {
             result.setEmail(userData.getEmail());
             result.setNickname(userData.getNickname());
             result.setFaceimg(userData.getFaceimg());
+            result.setAbout(userData.getAbout());
             result.setVerify(userData.isVerify());
             result.setIsadmin(userData.isIsadmin());
             return result;

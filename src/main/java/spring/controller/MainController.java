@@ -162,6 +162,36 @@ public class MainController {
         return "category";
     }
 
+    @GetMapping("/tag/{id}")
+    public String tags(HttpServletRequest request, Model model, PageVO vo, @PathVariable String id) {
+        accountService.sendProfileBySession(request, model);
+        SidebarMenu sidebar = accountService.loadSidebarMenu(request, model, vo);
+        model.addAttribute("sidebarMode", "category");
+
+        if (vo.getPage() < 1) {
+            vo.setPage(1);
+        }
+        try {
+            int intid = Integer.parseInt(id);
+            vo.setCategory(intid);
+            int postPerPage = markPageListToVO(vo);
+
+            CategoryDTO categoryData = pageService.getCategoryData(intid);
+            if (categoryData != null) {
+                List<PostDTO> posts = pageService.getPostList(vo, 3);
+                markPageListToView(model, posts, categoryData, vo, postPerPage);
+                return "category";
+            } else {
+                log.info("redirect - no category data");
+                return "redirect:/";
+            }
+        } catch (Exception e) {
+            log.info(e.toString());
+            log.info("redirect - couldn't get id, got " + id);
+            return "redirect:/";
+        }
+    }
+
     @GetMapping("/posts/{id}")
     public String posts(HttpServletRequest request, Model model, @PathVariable String id) {
         HttpSession session = request.getSession();

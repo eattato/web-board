@@ -1,10 +1,12 @@
 package spring.vo;
 
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @Setter
 public class AccountCreateVO {
     // Properties
@@ -36,14 +38,12 @@ public class AccountCreateVO {
     }
 
     // Setter
-    public void setData(String targetEmail, String targetPw, String targetName) {
-        email = targetEmail;
-        password = targetPw;
-        nickname = targetName;
+    public void setEncrypted() {
+        log.info("what, attempted to exploit with vo??");
     }
 
     public void setPassword(String target) {
-        if (password != null && encrypted == false) {
+        if (encrypted == false) { // 한 번만 열어줌
             encrypted = true;
             password = target;
         }

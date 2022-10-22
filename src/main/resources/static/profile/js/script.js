@@ -50,6 +50,7 @@ $(() => {
   var faceimg = $(".menu_profile_imgframe");
   var password = $("#password");
   var nickname = $("#nickname");
+  var about = $("#about");
   var commit = $("#submit");
   var logout = $("#logout");
   var imgSelect = $("#profile_img_select");
@@ -74,8 +75,20 @@ $(() => {
     inputField(nickname, error);
     return error;
   };
-  const changedEvents = [nicknameChanged];
+  const aboutChanged = function () {
+    let input = about.find(".form_input").val();
+    let error = null;
+
+    if (input.length > 60) {
+      error = "자기 소개 길이는 최대 60자 입니다!";
+    }
+
+    inputField(about, error);
+    return error;
+  };
+  const changedEvents = [nicknameChanged, aboutChanged];
   nickname.find(".form_input").change(nicknameChanged);
+  about.find(".form_input").change(aboutChanged);
   imgSelect.change(imgChanged);
 
   logout.click(() => {
@@ -104,6 +117,7 @@ $(() => {
       let data = {
         password: password.find(".form_input").val(),
         nickname: nickname.find(".form_input").val(),
+        about: about.find(".form_input").val(),
         image: null,
       };
       if (imgSelect[0].files.length == 1) {

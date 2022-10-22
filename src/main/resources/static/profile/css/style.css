@@ -28,7 +28,7 @@
 /* form */
 .form {
   margin-top: 50px;
-  height: 500px !important;
+  height: auto !important;
   width: 300px !important;
   border: 0 !important;
 }
@@ -101,6 +101,7 @@
 }
 
 .commit {
+  position: unset !important;
   display: flex;
   justify-content: space-between;
   width: 300px;

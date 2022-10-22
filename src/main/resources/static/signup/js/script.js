@@ -178,6 +178,9 @@ $(() => {
 
     if (foundError == false) {
       //let bodyData = encodeURI("email=" + email.find(".form_input").val() + "&password=" + password.find(".form_input").val() + "&nickname=" + nickname.find(".form_input").val());
+      console.log(email.find(".form_input").val());
+      console.log(password.find(".form_input").val());
+      console.log(nickname.find(".form_input").val());
       let data = {
         email: email.find(".form_input").val(),
         password: password.find(".form_input").val(),
@@ -194,7 +197,7 @@ $(() => {
         .then((response) => response.text())
         .then((result) => {
           if (result == "ok") {
-            window.location.replace("http://localhost:8888");
+            window.location.replace("http://localhost:8888/verify");
           } else if (result == "password is invalid") {
             inputField(password, "사용할 수 없는 비밀번호입니다!");
           } else if (result == "email is already taken") {

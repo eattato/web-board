@@ -56,6 +56,17 @@
                 <div class="form_error"></div>
               </div>
 
+              <div class="form_input_cover" id="about">
+                <div class="form_label">자기 소개</div>
+                <input
+                  class="form_input"
+                  type="text"
+                  placeholder="자기소개를 입력하세요."
+                  th:value="${profile.getAbout()}"
+                />
+                <div class="form_error"></div>
+              </div>
+
               <div class="form_blank"></div>
 
               <div class="form_input_cover" id="password">
@@ -67,9 +78,7 @@
                 />
                 <div class="form_error"></div>
                 <div class="form_help">
-                  <a th:href="@{/reset}"
-                    >비밀번호를 잊으셨나요?</a
-                  >
+                  <a th:href="@{/reset}">비밀번호를 잊으셨나요?</a>
                 </div>
               </div>
 

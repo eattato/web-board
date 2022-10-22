@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import spring.dto.AccountDataDTO;
 import spring.dto.PostDTO;
 import spring.vo.AccountCreateVO;
+import spring.vo.ProfileVO;
 import spring.vo.VerifyVO;
 
 @Repository
@@ -65,7 +66,7 @@ public class AccountDao {
 
     public int createAccount(AccountCreateVO accountData) { // 계정 생성
         String queryString = String.format(
-                "INSERT INTO members VALUES ('%s', '%s', '%s', 0, null, null)",
+                "INSERT INTO members VALUES ('%s', '%s', '%s', 0, null, null, false, null)",
                 accountData.getEmail(), accountData.getPassword(), accountData.getNickname()
         );
         return jt.update(queryString);
@@ -74,6 +75,10 @@ public class AccountDao {
     public int setNickname(String email, String nickname) { // 닉네임 변경
         email = email.replace(" ", "+");
         return jt.update(String.format("UPDATE members SET nickname = '%s' WHERE email = '%s'", nickname, email));
+    }
+
+    public int updateProfile(String email, ProfileVO vo) { // 닉네임 & 프로필 소개 변경
+        return jt.update(String.format("UPDATE members SET nickname = '%s', about = '%s' WHERE email = '%s'", vo.getNickname(), vo.getAbout(), email));
     }
 
     public int setProfileImage(String email, String path) { // 프로필 이미지 변경

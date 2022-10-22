@@ -208,7 +208,7 @@ public class PageDao {
     public int post(PostVO vo) {
         String queryString = "INSERT INTO posts VALUES(";
         int idCurrent = getIdCurrent("posts");
-        queryString += String.format("%s, %s, '%s', '%s', '%s', '%s', %s, %s, %s, '%s');", idCurrent + 1, vo.getCategory(), vo.getTitle(), vo.getAuthor(), LocalDate.now(), vo.getContent(), 0, 0, 0, vo.getTags());
+        queryString += String.format("%s, %s, '%s', '%s', '%s', '%s', %s, %s, %s, '%s', '', '');", idCurrent + 1, vo.getCategory(), vo.getTitle(), vo.getAuthor(), LocalDate.now(), vo.getContent(), 0, 0, 0, vo.getTags());
         return jt.update(queryString);
     }
 

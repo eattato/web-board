@@ -14,7 +14,7 @@ public class AccountDataDTO {
     private boolean verify;
     private String vcode;
     private String faceimg;
-    private String about;
+    private String about = "BOARDARC 유저";
     private boolean isadmin;
 
     public String getNickname() {
