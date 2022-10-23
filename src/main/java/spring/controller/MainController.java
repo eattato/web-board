@@ -90,14 +90,14 @@ public class MainController {
         String sessionData = accountService.getSession(session);
         if (sessionData != null) { // 로그인 세션이 존재하면
             // 이메일로 계정 조회해서 정보를 모델로 전송
-            boolean profile = accountService.sendProfileBySession(request, model);
-            if (profile == true) {
+            AccountDataDTO profile = accountService.sendProfileBySession(request, model);
+            if (profile != null) {
                 return "profile";
             } else {
                 return "redirect:";
             }
         } else {
-            return "redirect:login";
+            return "redirect:/login";
         }
     }
 
@@ -197,7 +197,7 @@ public class MainController {
         HttpSession session = request.getSession();
         String sessionData = accountService.getSession(session);
         if (sessionData != null) {
-            boolean profile = accountService.sendProfileBySession(request, model);
+            AccountDataDTO profile = accountService.sendProfileBySession(request, model);
         }
 
         try {

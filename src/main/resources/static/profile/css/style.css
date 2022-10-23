@@ -21,6 +21,18 @@
 /* main */
 .main {
   width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.profile_top {
+  width: 100%;
+  height: auto;
+}
+
+.profile_bottom {
+  width: 100%;
   display: flex;
   justify-content: space-between;
 }
@@ -112,4 +124,15 @@
   background-color: white;
   color: red;
   border-radius: 5px;
+}
+
+/* profile top */
+.profile_warn {
+  width: 100%;
+  height: 30px;
+  text-align: center;
+  line-height: 30px;
+  color: white;
+  background-color: red;
+  font-size: 18px;
 }

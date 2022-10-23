@@ -22,75 +22,86 @@
       <div class="menu" th:replace="fragments/common :: header"></div>
       <div class="body">
         <div class="main">
-          <div class="profile_left">
-            <div class="profile_title">프로필 이미지</div>
-            <div class="profile_img_frame">
-              <img
-                th:src="@{/images/{img}(img = ${profile.getFaceimg()})}"
-                alt=""
-              />
-              <div class="profile_img_desc">클릭해서 이미지를 변경하세요.</div>
-              <input id="profile_img_select" type="file" title=" " />
-            </div>
+          <div class="profile_top">
+            <a class="profile_warn" th:href="@{/verify}">
+              이메일이 인증되지 않은 계정입니다! 이 탭을 누르면 인증 페이지로
+              이동합니다.
+            </a>
           </div>
-          <div class="profile_right">
-            <form class="form">
-              <div class="form_input_cover" id="email">
-                <div class="form_label">이메일</div>
-                <div
-                  class="form_text"
-                  id="email_text"
-                  th:text="${profile.getEmail()}"
-                ></div>
-                <div class="form_error"></div>
-              </div>
 
-              <div class="form_input_cover" id="nickname">
-                <div class="form_label">닉네임</div>
-                <input
-                  class="form_input"
-                  type="text"
-                  placeholder="닉네임을 입력하세요."
-                  th:value="${profile.getNickname()}"
+          <div class="profile_bottom">
+            <div class="profile_left">
+              <div class="profile_title">프로필 이미지</div>
+              <div class="profile_img_frame">
+                <img
+                  th:src="@{/images/{img}(img = ${profile.getFaceimg()})}"
+                  alt=""
                 />
-                <div class="form_error"></div>
-              </div>
-
-              <div class="form_input_cover" id="about">
-                <div class="form_label">자기 소개</div>
-                <input
-                  class="form_input"
-                  type="text"
-                  placeholder="자기소개를 입력하세요."
-                  th:value="${profile.getAbout()}"
-                />
-                <div class="form_error"></div>
-              </div>
-
-              <div class="form_blank"></div>
-
-              <div class="form_input_cover" id="password">
-                <div class="form_label">비밀번호 확인</div>
-                <input
-                  class="form_input"
-                  type="password"
-                  placeholder="현재 비밀번호를 입력하세요."
-                />
-                <div class="form_error"></div>
-                <div class="form_help">
-                  <a th:href="@{/reset}">비밀번호를 잊으셨나요?</a>
+                <div class="profile_img_desc">
+                  클릭해서 이미지를 변경하세요.
                 </div>
+                <input id="profile_img_select" type="file" title=" " />
               </div>
+            </div>
+            <div class="profile_right">
+              <form class="form">
+                <div class="form_input_cover" id="email">
+                  <div class="form_label">이메일</div>
+                  <div
+                    class="form_text"
+                    id="email_text"
+                    th:text="${profile.getEmail()}"
+                  ></div>
+                  <div class="form_error"></div>
+                </div>
 
-              <div class="commit">
-                <button class="form_button" id="submit" type="button">
-                  변경
-                </button>
-                <button class="form_button" id="logout" type="button">
-                  로그아웃
-                </button>
-              </div>
-            </form>
+                <div class="form_input_cover" id="nickname">
+                  <div class="form_label">닉네임</div>
+                  <input
+                    class="form_input"
+                    type="text"
+                    placeholder="닉네임을 입력하세요."
+                    th:value="${profile.getNickname()}"
+                  />
+                  <div class="form_error"></div>
+                </div>
+
+                <div class="form_input_cover" id="about">
+                  <div class="form_label">자기 소개</div>
+                  <input
+                    class="form_input"
+                    type="text"
+                    placeholder="자기소개를 입력하세요."
+                    th:value="${profile.getAbout()}"
+                  />
+                  <div class="form_error"></div>
+                </div>
+
+                <div class="form_blank"></div>
+
+                <div class="form_input_cover" id="password">
+                  <div class="form_label">비밀번호 확인</div>
+                  <input
+                    class="form_input"
+                    type="password"
+                    placeholder="현재 비밀번호를 입력하세요."
+                  />
+                  <div class="form_error"></div>
+                  <div class="form_help">
+                    <a th:href="@{/reset}">비밀번호를 잊으셨나요?</a>
+                  </div>
+                </div>
+
+                <div class="commit">
+                  <button class="form_button" id="submit" type="button">
+                    변경
+                  </button>
+                  <button class="form_button" id="logout" type="button">
+                    로그아웃
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       </div>

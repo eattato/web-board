@@ -121,7 +121,10 @@
 
           <div class="post_main" th:text="${post.getContent()}">본문</div>
 
-          <div class="recommend_frame">
+          <div
+            class="recommend_frame"
+            th:if="${profile != null and profile.isVerify()}"
+          >
             <button
               class="recommend_love"
               th:classappend="${loved} ? 'activate' : ''"
@@ -137,6 +140,20 @@
               <span th:text="|싫어요 ${post.getHated()}|"></span>
             </button>
           </div>
+          <div
+            class="recommend_frame"
+            th:unless="${profile != null and profile.isVerify()}"
+          >
+            <button class="recommend_lock">
+              <i class="fa-solid fa-lock"></i>
+              <span th:text="|좋아요 ${post.getLoved()}|"></span>
+            </button>
+            <button class="recommend_lock">
+              <i class="fa-solid fa-lock"></i>
+              <span th:text="|싫어요 ${post.getHated()}|"></span>
+            </button>
+          </div>
+
           <div class="comments_frame">
             <div class="comments_top">
               <div class="comments_profile">
@@ -150,12 +167,32 @@
                 >
                   작성자
                 </div>
-                <div class="comments_img_frame" th:if="${profile != null}">
+                <div class="comments_img_frame">
                   <img
+                    th:if="${profile != null}"
                     th:src="@{/images/{img}(img = ${profile.getFaceimg()})}"
-                    src=""
                     alt=""
                   />
+                  <div
+                    class="comments_lock"
+                    th:unless="${profile != null and profile.isVerify()}"
+                  >
+                    <div class="comments_lock_frame">
+                      <i class="fa-solid fa-lock"></i>
+                      <div
+                        th:if="${profile == null}"
+                        class="comments_lock_display"
+                      >
+                        로그인이 필요합니다.
+                      </div>
+                      <div
+                        th:if="${profile != null}"
+                        class="comments_lock_display"
+                      >
+                        이메일 인증이 필요합니다.
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="comments_input_frame">

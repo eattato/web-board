@@ -66,7 +66,7 @@ public class AccountDao {
 
     public int createAccount(AccountCreateVO accountData) { // 계정 생성
         String queryString = String.format(
-                "INSERT INTO members VALUES ('%s', '%s', '%s', 0, null, null, false, null)",
+                "INSERT INTO members VALUES ('%s', '%s', '%s', false, null, null, false, null)",
                 accountData.getEmail(), accountData.getPassword(), accountData.getNickname()
         );
         return jt.update(queryString);

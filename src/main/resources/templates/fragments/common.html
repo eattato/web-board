@@ -7,7 +7,7 @@
   <body>
     <div class="banner" th:fragment="banner">
       <a th:href="@{/}">
-        <img th:src="@{/images/official/banner.png}">
+        <img th:src="@{/images/official/banner.png}" />
       </a>
     </div>
 
@@ -24,7 +24,14 @@
         <li class="menu_login" th:if="${profile == null}">
           <a th:href="@{/login}">로그인</a>
         </li>
-        <li class="menu_profile" th:if="${profile != null}">
+        <li
+          class="menu_profile"
+          th:if="${profile != null}"
+          th:classappend="${profile.isVerify()} ? '' : 'unverified'"
+        >
+          <div class="menu_unverified" th:unless="${profile.isVerify()}">
+            인증되지 않은 계정입니다!
+          </div>
           <a th:href="@{/profile}">
             <div class="menu_profile_imgframe">
               <img
@@ -41,7 +48,11 @@
       </ul>
     </div>
 
-    <div class="sidebar" th:fragment="sidebar" th:classappend="${sidebarMode != null and sidebarMode.equals('default')} ? shorten : ''">
+    <div
+      class="sidebar"
+      th:fragment="sidebar"
+      th:classappend="${sidebarMode != null and sidebarMode.equals('default')} ? shorten : ''"
+    >
       <div class="sidebar_title">카테고리 검색</div>
       <form class="sidebar_search">
         <div class="search_box">
@@ -77,22 +88,55 @@
           >
         </div>
 
-        <div class="sidebar_title" th:if="${sidebarMode != null and !sidebarMode.equals('default')}">검색 필터</div>
-        <div class="select_box" th:if="${sidebarMode != null and !sidebarMode.equals('default')}" id="search_filter">
+        <div
+          class="sidebar_title"
+          th:if="${sidebarMode != null and !sidebarMode.equals('default')}"
+        >
+          검색 필터
+        </div>
+        <div
+          class="select_box"
+          th:if="${sidebarMode != null and !sidebarMode.equals('default')}"
+          id="search_filter"
+        >
           <label
-            ><input name="title" type="checkbox" th:checked="${sidebar.isTitle()}" />제목</label
+            ><input
+              name="title"
+              type="checkbox"
+              th:checked="${sidebar.isTitle()}"
+            />제목</label
           >
           <label
-            ><input name="author" type="checkbox" th:checked="${sidebar.isAuthor()}" />작성자</label
+            ><input
+              name="author"
+              type="checkbox"
+              th:checked="${sidebar.isAuthor()}"
+            />작성자</label
           >
           <label
-            ><input name="content" type="checkbox" th:checked="${sidebar.isContent()}" />내용</label
+            ><input
+              name="content"
+              type="checkbox"
+              th:checked="${sidebar.isContent()}"
+            />내용</label
           >
-          <label><input name="date" type="checkbox" th:checked="${sidebar.isDate()}" />날짜</label>
+          <label
+            ><input
+              name="date"
+              type="checkbox"
+              th:checked="${sidebar.isDate()}"
+            />날짜</label
+          >
         </div>
 
-        <div class="sidebar_title" th:if="${sidebarMode != null and !sidebarMode.equals('default')}"></div>
-        <div class="select_box" th:if="${sidebarMode != null and !sidebarMode.equals('default')}">
+        <div
+          class="sidebar_title"
+          th:if="${sidebarMode != null and !sidebarMode.equals('default')}"
+        ></div>
+        <div
+          class="select_box"
+          th:if="${sidebarMode != null and !sidebarMode.equals('default')}"
+        >
           <label
             ><input
               th:checked="${#strings.equals(sidebar.getSort(), 'loved')}"

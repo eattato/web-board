@@ -18,3 +18,13 @@ function httpRequest(reqType, url, data, dataType) {
   }
   return xmlHttp.responseText;
 }
+
+$(document).ready(() => {
+  let profile = $(".menu_profile");
+  profile.mouseover(() => {
+    profile.addClass("activate");
+  });
+  profile.mouseout(() => {
+    profile.removeClass("activate");
+  });
+});

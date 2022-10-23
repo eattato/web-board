@@ -1,90 +1,112 @@
 * {
-    padding: 0;
-    margin: 0;
-    color: black;
-    box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  color: black;
+  box-sizing: border-box;
 }
 a {
-    display: block;
-    text-decoration: none;
+  display: block;
+  text-decoration: none;
 }
 li {
-    list-style: none;
+  list-style: none;
 }
 body {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 
-
 .wrap {
-    display: flex;
-    width: 1000px;
-    flex-direction: column;
+  display: flex;
+  width: 1000px;
+  flex-direction: column;
 }
 
 .origin {
-    display: none;
+  display: none;
 }
 
 /* header */
 .banner {
-    width: 1000px;
-    height: 250px;
-    margin-top: 5px;
-    background-color: ghostwhite;
+  width: 1000px;
+  height: 250px;
+  margin-top: 5px;
+  background-color: ghostwhite;
 }
 
 .menu {
-    width: 1000px;
-    height: 40px;
-    background-color: lightgray;
-    margin-top: 10px;
+  width: 1000px;
+  height: 40px;
+  background-color: lightgray;
+  margin-top: 10px;
 }
 
 .menu ul {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    height: 40px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 40px;
 }
 
 .menu li {
-    width: 100px;
-    height: 40px;
-    text-align: center;
-    line-height: 40px;
+  width: 100px;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
 }
 
 .menu_profile {
-    display: inline-block;
-    width: auto !important;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: auto !important;
+}
+.menu_profile.unverified {
+  background-color: #aa6666;
 }
 
 .menu_profile a {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 0 10px;
 }
 
 .menu_profile_imgframe {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 30px;
-    height: 30px;
-    margin-right: 10px;
-    border-radius: 15px;
-    overflow: hidden;
-    background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+  border-radius: 15px;
+  overflow: hidden;
+  background-color: white;
 }
 
 .menu_profile img {
-    width: 30px;
+  width: 30px;
+}
+
+.menu_unverified {
+  position: absolute;
+  display: none;
+  width: 180px;
+  height: 20px;
+  bottom: 40px;
+  text-align: center;
+  line-height: 20px;
+  background-color: red;
+  color: white;
+  font-size: 14px;
+}
+.menu_profile.activate .menu_unverified {
+  display: flex;
 }
 
 .menu_profile_name {
-    font-size: 12px;
+  font-size: 12px;
 }

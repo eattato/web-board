@@ -174,8 +174,8 @@ public class PageService {
             } catch (Exception e) {}
 
             // 이메일로 계정 조회해서 정보를 모델로 전송
-            boolean profile = accountService.sendProfileBySession(request, model);
-            if (profile == true) {
+            AccountDataDTO profile = accountService.sendProfileBySession(request, model);
+            if (profile != null) {
                 PageVO vo = new PageVO();
                 vo.setStartIndex(0);
                 vo.setEndIndex(-1);
@@ -215,16 +215,25 @@ public class PageService {
         String sessionData = accountService.getSession(session);
 
         if (sessionData != null) {
-            PostDTO postData = pageDao.getPostData(vo.getId());
-            if (postData != null) {
-                int result = pageDao.pressRecommend(sessionData, vo);
-                if (result == 1) {
-                    return "ok";
+            AccountDataDTO userProfile = accountService.getProfile(sessionData);
+            if (userProfile != null) {
+                if (userProfile.isVerify() == true) {
+                    PostDTO postData = pageDao.getPostData(vo.getId());
+                    if (postData != null) {
+                        int result = pageDao.pressRecommend(sessionData, vo);
+                        if (result == 1) {
+                            return "ok";
+                        } else {
+                            return "failed";
+                        }
+                    } else {
+                        return "post not found";
+                    }
                 } else {
-                    return "failed";
+                    return "user not verified";
                 }
             } else {
-                return "post not found";
+                return "user not found";
             }
         } else {
             return "no session";
@@ -258,25 +267,34 @@ public class PageService {
         HttpSession session = request.getSession();
         String sessionData = accountService.getSession(session);
         if (sessionData != null) {
-            data.setAuthor(sessionData);
-            if (data.isValid() == true) {
-                if (pageDao.hasPost(data.getPost()) == true) {
-                    if (data.getReplyTarget() != -1) {
-                        if (pageDao.hasComment(data.getReplyTarget()) == false) {
-                            return "target comment not exist";
+            AccountDataDTO userProfile = accountService.getProfile(sessionData);
+            if (userProfile != null) {
+                if (userProfile.isVerify() == true) {
+                    data.setAuthor(sessionData);
+                    if (data.isValid() == true) {
+                        if (pageDao.hasPost(data.getPost()) == true) {
+                            if (data.getReplyTarget() != -1) {
+                                if (pageDao.hasComment(data.getReplyTarget()) == false) {
+                                    return "target comment not exist";
+                                }
+                            }
+                            int result = pageDao.uploadComment(data);
+                            if (result == 1) {
+                                return "ok";
+                            } else {
+                                return "failed";
+                            }
+                        } else {
+                            return "post does not exist";
                         }
-                    }
-                    int result = pageDao.uploadComment(data);
-                    if (result == 1) {
-                        return "ok";
                     } else {
-                        return "failed";
+                        return "data not valid";
                     }
                 } else {
-                    return "post does not exist";
+                    return "user not verified";
                 }
             } else {
-                return "data not valid";
+                return "user not found";
             }
         } else {
             return "no session";

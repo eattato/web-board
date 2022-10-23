@@ -221,7 +221,7 @@ public class AccountService {
         return result;
     }
 
-    public boolean sendProfileBySession(HttpServletRequest request, Model model) {
+    public AccountDataDTO sendProfileBySession(HttpServletRequest request, Model model) {
         HttpSession session = request.getSession();
         String sessionData = getSession(session);
 
@@ -231,12 +231,12 @@ public class AccountService {
                 // 이메일로 계정 조회해서 정보를 모델로 전송
                 model.addAttribute("email", sessionData);
                 model.addAttribute("profile", profile);
-                return true;
+                return profile;
             } else {
-                return false;
+                return null;
             }
         } else {
-            return false;
+            return null;
         }
     }
 
