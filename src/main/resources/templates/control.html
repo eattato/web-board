@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>BOARDARC - 페이지 관리</title>
+    <link rel="icon" th:href="@{/images/official/icon.png}" />
+    <link rel="stylesheet" th:href="@{/components/css/style.css}" />
+    <link rel="stylesheet" th:href="@{/profile/css/style.css}" />
+    <link rel="stylesheet" th:href="@{/components/css/form.css}" />
+    <script
+      src="https://kit.fontawesome.com/d5e5d975b2.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="components/js/jquery.js"></script>
+    <script src="components/js/jquery.cookie.js"></script>
+    <script src="components/js/header.js"></script>
+    <script src="profile/js/script.js"></script>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="banner" th:replace="fragments/common :: banner"></div>
+      <div class="menu" th:replace="fragments/common :: header"></div>
+      <div class="body">
+        <div class="main">
+          <ul class="control_menu">
+            <li><i class="fa-solid fa-list"></i><span>카테고리</span></li>
+            <li><i class="fa-solid fa-tag"></i><span>태그</span></li>
+            <li><i class="fa-solid fa-users"></i><span>멤버</span></li>
+          </ul>
+
+          <div class="control_main">
+            <div class="control_left">
+              <input type="text" placeholder="검색할 카테고리를 입력하세요." />
+              <ul>
+                <li
+                  class="setting"
+                  th:each="category : ${categories}"
+                  th:id="|category${category.getId()}|"
+                >
+                  <div class="setting_top">
+                    <div class="setting_img_frame">
+                      <img
+                        th:src="@{/images/{img}(img = ${category.getImg()})}"
+                        alt=""
+                      />
+                    </div>
+                    <div class="setting_right">
+                      <div class="setting_right_top"></div>
+                      <div
+                        class="setting_right_bottom"
+                        th:text="${category.getAbout()}"
+                      ></div>
+                    </div>
+                  </div>
+                  <div class="setting_bottom">
+                    <li
+                      class="setting_tag"
+                      th:each="admin : ${category.getAdminList()}"
+                      th:text="${admin}"
+                      th:title="${admin}"
+                    ></li>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="control_right"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

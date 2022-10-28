@@ -247,12 +247,17 @@ public class PageService {
             AccountDataDTO userData = accountService.getProfile(sessionData);
             PostDTO postData = pageDao.getPostData(id);
             if (postData != null) {
-                if (postData.getAuthor().equals(sessionData) || userData.isIsadmin() == true) {
-                    pageDao.removePost(id);
-                    pageDao.removeCommentsOfPost(id);
-                    return "ok";
+                CategoryDTO categoryData = pageDao.getCategoryData(postData.getId());
+                if (categoryData != null) {
+                    if (postData.getAuthor().equals(sessionData) || userData.isIsadmin() == true || categoryData.getAdminList().contains(sessionData)) {
+                        pageDao.removePost(id);
+                        pageDao.removeCommentsOfPost(id);
+                        return "ok";
+                    } else {
+                        return "no access";
+                    }
                 } else {
-                    return "no access";
+                    return "category is removed";
                 }
             } else {
                 return "couldn't find post";
@@ -316,12 +321,22 @@ public class PageService {
             AccountDataDTO userData = accountService.getProfile(sessionData);
             CommentDTO commentData = pageDao.getCommentData(id);
             if (commentData != null) {
-                if (commentData.getAuthor().equals(sessionData) || userData.isIsadmin() == true) {
-                    pageDao.removeComment(id);
-                    pageDao.removeReplyComment(id);
-                    return "ok";
+                PostDTO postData = pageDao.getPostData(id);
+                if (postData != null) {
+                    CategoryDTO categoryData = pageDao.getCategoryData(postData.getId());
+                    if (categoryData != null) {
+                        if (commentData.getAuthor().equals(sessionData) || userData.isIsadmin() == true || categoryData.getAdminList().contains(sessionData)) {
+                            pageDao.removeComment(id);
+                            pageDao.removeReplyComment(id);
+                            return "ok";
+                        } else {
+                            return "no access";
+                        }
+                    } else {
+                        return "couldn't find category";
+                    }
                 } else {
-                    return "no access";
+                    return "couldn't find post";
                 }
             } else {
                 return "couldn't find comment";

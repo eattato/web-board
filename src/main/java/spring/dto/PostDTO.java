@@ -65,19 +65,11 @@ public class PostDTO {
     }
 
     public List<String> getLoverList() {
-        String[] list = lovers.split(" ");
-        if (list.length == 0 && lovers != null) {
-            list = new String[] {lovers};
-        }
-        return new ArrayList<>(Arrays.asList(list));
+        return getStringAsList(lovers);
     }
 
     public List<String> getHaterList() {
-        String[] list = haters.split(" ");
-        if (list.length == 0 && haters != null) {
-            list = new String[] {haters};
-        }
-        return new ArrayList<>(Arrays.asList(list));
+        return getStringAsList(haters);
     }
 
     // setter
@@ -102,6 +94,21 @@ public class PostDTO {
             haters = "";
         }
     }
+
+    // private methods
+    private List<String> getStringAsList(String target) {
+        if (target != null) {
+            String[] list = target.split(" ");
+            if (list.length == 0 && target != null) {
+                list = new String[] {target};
+            }
+            return new ArrayList<>(Arrays.asList(list));
+        } else {
+            return new ArrayList<String>();
+        }
+    }
+
+
 //    public void setTaglist(String target) {
 //        if (target != null) {
 //            String[] split = target.split(" ");
