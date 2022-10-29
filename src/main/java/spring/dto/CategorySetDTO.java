@@ -7,6 +7,6 @@ import lombok.Setter;
 @Setter
 public class CategorySetDTO {
     private String act;
-    private int id = -1;
+    private int id;
     private String target;
 }

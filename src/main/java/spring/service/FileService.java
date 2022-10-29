@@ -77,4 +77,17 @@ public class FileService {
             return null;
         }
     }
+
+    public String getImageDirectory(File file) {
+        String[] fullLink = file.toString().split("\\\\");
+        String directory = "";
+        for (int ind = 2; ind < fullLink.length; ind++) {
+            if (ind == 2) {
+                directory = fullLink[ind];
+            } else {
+                directory = directory + "/" + fullLink[ind];
+            }
+        }
+        return directory;
+    }
 }

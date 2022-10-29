@@ -201,15 +201,7 @@ public class AccountService {
                             if (image != null && image.exists() == true) {
                                 log.info(auditDone, String.format("%s uploaded profile image %s", request.getRemoteAddr(), image.getAbsolutePath()));
 //                                log.info(image.toString());
-                                String[] fullLink = image.toString().split("\\\\");
-                                String directory = "";
-                                for (int ind = 2; ind < fullLink.length; ind++) {
-                                    if (ind == 2) {
-                                        directory = fullLink[ind];
-                                    } else {
-                                        directory = directory + "/" + fullLink[ind];
-                                    }
-                                }
+                                String directory = fileService.getImageDirectory(image);
 
                                 if (accountDao.setProfileImage(sessionData, directory) == 0) {
                                     result = "failed";

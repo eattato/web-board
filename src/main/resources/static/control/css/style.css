@@ -141,33 +141,24 @@
 .setting_tags_frame {
   display: flex;
   width: 480px;
-  height: 45px;
-  overflow: hidden;
+  height: 52px;
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+.setting_tags_frame::-webkit-scrollbar {
+  height: 7px;
+  background-color: transparent;
+}
+.setting_tags_frame::-webkit-scrollbar-thumb {
+  background-color: lightgray;
+  border-radius: 5px;
 }
 
 .setting_tags {
   display: flex;
   align-items: center;
-  width: 440px;
-  height: 45px;
-}
-
-.setting_tag_left {
-  width: 20px;
-  height: 45px;
-  text-align: center;
-  line-height: 45px;
-  left: 0;
-  cursor: pointer;
-}
-
-.setting_tag_right {
-  width: 20px;
-  height: 45px;
-  text-align: center;
-  line-height: 45px;
-  right: 0;
-  cursor: pointer;
+  width: 480px;
+  height: 50px;
 }
 
 .setting_close {
@@ -296,17 +287,6 @@
   display: block;
 }
 
-.setting_tag_recommend {
-  position: absolute;
-  display: none;
-  flex-direction: column;
-  width: auto;
-  height: auto;
-  left: 45px;
-  top: 30px;
-  background-color: white;
-  border: 1px solid lightgray;
-}
 .setting_tag_add.activated .setting_tag_recommend {
   display: flex;
 }

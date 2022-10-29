@@ -98,7 +98,6 @@
                   <div class="setting_bottom">
                     <div class="setting_display">관리자</div>
                     <div class="setting_tags_frame">
-                      <div class="setting_tag_left">&lt;</div>
                       <div class="setting_tags">
                         <div
                           class="setting_tag"
@@ -116,14 +115,13 @@
                           <input
                             class="setting_tag_input"
                             type="text"
-                            placeholder="태그를 검색하세요."
+                            placeholder="관리자 이메일을 입력하세요."
                           />
                           <button class="setting_tag_commit" type="button">
                             추가
                           </button>
                         </div>
                       </div>
-                      <div class="setting_tag_right">&gt;</div>
                     </div>
                   </div>
                 </li>
@@ -134,12 +132,20 @@
 
               <div class="control_input_wrap">
                 <div class="control_info">카테고리명</div>
-                <input type="text" placeholder="카테고리명을 입력하세요." />
+                <input
+                  id="category_name"
+                  type="text"
+                  placeholder="카테고리명을 입력하세요."
+                />
               </div>
 
               <div class="control_input_wrap">
                 <div class="control_info">카테고리 설명</div>
-                <input type="text" placeholder="카테고리 설명을 입력하세요." />
+                <input
+                  id="category_about"
+                  type="text"
+                  placeholder="카테고리 설명을 입력하세요."
+                />
               </div>
 
               <div class="profile_img_frame">

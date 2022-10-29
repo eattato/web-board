@@ -102,12 +102,16 @@ public class PageDao {
                 List<String> adminList = categoryData.getAdminList();
                 adminList.add(data.getTarget());
                 String admins = String.join(" ", adminList);
-                return jt.update(String.format("UPDATE categories SET admins '%s';", admins));
+                return jt.update(String.format("UPDATE categories SET admins = '%s' WHERE id = %s;", admins, data.getId()));
             } else if (data.getAct().equals("removeAdmin")) {
                 List<String> adminList = categoryData.getAdminList();
                 adminList.remove(data.getTarget());
                 String admins = String.join(" ", adminList);
-                return jt.update(String.format("UPDATE categories SET admins '%s';", admins));
+                return jt.update(String.format("UPDATE categories SET admins = '%s' WHERE id = %s;", admins, data.getId()));
+            } else if (data.getAct().equals("changeName")) {
+                return jt.update(String.format("UPDATE categories SET category = '%s' WHERE id = %s;", data.getTarget(), data.getId()));
+            } else if (data.getAct().equals("changeAbout")) {
+                return jt.update(String.format("UPDATE categories SET about = '%s' WHERE id = %s;", data.getTarget(), data.getId()));
             }
             else {
                 return 0;
@@ -115,6 +119,20 @@ public class PageDao {
         } else {
             return 0;
         }
+    }
+
+    public int addCategory(CategoryCreateDTO data) {
+        int nextId = getIdCurrent("category") + 1;
+        return jt.update(String.format("INSERT INTO categories VALUES(%s, '%s', '%s', null, false, false, null);", nextId, data.getCategory(), data.getAbout()));
+    }
+
+    public int removeCategory(int id) {
+        removePostsOfCategory(id);
+        return jt.update("DELETE FROM categories WHERE id = %s;");
+    }
+
+    public int setCategoryImage(int id, String directory) {
+        return jt.update(String.format("UPDATE categories SET img = '%s' WHERE id = %s", directory, id));
     }
 
     // Post
@@ -281,7 +299,20 @@ public class PageDao {
 
     public int removePost(int id) {
         String queryString = String.format("DELETE FROM posts WHERE id = %s", id);
+        removeReplyComment(id);
         return jt.update(queryString);
+    }
+
+    public int removePostsOfCategory(int id) {
+        PageVO vo = new PageVO();
+        vo.setStartIndex(0);
+        vo.setEndIndex(-1);
+        vo.setCategory(id);
+        List<PostDTO> posts = getPostList(vo, 0);
+        for (PostDTO post : posts) {
+            removePost(post.getId());
+        }
+        return 1;
     }
 
     // Comment
@@ -332,6 +363,7 @@ public class PageDao {
 
     public int removeComment(int id) { // ID로 댓글 삭제
         String queryString = String.format("DELETE FROM comments WHERE id = %s", id);
+        removeReplyComment(id);
         return jt.update(queryString);
     }
 

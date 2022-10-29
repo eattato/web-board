@@ -16,6 +16,7 @@ import spring.vo.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.File;
 import java.sql.Array;
 import java.util.*;
 
@@ -27,6 +28,9 @@ public class PageService {
 
     @Autowired
     AccountService accountService;
+
+    @Autowired
+    FileService fileService;
 
     ObjectMapper mapper = new ObjectMapper();
 
@@ -52,18 +56,26 @@ public class PageService {
                 CategoryDTO categoryData = getCategoryData(data.getId());
                 AccountDataDTO userData = accountService.getUserData(sessionData);
                 if (categoryData != null) {
-                    if (userData.isIsadmin() || categoryData.getAdminList().contains(sessionData)) {
-                        List<String> availableActs = Arrays.asList(new String[] {"addAdmin", "removeAdmin", "setAdmin"});
+                    if (userData != null && (userData.isIsadmin() || categoryData.getAdminList().contains(sessionData))) {
+                        List<String> availableActs = Arrays.asList(new String[] {"addAdmin", "removeAdmin", "setAdmin", "changeName", "changeAbout"});
                         if (availableActs.contains(data.getAct())) {
-                            boolean available = true;
+                            String error = null;
                             if (data.getAct().equals("addAdmin")) {
                                 AccountDataDTO target = accountService.getUserData(data.getTarget());
                                 if (target == null) {
-                                    available = false;
+                                    error = "target is null";
+                                }
+                            } else if (data.getAct().equals("changeName")) {
+                                if ((data.getTarget().length() > 0 && data.getTarget().length() <= 100) == false) {
+                                    error = "wrong length";
+                                }
+                            } else if (data.getAct().equals("changeAbout")) {
+                                if ((data.getTarget().length() > 0 && data.getTarget().length() <= 300) == false) {
+                                    error = "wrong length";
                                 }
                             }
 
-                            if (available == true) {
+                            if (error == null) {
                                 int result = pageDao.updateCategory(data);
                                 if (result == 1) {
                                     return "ok";
@@ -71,7 +83,7 @@ public class PageService {
                                     return "failed";
                                 }
                             } else {
-                                return "target not found";
+                                return error;
                             }
                         } else {
                             return "wrong act";
@@ -84,6 +96,78 @@ public class PageService {
                 }
             } else {
                 return "no such category";
+            }
+        } else {
+            return "no session";
+        }
+    }
+
+    public String createCategory(HttpServletRequest request, CategoryCreateDTO data) {
+        HttpSession session = request.getSession();
+        String sessionData = accountService.getSession(session);
+
+        if (sessionData != null) {
+            AccountDataDTO userData = accountService.getUserData(sessionData);
+            if (userData != null && userData.isIsadmin()) {
+                if (data.getCategory() != null && data.getAbout() != null) {
+                    if (data.getCategory().length() >= 1 && data.getCategory().length() <= 100) {
+                        if (data.getAbout().length() >= 1 && data.getAbout().length() <= 300) {
+                            int result = pageDao.addCategory(data);
+                            
+                            if (result == 1) {
+                                if (data.getImage() != null) {
+                                    File image = fileService.uploadImage(data.getImage());
+                                    if (image != null && image.exists() == true) {
+                                        log.info(String.format("%s uploaded profile image %s", request.getRemoteAddr(), image.getAbsolutePath()));
+                                        String directory = fileService.getImageDirectory(image);
+                                        pageDao.setCategoryImage(pageDao.getIdCurrent("category"), directory)
+                                    }
+                                }
+                                return "ok";
+                            } else {
+                                return "failed";
+                            }
+                        } else {
+                            return "wrong about";
+                        }
+                    } else {
+                        return "wrong category";
+                    }
+                } else {
+                    return "no data";
+                }
+            } else {
+                return "no access";
+            }
+        } else {
+            return "no session";
+        }
+    }
+
+    public String removeCategory(HttpServletRequest request, CategorySetDTO data) {
+        HttpSession session = request.getSession();
+        String sessionData = accountService.getSession(session);
+
+        if (sessionData != null) {
+            if (data.getId() != -1) {
+                CategoryDTO categoryData = getCategoryData(data.getId());
+                AccountDataDTO userData = accountService.getUserData(sessionData);
+                if (categoryData != null) {
+                    if (userData != null && (userData.isIsadmin() || categoryData.getAdminList().contains(sessionData))) {
+                        int result = pageDao.removeCategory(data.getId());
+                        if (result == 1) {
+                            return "ok";
+                        } else {
+                            return "failed";
+                        }
+                    } else {
+                        return "no access";
+                    }
+                } else {
+                    return "no such category";
+                }
+            } else {
+                return "category not found";
             }
         } else {
             return "no session";
@@ -293,9 +377,8 @@ public class PageService {
             if (postData != null) {
                 CategoryDTO categoryData = pageDao.getCategoryData(postData.getId());
                 if (categoryData != null) {
-                    if (postData.getAuthor().equals(sessionData) || userData.isIsadmin() == true || categoryData.getAdminList().contains(sessionData)) {
+                    if (userData != null && (postData.getAuthor().equals(sessionData) || userData.isIsadmin() == true || categoryData.getAdminList().contains(sessionData))) {
                         pageDao.removePost(id);
-                        pageDao.removeCommentsOfPost(id);
                         return "ok";
                     } else {
                         return "no access";
@@ -369,9 +452,8 @@ public class PageService {
                 if (postData != null) {
                     CategoryDTO categoryData = pageDao.getCategoryData(postData.getId());
                     if (categoryData != null) {
-                        if (commentData.getAuthor().equals(sessionData) || userData.isIsadmin() == true || categoryData.getAdminList().contains(sessionData)) {
+                        if (userData != null && (commentData.getAuthor().equals(sessionData) || userData.isIsadmin() == true || categoryData.getAdminList().contains(sessionData))) {
                             pageDao.removeComment(id);
-                            pageDao.removeReplyComment(id);
                             return "ok";
                         } else {
                             return "no access";
