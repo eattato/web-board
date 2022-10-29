@@ -20,10 +20,10 @@
         <li>
           <a class="applyCookie" th:href="@{/popular}">인기글</a>
         </li>
-        <li th:if="${profile != null and profile.isIsadmin()}">
-          <a th:href="@{/control}">사이트 관리</a>
-        </li>
         <li><a th:href="@{/editor}">글 작성</a></li>
+        <li th:if="${profile != null and profile.isIsadmin()}">
+          <a th:href="@{/control/category}">사이트 관리</a>
+        </li>
         <li class="menu_login" th:if="${profile == null}">
           <a th:href="@{/login}">로그인</a>
         </li>

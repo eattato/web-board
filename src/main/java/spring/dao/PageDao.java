@@ -5,10 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import spring.dto.CategoryDTO;
-import spring.dto.CommentDTO;
-import spring.dto.PostDTO;
-import spring.dto.TagDTO;
+import spring.dto.*;
 import spring.vo.CommentVO;
 import spring.vo.PageVO;
 import spring.vo.PostVO;
@@ -96,6 +93,28 @@ public class PageDao {
             }
         }
         return result;
+    }
+
+    public int updateCategory(CategorySetDTO data) {
+        CategoryDTO categoryData = getCategoryData(data.getId());
+        if (categoryData != null) {
+            if (data.getAct().equals("addAdmin")) {
+                List<String> adminList = categoryData.getAdminList();
+                adminList.add(data.getTarget());
+                String admins = String.join(" ", adminList);
+                return jt.update(String.format("UPDATE categories SET admins '%s';", admins));
+            } else if (data.getAct().equals("removeAdmin")) {
+                List<String> adminList = categoryData.getAdminList();
+                adminList.remove(data.getTarget());
+                String admins = String.join(" ", adminList);
+                return jt.update(String.format("UPDATE categories SET admins '%s';", admins));
+            }
+            else {
+                return 0;
+            }
+        } else {
+            return 0;
+        }
     }
 
     // Post

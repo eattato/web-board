@@ -6,8 +6,12 @@ import org.slf4j.MarkerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import spring.dao.AccountDao;
 import spring.dto.AccountDataDTO;
+import spring.dto.CategoryDTO;
+import spring.dto.CategorySetDTO;
 import spring.dto.SidebarMenu;
 import spring.vo.*;
 
@@ -17,6 +21,9 @@ import javax.websocket.Session;
 import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -32,11 +39,16 @@ public class AccountService {
     @Autowired
     MailService mailService;
 
+    @Autowired
+    PageService pageService;
+
     private final Marker auditDone = MarkerFactory.getMarker("AUDIT_DONE");
     private final Marker auditTry = MarkerFactory.getMarker("AUDIT_TRY");
     private final Marker auditError = MarkerFactory.getMarker("AUDIT_ERROR");
 
     // Public Methods
+
+    // account checks
     public boolean checkEmail(String check) {
         return accountDao.emailAvailable(check);
     }
@@ -103,6 +115,7 @@ public class AccountService {
         return result;
     }
 
+    // signing
     public String login(HttpServletRequest request, LoginVO loginData) {
         HttpSession session = request.getSession();
         String sessionData = getSession(session);
@@ -148,6 +161,7 @@ public class AccountService {
         return result;
     }
 
+    // profile update
     public String updateProfile(HttpServletRequest request, ProfileVO data) {
         HttpSession session = request.getSession();
         String sessionData = getSession(session);
@@ -259,6 +273,10 @@ public class AccountService {
         }
     }
 
+    public AccountDataDTO getUserData(String email) {
+        return accountDao.getUserData(email);
+    }
+
     public String verify(HttpServletRequest request, VerifyVO vo, Model model) {
         HttpSession session = request.getSession();
         String sessionData = getSession(session);
@@ -366,6 +384,7 @@ public class AccountService {
         return result;
     }
 
+    // personal data send
     public SidebarMenu loadSidebarMenu(HttpServletRequest request, Model model, PageVO vo) {
         HttpSession session = request.getSession();
         Object sideObj = session.getAttribute("sidebar");
@@ -395,6 +414,25 @@ public class AccountService {
         SidebarMenu sidebar = loadSidebarMenu(request, model, null);
         HttpSession session = request.getSession();
         session.setAttribute("sidebar", menu);
+    }
+
+    // page access
+    public String controlPage(HttpServletRequest request, Model model, String menu) {
+        sendProfileBySession(request, model);
+        if (menu.equals("category")) {
+            PageVO vo = new PageVO();
+            vo.setStartIndex(0);
+            vo.setEndIndex(-1);
+            List<CategoryDTO> result = pageService.getCategoryList(vo);
+            model.addAttribute("categories", result);
+            return "control/category";
+        } else if (menu.equals("tags")) {
+            model.addAttribute("tags", pageService.getAllTags());
+            return "control/tags";
+        } else if (menu.equals("members")) {
+            return "control/members";
+        }
+        return "redirect:/";
     }
 
     // Private Methods

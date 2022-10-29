@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 
+import spring.dto.CategorySetDTO;
 import spring.dto.SidebarMenu;
 import spring.service.AccountService;
 import spring.service.FileService;
@@ -73,6 +74,11 @@ public class ApiController {
 //    public String loginSession(HttpServletRequest request) {
 //        return accountService.getLoginData(request);
 //    }
+
+    @PostMapping("/categoryset")
+    public String updateCategory(HttpServletRequest request, @RequestBody CategorySetDTO data) {
+        return pageService.updateCategory(request, data);
+    }
 
     @PostMapping("/setprofile")
     public String setProfile(HttpServletRequest request, @RequestBody ProfileVO vo) {

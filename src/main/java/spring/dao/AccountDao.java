@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import spring.dto.AccountDataDTO;
+import spring.dto.CategoryDTO;
+import spring.dto.CategorySetDTO;
 import spring.dto.PostDTO;
 import spring.vo.AccountCreateVO;
 import spring.vo.ProfileVO;

@@ -17,10 +17,7 @@ import spring.vo.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.sql.Array;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -44,6 +41,53 @@ public class PageService {
 
     public CategoryDTO getCategoryData(int id) {
         return pageDao.getCategoryData(id);
+    }
+
+    public String updateCategory(HttpServletRequest request, CategorySetDTO data) {
+        HttpSession session = request.getSession();
+        String sessionData = accountService.getSession(session);
+
+        if (sessionData != null) {
+            if (data.getId() != -1) {
+                CategoryDTO categoryData = getCategoryData(data.getId());
+                AccountDataDTO userData = accountService.getUserData(sessionData);
+                if (categoryData != null) {
+                    if (userData.isIsadmin() || categoryData.getAdminList().contains(sessionData)) {
+                        List<String> availableActs = Arrays.asList(new String[] {"addAdmin", "removeAdmin", "setAdmin"});
+                        if (availableActs.contains(data.getAct())) {
+                            boolean available = true;
+                            if (data.getAct().equals("addAdmin")) {
+                                AccountDataDTO target = accountService.getUserData(data.getTarget());
+                                if (target == null) {
+                                    available = false;
+                                }
+                            }
+
+                            if (available == true) {
+                                int result = pageDao.updateCategory(data);
+                                if (result == 1) {
+                                    return "ok";
+                                } else {
+                                    return "failed";
+                                }
+                            } else {
+                                return "target not found";
+                            }
+                        } else {
+                            return "wrong act";
+                        }
+                    } else {
+                        return "no access";
+                    }
+                } else {
+                    return "no such category";
+                }
+            } else {
+                return "no such category";
+            }
+        } else {
+            return "no session";
+        }
     }
 
     // Post

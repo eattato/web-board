@@ -79,7 +79,7 @@ $(() => {
     } else {
       //console.log("id wrong");
     }
-  }
+  };
 
   // 태그 추가 버튼
   $(".editor_tag_display").click(() => {
@@ -116,9 +116,10 @@ $(() => {
       if (id in tagIncluded) {
         tagIncluded[id].remove();
         delete tagIncluded[id];
+        closeButton.off("click");
       }
     });
-  })
+  });
 
   // 태그 입력 추천
   tagInput.on("input", () => {
@@ -188,7 +189,7 @@ $(() => {
             "data save failed": "글을 게시하는 데 실패했습니다.",
             "tag not found": "존재하지 않는 태그를 사용했습니다!",
             "post not found": "수정할 글을 찾지 못했습니다!",
-            "no access": "해당 글의 수정 권한이 없습니다!"
+            "no access": "해당 글의 수정 권한이 없습니다!",
           };
 
           fetch("http://localhost:8888/post", {

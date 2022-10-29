@@ -164,15 +164,7 @@ public class MainController {
 
     @GetMapping("/control/{menu}")
     public String control(HttpServletRequest request, Model model, @PathVariable String menu) {
-        accountService.sendProfileBySession(request, model);
-        PageVO vo = new PageVO();
-        vo.setStartIndex(0);
-        vo.setEndIndex(-1);
-        List<CategoryDTO> result = pageService.getCategoryList(vo);
-        log.info(Integer.toString(result.size()));
-        log.info(result.get(0).getCategory());
-        model.addAttribute("categories", result);
-        return "control";
+        return accountService.controlPage(request, model, menu);
     }
 
     @GetMapping("/tag/{id}")
