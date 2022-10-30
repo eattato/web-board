@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>BOARDARC - 페이지 관리</title>
+    <link rel="icon" th:href="@{/images/official/icon.png}" />
+    <link rel="stylesheet" th:href="@{/components/css/style.css}" />
+    <link rel="stylesheet" th:href="@{/control/css/style.css}" />
+    <link rel="stylesheet" th:href="@{/control/css/tags.css}" />
+    <script
+      src="https://kit.fontawesome.com/d5e5d975b2.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="/components/js/jquery.js"></script>
+    <script src="/components/js/jquery.cookie.js"></script>
+    <script src="/library/iro/dist/iro.js"></script>
+    <script src="/components/js/header.js"></script>
+    <script src="/control/js/tags.js"></script>
+  </head>
+  <body>
+    <div class="popup">
+      <div class="popup_frame">
+        <div class="popup_close">x</div>
+        <div class="popup_title">정말 이 태그를 삭제하시겠습니까?</div>
+        <div class="popup_desc">
+          해당 태그를 사용한 게시물에서 표시되지 않으며, 되돌릴 수 없습니다.
+        </div>
+        <div class="popup_tab">
+          <button type="button" class="popup_accept">확인</button>
+          <button type="button" class="popup_cancel">취소</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <div class="banner" th:replace="fragments/common :: banner"></div>
+      <div class="menu" th:replace="fragments/common :: header"></div>
+      <div class="body">
+        <div class="main">
+          <ul class="control_menu">
+            <li>
+              <a th:href="@{/control/category}">
+                <i class="fa-solid fa-list"></i><span>카테고리</span>
+              </a>
+            </li>
+            <li>
+              <a th:href="@{/control/tags}">
+                <i class="fa-solid fa-tag"></i><span>태그</span>
+              </a>
+            </li>
+            <li>
+              <a th:href="@{/control/members}">
+                <i class="fa-solid fa-users"></i><span>멤버</span>
+              </a>
+            </li>
+          </ul>
+
+          <div class="control_main">
+            <div class="control_left">
+              <div class="search_box">
+                <div class="search_wrap"></div>
+                <input
+                  class="search_input"
+                  type="search"
+                  name="search"
+                  placeholder="검색"
+                />
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </div>
+
+              <ul>
+                <li
+                  class="setting"
+                  th:each="tag : ${tags}"
+                  th:id="|tag${tag.getId()}|"
+                >
+                  <div class="setting_top">
+                    <div class="setting_img_frame">
+                      <div
+                        class="setting_color"
+                        th:style="|background-color: #${tag.getTagcolor()}|"
+                      ></div>
+                      <div class="setting_color_editting">수정 중</div>
+                    </div>
+                    <div class="setting_right">
+                      <div class="setting_right_top">
+                        <div class="setting_right_split">
+                          <span
+                            class="setting_title"
+                            th:text="${tag.getTagname()}"
+                            contenteditable="true"
+                          >
+                            카테고리명
+                          </span>
+                        </div>
+                        <div class="setting_right_split">
+                          <div class="setting_close">x</div>
+                        </div>
+                      </div>
+                      <span
+                        class="setting_right_bottom"
+                        th:text="${tag.getTagdesc()}"
+                        contenteditable="true"
+                      >
+                        설명
+                      </span>
+                    </div>
+                  </div>
+                  <div class="setting_bottom">
+                    <div class="setting_option">
+                      <div class="setting_display">관리자 전용</div>
+                      <input type="checkbox" />
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="control_right">
+              <div class="control_title">태그 생성</div>
+
+              <div class="control_input_wrap">
+                <div class="control_info">태그명</div>
+                <input
+                  id="category_name"
+                  type="text"
+                  placeholder="태그명을 입력하세요."
+                />
+              </div>
+
+              <div class="control_input_wrap">
+                <div class="control_info">태그 설명</div>
+                <input
+                  id="category_about"
+                  type="text"
+                  placeholder="태그 설명을 입력하세요."
+                />
+              </div>
+
+              <div class="control_input_wrap">
+                <div class="control_info">태그 색상</div>
+                <div class="control_img_frame">
+                  <div
+                    class="control_color"
+                    style="background-color: black"
+                  ></div>
+                  <div class="setting_color_editting">수정 중</div>
+                </div>
+              </div>
+
+              <div class="control_create_frame">
+                <div class="profile_img_frame">
+                  <div id="picker"></div>
+                </div>
+                <button class="control_create">추가</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

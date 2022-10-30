@@ -86,9 +86,9 @@ public class ApiController {
         return pageService.createCategory(request, data);
     }
 
-    @PostMapping("/removecategory")
-    public String removeCategory(HttpServletRequest request, @RequestBody CategorySetDTO data) {
-        return pageService.removeCategory(request, data);
+    @PostMapping("/tagset")
+    public String updateTag(HttpServletRequest request, @RequestBody CategorySetDTO data) {
+        return pageService.updateTag(request, data);
     }
 
     @PostMapping("/setprofile")

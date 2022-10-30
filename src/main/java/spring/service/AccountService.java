@@ -412,25 +412,6 @@ public class AccountService {
         session.setAttribute("sidebar", menu);
     }
 
-    // page access
-    public String controlPage(HttpServletRequest request, Model model, String menu) {
-        sendProfileBySession(request, model);
-        if (menu.equals("category")) {
-            PageVO vo = new PageVO();
-            vo.setStartIndex(0);
-            vo.setEndIndex(-1);
-            List<CategoryDTO> result = pageService.getCategoryList(vo);
-            model.addAttribute("categories", result);
-            return "control/category";
-        } else if (menu.equals("tags")) {
-            model.addAttribute("tags", pageService.getAllTags());
-            return "control/tags";
-        } else if (menu.equals("members")) {
-            return "control/members";
-        }
-        return "redirect:/";
-    }
-
     // Private Methods
     private String checkPassword(String pw) {
         String result = null;

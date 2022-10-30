@@ -164,7 +164,7 @@ public class MainController {
 
     @GetMapping("/control/{menu}")
     public String control(HttpServletRequest request, Model model, @PathVariable String menu) {
-        return accountService.controlPage(request, model, menu);
+        return pageService.controlPage(request, model, menu);
     }
 
     @GetMapping("/tag/{id}")
@@ -286,6 +286,5 @@ public class MainController {
         model.addAttribute("id", vo.getCategoryIndex());
         model.addAttribute("page", vo.getPage());
         model.addAttribute("pageCount", (int)Math.ceil((float)posts.size() / postPerPage));
-        log.info(String.format("post count: %s / ppp: %s -> ceiled = page count: %s", posts.size(), postPerPage, (int)Math.ceil((float)posts.size() / postPerPage)));
     }
 }

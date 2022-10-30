@@ -309,9 +309,10 @@ $(() => {
         canPost = false;
         let data = {
           id: removingCategory,
+          act: "removeCategory",
         };
 
-        fetch("http://localhost:8888/removecategory", {
+        fetch("http://localhost:8888/categoryset", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -399,7 +400,7 @@ $(() => {
               canPost = true;
               if (result == "ok") {
                 alert("카테고리를 생성했습니다!");
-                window.location.replace("http://localhost:8888/profile");
+                window.location.href = window.location.href;
               } else if (result == "no session") {
                 alert("로그인이 필요합니다!");
               }
@@ -415,4 +416,16 @@ $(() => {
       }
     }
   });
+
+  let colorEditting = null;
+  var colorPicker = new iro.ColorPicker("#picker", {
+    width: 170,
+    color: "#00FF00",
+  });
+  colorPicker.on("color:change", function (color) {
+    console.log(color.hexString);
+  });
+
+  $(".setting_color").click(function () {});
+  //colorPicker.color.hexString
 });

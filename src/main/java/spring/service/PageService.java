@@ -57,7 +57,7 @@ public class PageService {
                 AccountDataDTO userData = accountService.getUserData(sessionData);
                 if (categoryData != null) {
                     if (userData != null && (userData.isIsadmin() || categoryData.getAdminList().contains(sessionData))) {
-                        List<String> availableActs = Arrays.asList(new String[] {"addAdmin", "removeAdmin", "setAdmin", "changeName", "changeAbout"});
+                        List<String> availableActs = Arrays.asList(new String[] {"addAdmin", "removeAdmin", "setAdmin", "changeName", "changeAbout", "removeCategory"});
                         if (availableActs.contains(data.getAct())) {
                             String error = null;
                             if (data.getAct().equals("addAdmin")) {
@@ -66,13 +66,15 @@ public class PageService {
                                     error = "target is null";
                                 }
                             } else if (data.getAct().equals("changeName")) {
-                                if ((data.getTarget().length() > 0 && data.getTarget().length() <= 100) == false) {
+                                if (data.getTarget() != null && (data.getTarget().length() > 0 && data.getTarget().length() <= 100) == false) {
                                     error = "wrong length";
                                 }
                             } else if (data.getAct().equals("changeAbout")) {
-                                if ((data.getTarget().length() > 0 && data.getTarget().length() <= 300) == false) {
+                                if (data.getTarget() != null && (data.getTarget().length() > 0 && data.getTarget().length() <= 300) == false) {
                                     error = "wrong length";
                                 }
+                            } else if (data.getTarget() != null && data.getAct().equals("removeCategory")) {
+                                return removeCategory(request, data);
                             }
 
                             if (error == null) {
@@ -179,7 +181,7 @@ public class PageService {
     public List<PostDTO> getPostList(PageVO data, int actType) {
         List<PostDTO> result = pageDao.getPostList(data, actType);
         for (PostDTO post : result) {
-            post.setTagdataList(pageDao.getTagData(post.getTaglist()));
+            post.setTagdataList(pageDao.getTagDatas(post.getTaglist()));
 
             if (post.getContent().contains("{image}")) {
 //                map.put("mainImage", );
@@ -205,7 +207,7 @@ public class PageService {
             model.addAttribute("category", getCategoryData(postData.getCategory()));
             model.addAttribute("author", accountService.getProfile(postData.getAuthor()));
             model.addAttribute("comments", commentData);
-            postData.setTagdataList(pageDao.getTagData(postData.getTaglist()));
+            postData.setTagdataList(pageDao.getTagDatas(postData.getTaglist()));
             if (sessionData != null) {
                 List<String> lovers = postData.getLoverList();
                 List<String> haters = postData.getHaterList();
@@ -314,7 +316,7 @@ public class PageService {
                 if (editing != -1) {
                     PostDTO postData = pageDao.getPostData(editing);
                     if (postData.getAuthor().equals(sessionData)) {
-                        postData.setTagdataList(pageDao.getTagData(postData.getTaglist()));
+                        postData.setTagdataList(pageDao.getTagDatas(postData.getTaglist()));
                         model.addAttribute("pastData", postData);
                     } else {
                         return "redirect:";
@@ -477,8 +479,81 @@ public class PageService {
         }
     }
 
+    // page access
+    public String controlPage(HttpServletRequest request, Model model, String menu) {
+        accountService.sendProfileBySession(request, model);
+        if (menu.equals("category")) {
+            PageVO vo = new PageVO();
+            vo.setStartIndex(0);
+            vo.setEndIndex(-1);
+            List<CategoryDTO> result = getCategoryList(vo);
+            model.addAttribute("categories", result);
+            return "control/category";
+        } else if (menu.equals("tags")) {
+            model.addAttribute("tags", getAllTags());
+            return "control/tags";
+        } else if (menu.equals("members")) {
+            return "control/members";
+        }
+        return "redirect:/";
+    }
+
     // Tag
     public List<TagDTO> getAllTags() {
         return pageDao.getAllTags();
+    }
+
+    public String updateTag(HttpServletRequest request, CategorySetDTO data) {
+        HttpSession session = request.getSession();
+        String sessionData = accountService.getSession(session);
+
+        if (sessionData != null) {
+            if (data.getId() != -1) {
+                TagDTO tagData = pageDao.getTagData(data.getId());
+                AccountDataDTO userData = accountService.getUserData(sessionData);
+                if (tagData != null) {
+                    if (userData != null && userData.isIsadmin()) {
+                        List<String> availableActs = Arrays.asList(new String[] {"changeName", "changeAbout", "changeColor", "removeTag"});
+                        if (availableActs.contains(data.getAct())) {
+                            String error = null;
+                            if (data.getAct().equals("changeName")) {
+                                if (data.getTarget() != null && (data.getTarget().length() > 0 && data.getTarget().length() <= 30) == false) {
+                                    error = "wrong length";
+                                }
+                            } else if (data.getAct().equals("changeAbout")) {
+                                if (data.getTarget() != null && (data.getTarget().length() > 0 && data.getTarget().length() <= 300) == false) {
+                                    error = "wrong length";
+                                }
+                            } else if (data.getAct().equals("changeColor")) {
+                                if (data.getTarget() != null && data.getTarget().length() != 6) {
+                                    error = "wrong color";
+                                }
+                            }
+
+                            if (error == null) {
+                                int result = pageDao.updateTag(data);
+                                if (result == 1) {
+                                    return "ok";
+                                } else {
+                                    return "failed";
+                                }
+                            } else {
+                                return error;
+                            }
+                        } else {
+                            return "wrong act";
+                        }
+                    } else {
+                        return "no access";
+                    }
+                } else {
+                    return "no such category";
+                }
+            } else {
+                return "no such category";
+            }
+        } else {
+            return "no session";
+        }
     }
 }

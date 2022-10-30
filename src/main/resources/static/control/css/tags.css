@@ -1,0 +1,72 @@
+.setting_option {
+  display: flex;
+  height: 45px;
+  margin-right: 20px;
+}
+
+.setting_display {
+  width: auto;
+  line-height: 45px;
+  margin-right: 10px;
+}
+
+.setting_color,
+.control_color {
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+}
+
+.setting_img_frame,
+.control_img_frame {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.control_img_frame {
+  width: 60px;
+  height: 60px;
+  border: 1px solid lightgray;
+  border-radius: 30px;
+  overflow: hidden;
+}
+
+.control_input_wrap .control_img_frame {
+  margin-right: 170px;
+  margin-left: 20px;
+}
+
+.setting_color_editting {
+  display: none;
+  position: absolute;
+  width: 100px;
+  height: 24px;
+  padding: 0 10px;
+  text-align: center;
+  line-height: 24px;
+  font-size: 12px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  word-break: break-all;
+  pointer-events: none;
+}
+.setting_color_editting.activate {
+  display: block;
+}
+
+.profile_img_frame {
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+  height: auto;
+}
+
+.control_create_frame {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 400px;
+  height: auto;
+}

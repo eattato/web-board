@@ -378,7 +378,7 @@ public class PageDao {
     }
 
     // Tags
-    public List<TagDTO> getTagData(int[] tagIds) {
+    public List<TagDTO> getTagDatas(int[] tagIds) {
         //log.info(tagIds.toString());
         List<TagDTO> result = new ArrayList<>();
         for (int id : tagIds) {
@@ -390,6 +390,11 @@ public class PageDao {
         return result;
     }
 
+    public TagDTO getTagData(int id) {
+        List<Map<String, Object>> queryResult = getRows(String.format("SELECT * FROM tags WHERE id = %s", id));
+        return mapper.convertValue(queryResult.get(0), TagDTO.class);
+    }
+
     public List<TagDTO> getAllTags() {
         List<TagDTO> result = new ArrayList<>();
         List<Map<String, Object>> queryResult = getRows("SELECT * FROM tags;");
@@ -397,6 +402,24 @@ public class PageDao {
             result.add(mapper.convertValue(map, TagDTO.class));
         }
         return result;
+    }
+
+    public int updateTag(CategorySetDTO data) {
+        TagDTO tagData = getTagData(data.getId());
+        if (tagData != null) {
+            if (data.getAct().equals("changeName")) {
+                return jt.update(String.format("UPDATE tags SET tagname = '%s' WHERE id = %s;", data.getTarget(), data.getId()));
+            } else if (data.getAct().equals("changeAbout")) {
+                return jt.update(String.format("UPDATE tags SET tagdesc = '%s' WHERE id = %s;", data.getTarget(), data.getId()));
+            } else if (data.getAct().equals("changeColor")) {
+                return jt.update(String.format("UPDATE tags SET tagcolor = '%s' WHERE id = %s;", data.getTarget(), data.getId()));
+            }
+            else {
+                return 0;
+            }
+        } else {
+            return 0;
+        }
     }
 
     // Misc
