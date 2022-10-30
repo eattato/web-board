@@ -122,13 +122,13 @@ public class PageDao {
     }
 
     public int addCategory(CategoryCreateDTO data) {
-        int nextId = getIdCurrent("category") + 1;
+        int nextId = getIdCurrent("categories") + 1;
         return jt.update(String.format("INSERT INTO categories VALUES(%s, '%s', '%s', null, false, false, null);", nextId, data.getCategory(), data.getAbout()));
     }
 
     public int removeCategory(int id) {
         removePostsOfCategory(id);
-        return jt.update("DELETE FROM categories WHERE id = %s;");
+        return jt.update(String.format("DELETE FROM categories WHERE id = %s;", id));
     }
 
     public int setCategoryImage(int id, String directory) {
@@ -205,8 +205,8 @@ public class PageDao {
         return result;
     }
 
-    public int getPostCount() {
-        String queryString = String.format("SELECT COUNT(id) AS csize FROM posts;");
+    public int getPostCount(int id) {
+        String queryString = String.format("SELECT COUNT(id) AS csize FROM posts WHERE id = %s;", id);
         List<Map<String, Object>> queryResult = getRows(queryString);
         if (queryResult.size() >= 1) {
             if (queryResult.get(0).get("csize") != null) {
@@ -299,7 +299,7 @@ public class PageDao {
 
     public int removePost(int id) {
         String queryString = String.format("DELETE FROM posts WHERE id = %s", id);
-        removeReplyComment(id);
+        removeCommentsOfPost(id);
         return jt.update(queryString);
     }
 

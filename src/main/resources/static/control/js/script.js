@@ -96,6 +96,8 @@ $(() => {
               alert("존재하지 않는 카테고리입니다!");
             } else if (result == "no session") {
               alert("로그인이 필요합니다!");
+            } else if (result == "no access") {
+              alert("권한이 없습니다!");
             }
             canPost = true;
           })
@@ -107,51 +109,55 @@ $(() => {
   });
 
   const adminRemove = (button) => {
-    let input = button.parent().find(".setting_tag_name").text();
-    let target = button.parent().parent().parent().parent().parent();
-    let category = null;
+    if (canPost == true) {
+      let input = button.parent().find(".setting_tag_name").text();
+      let target = button.parent().parent().parent().parent().parent();
+      let category = null;
 
-    // 카테고리 배열 검색
-    for (let ind in categoryDatas) {
-      let check = categoryDatas[ind];
-      if (check.obj.is(target)) {
-        category = check;
-        break;
+      // 카테고리 배열 검색
+      for (let ind in categoryDatas) {
+        let check = categoryDatas[ind];
+        if (check.obj.is(target)) {
+          category = check;
+          break;
+        }
       }
-    }
 
-    let data = {
-      id: category.id,
-      act: "removeAdmin",
-      target: input,
-    };
+      let data = {
+        id: category.id,
+        act: "removeAdmin",
+        target: input,
+      };
 
-    if (category != null) {
-      canPost = false;
-      fetch("http://localhost:8888/categoryset", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      })
-        .then((response) => response.text())
-        .then((result) => {
-          if (result == "ok") {
-            button.parent().remove();
-            button.off("click");
-          } else if (result == "user not found") {
-            alert("존재하지 않는 유저입니다!");
-          } else if (result == "no such category") {
-            alert("존재하지 않는 카테고리입니다!");
-          } else if (result == "no session") {
-            alert("로그인이 필요합니다!");
-          }
-          canPost = true;
+      if (category != null) {
+        canPost = false;
+        fetch("http://localhost:8888/categoryset", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
         })
-        .finally(() => {
-          canPost = true;
-        });
+          .then((response) => response.text())
+          .then((result) => {
+            if (result == "ok") {
+              button.parent().remove();
+              button.off("click");
+            } else if (result == "user not found") {
+              alert("존재하지 않는 유저입니다!");
+            } else if (result == "no such category") {
+              alert("존재하지 않는 카테고리입니다!");
+            } else if (result == "no session") {
+              alert("로그인이 필요합니다!");
+            } else if (result == "no access") {
+              alert("권한이 없습니다!");
+            }
+            canPost = true;
+          })
+          .finally(() => {
+            canPost = true;
+          });
+      }
     }
   };
   $(".setting_tag_close").click(function () {
@@ -159,7 +165,123 @@ $(() => {
   });
 
   $(".setting_title").on("DOMSubtreeModified", function () {
-    let input = $(this).text();
+    if (canPost == true) {
+      let input = $(this).text();
+      let target = $(this).parent().parent().parent().parent().parent();
+      let category = null;
+
+      // 카테고리 배열 검색
+      for (let ind in categoryDatas) {
+        let check = categoryDatas[ind];
+        if (check.obj.is(target)) {
+          category = check;
+          break;
+        }
+      }
+
+      if (category != null) {
+        category.title = input;
+        setTimeout(() => {
+          if (category.title == input) {
+            canPost = false;
+            let data = {
+              act: "changeName",
+              id: category.id,
+              target: input,
+            };
+            fetch("http://localhost:8888/categoryset", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(data),
+            })
+              .then((response) => response.text())
+              .then((result) => {
+                if (result == "ok") {
+                } else if (result == "wrong name") {
+                  alert("잘못된 카테고리명 입니다!");
+                } else if (result == "wrong length") {
+                  alert("카테고리명은 1 ~ 100자 입니다!");
+                } else if (result == "no such category") {
+                  alert("존재하지 않는 카테고리입니다!");
+                } else if (result == "no session") {
+                  alert("로그인이 필요합니다!");
+                } else if (result == "no access") {
+                  alert("권한이 없습니다!");
+                }
+                canPost = true;
+              })
+              .finally(() => {
+                canPost = true;
+              });
+          }
+        }, 3000);
+      }
+    }
+  });
+
+  $(".setting_right_bottom").on("DOMSubtreeModified", function () {
+    if (canPost == true) {
+      let input = $(this).text();
+      let target = $(this).parent().parent().parent();
+      let category = null;
+
+      // 카테고리 배열 검색
+      for (let ind in categoryDatas) {
+        let check = categoryDatas[ind];
+        if (check.obj.is(target)) {
+          category = check;
+          break;
+        }
+      }
+
+      if (category != null) {
+        category.desc = input;
+        setTimeout(() => {
+          if (category.desc == input) {
+            canPost = false;
+            let data = {
+              act: "changeAbout",
+              id: category.id,
+              target: input,
+            };
+            fetch("http://localhost:8888/categoryset", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(data),
+            })
+              .then((response) => response.text())
+              .then((result) => {
+                if (result == "ok") {
+                } else if (result == "wrong name") {
+                  alert("잘못된 카테고리 설명 입니다!");
+                } else if (result == "wrong length") {
+                  alert("카테고리 설명은 1 ~ 300자 입니다!");
+                } else if (result == "no such category") {
+                  alert("존재하지 않는 카테고리입니다!");
+                } else if (result == "no session") {
+                  alert("로그인이 필요합니다!");
+                } else if (result == "no access") {
+                  alert("권한이 없습니다!");
+                }
+                canPost = true;
+              })
+              .finally(() => {
+                canPost = true;
+              });
+          }
+        }, 3000);
+      } else {
+        console.log("no category");
+      }
+    }
+  });
+
+  let removingCategory = -1;
+  $(".setting_close").click(function () {
     let target = $(this).parent().parent().parent().parent().parent();
     let category = null;
 
@@ -173,97 +295,60 @@ $(() => {
     }
 
     if (category != null) {
-      category.title = input;
-      setTimeout(() => {
-        if (category.title == input) {
-          let data = {
-            act: "changeName",
-            id: category.id,
-            target: input,
-          };
-          fetch("http://localhost:8888/categoryset", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          })
-            .then((response) => response.text())
-            .then((result) => {
-              if (result == "ok") {
-              } else if (result == "wrong name") {
-                alert("잘못된 카테고리명 입니다!");
-              } else if (result == "wrong length") {
-                alert("카테고리명은 1 ~ 100자 입니다!");
-              } else if (result == "no such category") {
-                alert("존재하지 않는 카테고리입니다!");
-              } else if (result == "no session") {
-                alert("로그인이 필요합니다!");
-              }
-              canPost = true;
-            })
-            .finally(() => {
-              canPost = true;
-            });
-        }
-      }, 3000);
+      removingCategory = category.id;
+      $(".popup_title").text(
+        "정말 " + category.title + " 카테고리를 삭제하시겠습니까?"
+      );
+      $(".popup").addClass("activated");
     }
   });
 
-  $(".setting_right_bottom").on("DOMSubtreeModified", function () {
-    let input = $(this).text();
-    let target = $(this).parent().parent().parent();
-    let category = null;
+  $(".popup_accept").click(() => {
+    if (canPost == true) {
+      if (removingCategory != -1) {
+        canPost = false;
+        let data = {
+          id: removingCategory,
+        };
 
-    // 카테고리 배열 검색
-    for (let ind in categoryDatas) {
-      let check = categoryDatas[ind];
-      if (check.obj.is(target)) {
-        category = check;
-        break;
+        fetch("http://localhost:8888/removecategory", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => response.text())
+          .then((result) => {
+            if (result == "ok") {
+              alert("카테고리를 삭제했습니다!");
+              window.location.href = window.location.href;
+            } else if (result == "no session") {
+              alert("로그인이 필요합니다!");
+            } else if (result == "no access") {
+              alert("권한이 없습니다!");
+            } else if (result == "no access") {
+              alert("권한이 없습니다!");
+            }
+            canPost = true;
+          })
+          .finally(() => {
+            canPost = true;
+          });
       }
     }
-
-    if (category != null) {
-      category.desc = input;
-      setTimeout(() => {
-        if (category.desc == input) {
-          let data = {
-            act: "changeAbout",
-            id: category.id,
-            target: input,
-          };
-          fetch("http://localhost:8888/categoryset", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          })
-            .then((response) => response.text())
-            .then((result) => {
-              if (result == "ok") {
-              } else if (result == "wrong name") {
-                alert("잘못된 카테고리 설명 입니다!");
-              } else if (result == "wrong length") {
-                alert("카테고리 설명은 1 ~ 300자 입니다!");
-              } else if (result == "no such category") {
-                alert("존재하지 않는 카테고리입니다!");
-              } else if (result == "no session") {
-                alert("로그인이 필요합니다!");
-              }
-              canPost = true;
-            })
-            .finally(() => {
-              canPost = true;
-            });
-        }
-      }, 3000);
-    } else {
-      console.log("no category");
-    }
   });
 
+  $(".popup_cancel").click(() => {
+    removingCategory = -1;
+    $(".popup").removeClass("activated");
+  });
+  $(".popup_close").click(() => {
+    removingCategory = -1;
+    $(".popup").removeClass("activated");
+  });
+
+  let imgSelect = $("#profile_img_select");
   async function readFileAsDataURL(file) {
     let result_base64 = await new Promise((resolve) => {
       let fileReader = new FileReader();
@@ -274,46 +359,60 @@ $(() => {
     return result_base64;
   }
   const imgChanged = async function () {
-    $("#profile_img_select").attr("title", " ");
-    if ($("#profile_img_select")[0].files.length == 1) {
-      let encoded = await readFileAsDataURL(
-        $("#profile_img_select")[0].files[0]
-      );
+    imgSelect.attr("title", " ");
+    if (imgSelect[0].files.length == 1) {
+      let encoded = await readFileAsDataURL(imgSelect[0].files[0]);
       $(".profile_img_frame img").attr("src", encoded);
     }
     // imgSelect.val("");
   };
-  $("#profile_img_select").change(imgChanged);
+  imgSelect.change(imgChanged);
 
   $(".control_create").click(async () => {
-    let data = {
-      category: $("#category_name").val(),
-      about: $("#category_about").val(),
-      image: null,
-    };
-    if (imgSelect[0].files.length == 1) {
-      let encoded = await readFileAsDataURL(imgSelect[0].files[0]);
-      encoded = encoded.replace("data:image/png;base64,", "");
-      encoded = encoded.replaceAll("+", "-");
-      encoded = encoded.replaceAll("/", "_");
-      data["image"] = encoded;
-    }
+    if (canPost == true) {
+      let categoryName = $("#category_name").val();
+      let categoryAbout = $("#category_about").val();
+      if (categoryName.length >= 1 && categoryName.length <= 100) {
+        if (categoryAbout.length >= 1 && categoryAbout.length <= 300) {
+          let data = {
+            category: categoryName,
+            about: categoryAbout,
+            image: null,
+          };
+          if (imgSelect[0].files.length == 1) {
+            let encoded = await readFileAsDataURL(imgSelect[0].files[0]);
+            encoded = encoded.replace("data:image/png;base64,", "");
+            encoded = encoded.replaceAll("+", "-");
+            encoded = encoded.replaceAll("/", "_");
+            data["image"] = encoded;
+          }
 
-    fetch("http://localhost:8888/addcategory", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data);
-    })
-    .then((response) => response.text())
-    .then((result) => {
-      if (result == "ok") {
-        alert("카테고리를 생성했습니다!");
-        window.location.replace("http://localhost:8888/profile");
-      } else if (result == "no session") {
-        alert("로그인이 필요합니다!");
+          fetch("http://localhost:8888/addcategory", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          })
+            .then((response) => response.text())
+            .then((result) => {
+              canPost = true;
+              if (result == "ok") {
+                alert("카테고리를 생성했습니다!");
+                window.location.replace("http://localhost:8888/profile");
+              } else if (result == "no session") {
+                alert("로그인이 필요합니다!");
+              }
+            })
+            .finally(() => {
+              canPost = true;
+            });
+        } else {
+          alert("카테고리 설명은 1 ~ 300자 입니다!");
+        }
+      } else {
+        alert("카테고리명은 1 ~ 100자 입니다!");
       }
-    });
+    }
   });
 });

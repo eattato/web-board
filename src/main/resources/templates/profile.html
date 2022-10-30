@@ -23,7 +23,11 @@
       <div class="body">
         <div class="main">
           <div class="profile_top">
-            <a class="profile_warn" th:href="@{/verify}">
+            <a
+              class="profile_warn"
+              th:href="@{/verify}"
+              th:if="${profile.isVerify() == false}"
+            >
               이메일이 인증되지 않은 계정입니다! 이 탭을 누르면 인증 페이지로
               이동합니다.
             </a>

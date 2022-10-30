@@ -184,11 +184,21 @@
   margin: 0 5px;
 }
 
-.post_left img {
+.post_exact .post_img_frame {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100px;
   height: 100px;
   margin-left: 10px;
   background-color: lightgray;
+  border: 1px solid lightgray;
+  border-radius: 50px;
+  overflow: hidden;
+}
+
+.post_exact img {
+  width: 100px;
 }
 
 .post_exact p {

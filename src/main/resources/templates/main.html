@@ -32,10 +32,12 @@
         <div class="main">
           <div class="main_posts">
             <ul class="post_list">
-              <li class="post_simple" th:if="${#strings.equals(sidebar.getViewmode(), 'simple')}" th:each="category : ${categoryList}">
-                <a
-                  th:href="@{/category/{id}(id = ${category.getId()})}"
-                >
+              <li
+                class="post_simple"
+                th:if="${#strings.equals(sidebar.getViewmode(), 'simple')}"
+                th:each="category : ${categoryList}"
+              >
+                <a th:href="@{/category/{id}(id = ${category.getId()})}">
                   <div class="post_name" th:text="${category.getCategory()}">
                     카테고리 제목
                   </div>
@@ -59,20 +61,24 @@
                 </a>
               </li>
 
-              <li class="post_exact" th:if="${#strings.equals(sidebar.getViewmode(), 'exact')}" th:each="category: ${categoryList}">
-                <a
-                  th:href="@{/category/{id}(id = ${category.getId()})}"
-                >
+              <li
+                class="post_exact"
+                th:if="${#strings.equals(sidebar.getViewmode(), 'exact')}"
+                th:each="category: ${categoryList}"
+              >
+                <a th:href="@{/category/{id}(id = ${category.getId()})}">
                   <div class="post_left">
                     <div class="post_name" th:text="${category.getCategory()}">
                       카테고리 제목
                     </div>
                     <div class="post_info">
-                      <img
-                        src=""
-                        alt=""
-                        th:src="@{/images/{img}(img = ${category.getImg()})}"
-                      />
+                      <div class="post_img_frame">
+                        <img
+                          src=""
+                          alt=""
+                          th:src="@{/images/{img}(img = ${category.getImg()})}"
+                        />
+                      </div>
                       <p th:text="${category.getAbout()}">카테고리 설명</p>
                     </div>
                   </div>
@@ -98,21 +104,26 @@
             </ul>
 
             <ul class="paging">
-              <li class="post_move">
+              <li class="post_move" th:if="${page &gt; 1}">
+                <a th:href="@{/(page=1)}">&lt;&lt;</a>
+              </li>
+              <li class="post_move" th:if="${page &gt; 1}">
                 <a th:href="@{/(page=${page - 1})}">&lt;</a>
               </li>
+
               <li
                 class="post_button"
                 th:each="num : ${#numbers.sequence(1, pageCount)}"
                 th:classappend="${page} == num ? current : ''"
               >
-                <a
-                  th:href="@{/(page=${num})}"
-                  th:text="${num}"
-                ></a>
+                <a th:href="@{/(page=${num})}" th:text="${num}"></a>
               </li>
-              <li class="post_move">
+
+              <li class="post_move" th:if="${page &lt; pageCount}">
                 <a th:href="@{/(page=${page + 1})}">&gt;</a>
+              </li>
+              <li class="post_move" th:if="${page &lt; pageCount}">
+                <a th:href="|@{/(page=${pageCount})}|">&gt;&gt;</a>
               </li>
             </ul>
           </div>

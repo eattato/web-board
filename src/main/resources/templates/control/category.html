@@ -16,6 +16,20 @@
     <script src="/control/js/script.js"></script>
   </head>
   <body>
+    <div class="popup">
+      <div class="popup_frame">
+        <div class="popup_close">x</div>
+        <div class="popup_title">정말 이 카테고리를 삭제하시겠습니까?</div>
+        <div class="popup_desc">
+          해당 카테고리 내의 게시물과 댓글은 모두 삭제되며, 되돌릴 수 없습니다.
+        </div>
+        <div class="popup_tab">
+          <button type="button" class="popup_accept">확인</button>
+          <button type="button" class="popup_cancel">취소</button>
+        </div>
+      </div>
+    </div>
+
     <div class="wrap">
       <div class="banner" th:replace="fragments/common :: banner"></div>
       <div class="menu" th:replace="fragments/common :: header"></div>

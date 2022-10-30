@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 
+import spring.dto.CategoryCreateDTO;
 import spring.dto.CategorySetDTO;
 import spring.dto.SidebarMenu;
 import spring.service.AccountService;
@@ -78,6 +79,16 @@ public class ApiController {
     @PostMapping("/categoryset")
     public String updateCategory(HttpServletRequest request, @RequestBody CategorySetDTO data) {
         return pageService.updateCategory(request, data);
+    }
+
+    @PostMapping("/addcategory")
+    public String createCategory(HttpServletRequest request, @RequestBody CategoryCreateDTO data) {
+        return pageService.createCategory(request, data);
+    }
+
+    @PostMapping("/removecategory")
+    public String removeCategory(HttpServletRequest request, @RequestBody CategorySetDTO data) {
+        return pageService.removeCategory(request, data);
     }
 
     @PostMapping("/setprofile")
@@ -145,6 +156,7 @@ public class ApiController {
         if (vo.isRemove() == false) {
             return pageService.post(request, vo);
         } else {
+            log.info("remove request");
             return pageService.removePost(request, vo.getId());
         }
     }

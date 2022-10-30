@@ -36,7 +36,11 @@
         <div class="main">
           <div class="main_posts">
             <ul class="post_list">
-              <li class="post_simple" th:if="${#strings.equals(sidebar.getViewmode(), 'simple')}" th:each="post : ${posts}">
+              <li
+                class="post_simple"
+                th:if="${#strings.equals(sidebar.getViewmode(), 'simple')}"
+                th:each="post : ${posts}"
+              >
                 <a th:href="@{/posts/{id}(id = ${post.getId()})}">
                   <div class="post_left">
                     <div class="post_name" th:text="${post.getPostname()}">
@@ -88,7 +92,11 @@
                 </a>
               </li>
 
-              <li class="post_exact" th:if="${#strings.equals(sidebar.getViewmode(), 'exact')}" th:each="post : ${posts}">
+              <li
+                class="post_exact"
+                th:if="${#strings.equals(sidebar.getViewmode(), 'exact')}"
+                th:each="post : ${posts}"
+              >
                 <a th:href="@{/posts/{id}(id = ${post.getId()})}">
                   <div class="post_top">
                     <div class="post_top_left">
@@ -121,7 +129,13 @@
                   <div class="post_bottom">
                     <div class="post_left">
                       <div class="post_info">
-                        <img src="" alt="" />
+                        <div class="post_img_frame">
+                          <img
+                            src=""
+                            alt=""
+                            th:src="@{/images/{img}(img = ${categoryData.getImg()})}"
+                          />
+                        </div>
                         <p th:text="${post.getContent()}">글 내용</p>
                       </div>
                     </div>
@@ -157,37 +171,33 @@
             </ul>
 
             <ul class="paging">
-              <li class="post_move" th:if="${page != 1}">
-                <a
-                  th:href="|http://localhost:8888/category/${id}?page=1|"
-                  >&lt;&lt;</a
-                >
+              <li class="post_move" th:if="${page &gt; 1}">
+                <a th:href="@{/category/{id}(id = ${id})}">&lt;&lt;</a>
               </li>
-              <li class="post_move" th:if="${page != 1}">
-                <a
-                  th:href="|http://localhost:8888/category/${id}?page=${page - 1}|"
+              <li class="post_move" th:if="${page &gt; 1}">
+                <a th:href="@{/category/{id}(id = ${id}, page = ${page - 1})}"
                   >&lt;</a
                 >
               </li>
+
               <li
                 class="post_button"
                 th:each="num : ${#numbers.sequence(1, pageCount)}"
                 th:classappend="${page} == num ? current : ''"
               >
                 <a
-                  th:href="|http://localhost:8888/category/${id}?page=${num}|"
+                  th:href="@{/category/{id}(id = ${id}, page = ${num})}"
                   th:text="${num}"
                 ></a>
               </li>
+
               <li class="post_move" th:if="${page &lt; pageCount}">
-                <a
-                  th:href="|http://localhost:8888/category/${id}?page=${page + 1}|"
+                <a th:href="@{/category/{id}(id = ${id}, page = ${page + 1})}"
                   >&gt;</a
                 >
               </li>
               <li class="post_move" th:if="${page &lt; pageCount}">
-                <a
-                  th:href="|http://localhost:8888/category/${id}?page=${pageCount}|"
+                <a th:href="@{/category/{id}(id = ${id}, page = ${pageCount})}"
                   >&gt;&gt;</a
                 >
               </li>

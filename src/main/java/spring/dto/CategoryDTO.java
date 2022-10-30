@@ -40,10 +40,14 @@ public class CategoryDTO {
 
     // private methods
     private List<String> getStringAsList(String target) {
-        String[] list = target.split(" ");
-        if (list.length == 0 && target != null) {
-            list = new String[] {target};
+        if (target != null) {
+            String[] list = target.split(" ");
+            if (list.length == 0 && target != null) {
+                list = new String[] {target};
+            }
+            return new ArrayList<>(Arrays.asList(list));
+        } else {
+            return new ArrayList<String>();
         }
-        return new ArrayList<>(Arrays.asList(list));
     }
 }

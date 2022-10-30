@@ -191,21 +191,25 @@ public class AccountService {
                     if (result == null) {
                         if (data.getImage() != null) {
                             AccountDataDTO userData = accountDao.getUserData(sessionData);
-                            String faceimg = userData.getFaceimg();
-                            if (faceimg != null && !faceimg.equals("profiles/default.png") && !faceimg.equals("profiles/delete.png")) {
-                                File oldImage = new File("C:/board-saves/" + userData.getFaceimg());
-                                oldImage.delete();
-                            }
-
-                            File image = fileService.uploadImage(data.getImage());
-                            if (image != null && image.exists() == true) {
-                                log.info(auditDone, String.format("%s uploaded profile image %s", request.getRemoteAddr(), image.getAbsolutePath()));
-//                                log.info(image.toString());
-                                String directory = fileService.getImageDirectory(image);
-
-                                if (accountDao.setProfileImage(sessionData, directory) == 0) {
-                                    result = "failed";
+                            if (userData != null) {
+                                String faceimg = userData.getFaceimg();
+                                if (faceimg != null && !faceimg.equals("profiles/default.png") && !faceimg.equals("profiles/delete.png")) {
+                                    File oldImage = new File("C:/board-saves/" + userData.getFaceimg());
+                                    oldImage.delete();
                                 }
+
+                                File image = fileService.uploadImage(data.getImage());
+                                if (image != null && image.exists() == true) {
+                                    log.info(auditDone, String.format("%s uploaded profile image %s", request.getRemoteAddr(), image.getAbsolutePath()));
+//                                log.info(image.toString());
+                                    String directory = fileService.getImageDirectory(image);
+
+                                    if (accountDao.setProfileImage(sessionData, directory) == 0) {
+                                        result = "failed";
+                                    }
+                                }
+                            } else {
+                                result = "user not found";
                             }
                         }
                     }

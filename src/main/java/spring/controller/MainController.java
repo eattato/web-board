@@ -285,6 +285,7 @@ public class MainController {
         model.addAttribute("categoryData", categoryData);
         model.addAttribute("id", vo.getCategoryIndex());
         model.addAttribute("page", vo.getPage());
-        model.addAttribute("pageCount", (int)Math.ceil((float)pageService.getPostCount() / postPerPage));
+        model.addAttribute("pageCount", (int)Math.ceil((float)posts.size() / postPerPage));
+        log.info(String.format("post count: %s / ppp: %s -> ceiled = page count: %s", posts.size(), postPerPage, (int)Math.ceil((float)posts.size() / postPerPage)));
     }
 }

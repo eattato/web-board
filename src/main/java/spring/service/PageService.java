@@ -113,14 +113,15 @@ public class PageService {
                     if (data.getCategory().length() >= 1 && data.getCategory().length() <= 100) {
                         if (data.getAbout().length() >= 1 && data.getAbout().length() <= 300) {
                             int result = pageDao.addCategory(data);
-                            
+
                             if (result == 1) {
                                 if (data.getImage() != null) {
                                     File image = fileService.uploadImage(data.getImage());
                                     if (image != null && image.exists() == true) {
                                         log.info(String.format("%s uploaded profile image %s", request.getRemoteAddr(), image.getAbsolutePath()));
                                         String directory = fileService.getImageDirectory(image);
-                                        pageDao.setCategoryImage(pageDao.getIdCurrent("category"), directory)
+                                        int id = pageDao.getIdCurrent("categories");
+                                        pageDao.setCategoryImage(id, directory);
                                     }
                                 }
                                 return "ok";
@@ -153,7 +154,7 @@ public class PageService {
                 CategoryDTO categoryData = getCategoryData(data.getId());
                 AccountDataDTO userData = accountService.getUserData(sessionData);
                 if (categoryData != null) {
-                    if (userData != null && (userData.isIsadmin() || categoryData.getAdminList().contains(sessionData))) {
+                    if (userData != null && (userData.isIsadmin())) {
                         int result = pageDao.removeCategory(data.getId());
                         if (result == 1) {
                             return "ok";
@@ -189,8 +190,8 @@ public class PageService {
         return result;
     }
 
-    public int getPostCount() {
-        return pageDao.getPostCount();
+    public int getPostCount(int id) {
+        return pageDao.getPostCount(id);
     }
 
     public boolean getPost(HttpServletRequest request, int id, Model model) {
@@ -375,11 +376,15 @@ public class PageService {
             AccountDataDTO userData = accountService.getProfile(sessionData);
             PostDTO postData = pageDao.getPostData(id);
             if (postData != null) {
-                CategoryDTO categoryData = pageDao.getCategoryData(postData.getId());
+                CategoryDTO categoryData = pageDao.getCategoryData(postData.getCategory());
                 if (categoryData != null) {
                     if (userData != null && (postData.getAuthor().equals(sessionData) || userData.isIsadmin() == true || categoryData.getAdminList().contains(sessionData))) {
-                        pageDao.removePost(id);
-                        return "ok";
+                        int result = pageDao.removePost(id);
+                        if (result == 1) {
+                            return "ok";
+                        } else {
+                            return "failed";
+                        }
                     } else {
                         return "no access";
                     }

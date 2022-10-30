@@ -85,7 +85,7 @@
                     <a th:href="@{/editor/{id}(id = ${post.getId()})}">수정</a>
                   </button>
                   <button
-                    th:if="${profile != null && (#strings.equals(post.getAuthor(), email) || profile.isIsadmin() == true)}"
+                    th:if="${profile != null && (#strings.equals(post.getAuthor(), email) || profile.isIsadmin() == true || #lists.contains(category.getAdminList(), email))}"
                     type="button"
                     class="post_ellipsis_delete"
                   >
@@ -246,7 +246,7 @@
                         신고
                       </button>
                       <button
-                        th:if="${profile != null && (#strings.equals(comment.getAuthor(), email) || profile.isIsadmin() == true)}"
+                        th:if="${profile != null && (#strings.equals(comment.getAuthor(), email) || profile.isIsadmin() == true || #lists.contains(category.getAdminList(), email))}"
                         type="button"
                         class="comment_ellipsis_delete"
                       >

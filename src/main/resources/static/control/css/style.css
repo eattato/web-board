@@ -96,15 +96,16 @@
 
 .setting_img_frame {
   display: flex;
-  width: 70px;
-  height: 70px;
+  width: 60px;
+  height: 60px;
+  margin-top: 10px;
   border-radius: 35px;
   border: 1px solid lightgray;
   overflow: hidden;
 }
 
 .setting_img_frame img {
-  width: 70px;
+  width: 60px;
 }
 
 .setting_right {
@@ -395,4 +396,80 @@
 
 #profile_img_select:hover {
   background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* popup */
+.popup {
+  position: fixed;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 10;
+}
+.popup.activated {
+  display: flex;
+}
+
+.popup_frame {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 700px;
+  height: 400px;
+  background-color: white;
+  border-radius: 10px;
+  padding: 0 20px;
+}
+
+.popup_title {
+  position: absolute;
+  top: 20px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.popup_desc {
+  font-size: 18px;
+}
+
+.popup_close {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  color: red;
+  cursor: pointer;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.popup_tab {
+  position: absolute;
+  display: flex;
+  bottom: 20px;
+  width: auto;
+  height: 30px;
+}
+
+.popup_tab > button {
+  width: 70px;
+  height: 30px;
+  margin: 0 10px;
+  text-align: center;
+  line-height: 30px;
+  border: 1px solid lightgray;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.popup_accept {
+  background-color: #b6ffcb;
+}
+
+.popup_cancel {
+  background-color: #ffadad;
 }
