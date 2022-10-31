@@ -29,7 +29,10 @@
         <div class="main">
           <div class="editor">
             <div class="editor_top">
-              <select id="editor_category" th:value="${pastData != null} ? ${pastData.getCategory()} : ''">
+              <select
+                id="editor_category"
+                th:value="${pastData != null} ? ${pastData.getCategory()} : ''"
+              >
                 <option
                   th:each="category : ${categoryList}"
                   th:value="${category.getId()}"
@@ -54,8 +57,7 @@
                     th:text="${tag.getTagname()}"
                     th:title="${tag.getTagdesc()}"
                     th:style="|color: #${tag.getTagcolor()}|"
-                    >
-                  </li>
+                  ></li>
                 </div>
 
                 <li class="editor_tag_add">
@@ -68,6 +70,7 @@
                   <ul class="editor_tag_recommend">
                     <div
                       th:each="tag : ${tags}"
+                      th:if="${tag.getAdminonly() == false || profile.isIsadmin() == true}"
                       th:text="${tag.getTagname()}"
                       th:title="${tag.getTagdesc()}"
                       th:style="|color: #${tag.getTagcolor()}|"

@@ -415,6 +415,8 @@ public class PageDao {
                 return jt.update(String.format("UPDATE tags SET tagcolor = '%s' WHERE id = %s;", data.getTarget(), data.getId()));
             } else if (data.getAct().equals("changeAdmin")) {
                 return jt.update(String.format("UPDATE tags SET adminonly = %s WHERE id = %s;", data.isBoolTarget(), data.getId()));
+            } else if (data.getAct().equals("removeTag")) {
+                return jt.update(String.format("DELETE FROM tags WHERE id = %s;", data.getId()));
             }
             else {
                 return 0;

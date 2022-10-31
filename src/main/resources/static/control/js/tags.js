@@ -150,7 +150,6 @@ $(() => {
   });
 
   $(".setting_admin").change(function () {
-    console.log("change");
     if (canPost == true) {
       let input = $(this).is(":checked");
       let target = $(this).parent().parent().parent();

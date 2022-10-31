@@ -227,64 +227,76 @@ public class PageService {
         HttpSession session = request.getSession();
         String sessionData = accountService.getSession(session);
         if (sessionData != null) {
-            if (data.isValid() == true) {
-                if (data.getTitle().length() > 0 && data.getTitle().length() <= 100) {
-                    if (pageDao.hasCategory(data.getCategory()) == true) {
-                        boolean tagNormal = true;
-                        if (data.getTags().length() >= 1) {
-                            List<TagDTO> tagDataList = getAllTags();
-                            List<Integer> tags = new ArrayList<>();
-                            for (int ind = 0; ind < tagDataList.size(); ind++) {
-                                tags.add(tagDataList.get(ind).getId());
-                            }
-                            for (int tag : data.getTagsAsInt()) {
-                                if (tags.contains(tag) == false) {
-                                    tagNormal = false;
-                                }
-                            }
-                        }
-
-                        if (tagNormal == true) {
-                            data.setAuthor(sessionData);
-                            if (data.getId() == -1) {
-                                //log.info("new post request!");
-                                int result = pageDao.post(data);
-                                if (result == 1) {
-                                    //log.info("successfully posted! id: " + pageDao.getIdCurrent("posts"));
-                                    return Integer.toString(pageDao.getIdCurrent("posts"));
-                                } else {
-                                    //log.info("failed posting!!!");
-                                    return "data save failed";
-                                }
-                            } else {
-                                //log.info("post edit request!");
-                                PostDTO postData = pageDao.getPostData(data.getId());
-                                if (postData != null) {
-                                    if (postData.getAuthor().equals(sessionData)) {
-                                        int result = pageDao.updatePost(data);
-                                        if (result == 1) {
-                                            return Integer.toString(data.getId());
-                                        } else {
-                                            return "data save failed";
+            AccountDataDTO userData = accountService.getUserData(sessionData);
+            if (userData != null) {
+                if (data.isValid() == true) {
+                    if (data.getTitle().length() > 0 && data.getTitle().length() <= 100) {
+                        if (pageDao.hasCategory(data.getCategory()) == true) {
+                            boolean tagNormal = true;
+                            if (data.getTags().length() >= 1) {
+                                List<TagDTO> tagDataList = getAllTags();
+                                for (int tagId : data.getTagsAsInt()) {
+                                    boolean foundTag = false;
+                                    for (TagDTO tagData : tagDataList) {
+                                        if (tagData.getId() == tagId) {
+                                            foundTag = true;
+                                            if (tagData.getAdminonly() == true && userData.isIsadmin() == false) {
+                                                tagNormal = false;
+                                            }
+                                            break;
                                         }
+                                    }
+                                    if (foundTag == false || tagNormal == false) {
+                                        tagNormal = false;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (tagNormal == true) {
+                                data.setAuthor(sessionData);
+                                if (data.getId() == -1) {
+                                    //log.info("new post request!");
+                                    int result = pageDao.post(data);
+                                    if (result == 1) {
+                                        //log.info("successfully posted! id: " + pageDao.getIdCurrent("posts"));
+                                        return Integer.toString(pageDao.getIdCurrent("posts"));
                                     } else {
-                                        return "no access";
+                                        //log.info("failed posting!!!");
+                                        return "data save failed";
                                     }
                                 } else {
-                                    return "post not found";
+                                    //log.info("post edit request!");
+                                    PostDTO postData = pageDao.getPostData(data.getId());
+                                    if (postData != null) {
+                                        if (postData.getAuthor().equals(sessionData)) {
+                                            int result = pageDao.updatePost(data);
+                                            if (result == 1) {
+                                                return Integer.toString(data.getId());
+                                            } else {
+                                                return "data save failed";
+                                            }
+                                        } else {
+                                            return "no access";
+                                        }
+                                    } else {
+                                        return "post not found";
+                                    }
                                 }
+                            } else {
+                                return "tag not found";
                             }
                         } else {
-                            return "tag not found";
+                            return "category does not exist";
                         }
                     } else {
-                        return "category does not exist";
+                        return "title not valid";
                     }
                 } else {
-                    return "title not valid";
+                    return "post not valid";
                 }
             } else {
-                return "post not valid";
+                return "user not found";
             }
         } else {
             return "no session";
