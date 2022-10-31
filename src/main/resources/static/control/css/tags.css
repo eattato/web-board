@@ -17,6 +17,10 @@
   cursor: pointer;
 }
 
+.control_title {
+  margin-bottom: 20px;
+}
+
 .setting_img_frame,
 .control_img_frame {
   position: relative;
@@ -34,7 +38,6 @@
 }
 
 .control_input_wrap .control_img_frame {
-  margin-right: 170px;
   margin-left: 20px;
 }
 
@@ -69,4 +72,20 @@
   align-items: center;
   width: 400px;
   height: auto;
+}
+
+.control_checkbox_frame {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  width: 170px;
+}
+
+.control_checkbox_frame input {
+  width: 30px;
+  height: 30px;
+}
+
+.control_checkbox_frame .control_info {
+  font-size: 14px;
 }

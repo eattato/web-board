@@ -513,7 +513,7 @@ public class PageService {
                 AccountDataDTO userData = accountService.getUserData(sessionData);
                 if (tagData != null) {
                     if (userData != null && userData.isIsadmin()) {
-                        List<String> availableActs = Arrays.asList(new String[] {"changeName", "changeAbout", "changeColor", "removeTag"});
+                        List<String> availableActs = Arrays.asList(new String[] {"changeName", "changeAbout", "changeColor", "removeTag", "changeAdmin"});
                         if (availableActs.contains(data.getAct())) {
                             String error = null;
                             if (data.getAct().equals("changeName")) {
@@ -551,6 +551,43 @@ public class PageService {
                 }
             } else {
                 return "no such category";
+            }
+        } else {
+            return "no session";
+        }
+    }
+
+    public String createTag(HttpServletRequest request, TagCreateDTO data) {
+        HttpSession session = request.getSession();
+        String sessionData = accountService.getSession(session);
+
+        if (sessionData != null) {
+            AccountDataDTO userData = accountService.getUserData(sessionData);
+            if (userData != null && userData.isIsadmin()) {
+                if (data.getTag() != null && data.getAbout() != null && data.getColor() != null) {
+                    if (data.getTag().length() >= 1 && data.getTag().length() <= 30) {
+                        if (data.getAbout().length() >= 1 && data.getAbout().length() <= 300) {
+                            if (data.getColor().length() == 6) {
+                                int result = pageDao.addTag(data);
+                                if (result == 1) {
+                                    return "ok";
+                                } else {
+                                    return "failed";
+                                }
+                            } else {
+                                return "wrong color";
+                            }
+                        } else {
+                            return "wrong about";
+                        }
+                    } else {
+                        return "wrong category";
+                    }
+                } else {
+                    return "no data";
+                }
+            } else {
+                return "no access";
             }
         } else {
             return "no session";

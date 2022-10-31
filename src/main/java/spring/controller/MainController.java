@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import spring.dto.AccountDataDTO;
-import spring.dto.CategoryDTO;
-import spring.dto.PostDTO;
-import spring.dto.SidebarMenu;
+import spring.dto.*;
 import spring.service.AccountService;
 
 import javax.servlet.http.HttpServletRequest;

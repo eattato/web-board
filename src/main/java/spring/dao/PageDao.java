@@ -413,6 +413,8 @@ public class PageDao {
                 return jt.update(String.format("UPDATE tags SET tagdesc = '%s' WHERE id = %s;", data.getTarget(), data.getId()));
             } else if (data.getAct().equals("changeColor")) {
                 return jt.update(String.format("UPDATE tags SET tagcolor = '%s' WHERE id = %s;", data.getTarget(), data.getId()));
+            } else if (data.getAct().equals("changeAdmin")) {
+                return jt.update(String.format("UPDATE tags SET adminonly = %s WHERE id = %s;", data.isBoolTarget(), data.getId()));
             }
             else {
                 return 0;
@@ -420,6 +422,11 @@ public class PageDao {
         } else {
             return 0;
         }
+    }
+
+    public int addTag(TagCreateDTO data) {
+        int nextId = getIdCurrent("tags") + 1;
+        return jt.update(String.format("INSERT INTO tags VALUES(%s, '%s', '%s', %s, '%s');", nextId, data.getTag(), data.getAbout(), data.isAdmin(), data.getColor()));
     }
 
     // Misc

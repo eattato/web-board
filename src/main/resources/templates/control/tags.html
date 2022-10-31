@@ -109,7 +109,11 @@
                   <div class="setting_bottom">
                     <div class="setting_option">
                       <div class="setting_display">관리자 전용</div>
-                      <input type="checkbox" />
+                      <input
+                        class="setting_admin"
+                        th:checked="${tag.getAdminonly()}"
+                        type="checkbox"
+                      />
                     </div>
                   </div>
                 </li>
@@ -144,6 +148,11 @@
                     style="background-color: black"
                   ></div>
                   <div class="setting_color_editting">수정 중</div>
+                </div>
+
+                <div class="control_checkbox_frame">
+                  <div class="control_info">관리자 전용 태그</div>
+                  <input type="checkbox" />
                 </div>
               </div>
 

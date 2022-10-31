@@ -9,7 +9,7 @@ public class TagDTO {
     private int id;
     private String tagname;
     private String tagdesc;
-    private Boolean adminonly;
+    private Boolean adminonly = false;
     private String tagcolor;
 
     // Getter

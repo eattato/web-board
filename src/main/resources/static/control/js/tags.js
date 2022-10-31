@@ -149,6 +149,55 @@ $(() => {
     }
   });
 
+  $(".setting_admin").change(function () {
+    console.log("change");
+    if (canPost == true) {
+      let input = $(this).is(":checked");
+      let target = $(this).parent().parent().parent();
+
+      let tag = null;
+      // 카테고리 배열 검색
+      for (let ind in tagDatas) {
+        let check = tagDatas[ind];
+        if (check.obj.is(target)) {
+          tag = check;
+          break;
+        }
+      }
+
+      if (tag != null) {
+        let data = {
+          act: "changeAdmin",
+          id: tag.id,
+          boolTarget: input,
+        };
+
+        fetch("http://localhost:8888/tagset", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => response.text())
+          .then((result) => {
+            if (result == "ok") {
+            } else if (result == "no such tag") {
+              alert("존재하지 않는 카테고리입니다!");
+            } else if (result == "no session") {
+              alert("로그인이 필요합니다!");
+            } else if (result == "no access") {
+              alert("권한이 없습니다!");
+            }
+            canPost = true;
+          })
+          .finally(() => {
+            canPost = true;
+          });
+      }
+    }
+  });
+
   let removingCategory = -1;
   $(".setting_close").click(function () {
     let target = $(this).parent().parent().parent().parent().parent();
@@ -218,8 +267,8 @@ $(() => {
 
   $(".control_create").click(() => {
     if (canPost == true) {
-      let tagName = $("#tag_name").val();
-      let tagAbout = $("#tag_about").val();
+      let tagName = $("#category_name").val();
+      let tagAbout = $("#category_about").val();
       if (tagName.length >= 1 && tagName.length <= 100) {
         if (tagAbout.length >= 1 && tagAbout.length <= 300) {
           let data = {
@@ -229,6 +278,7 @@ $(() => {
               "#",
               ""
             ),
+            admin: $(".control_checkbox_frame input").is(":checked"),
           };
 
           fetch("http://localhost:8888/addtag", {

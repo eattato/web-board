@@ -24,6 +24,7 @@ import java.util.Map;
 import spring.dto.CategoryCreateDTO;
 import spring.dto.CategorySetDTO;
 import spring.dto.SidebarMenu;
+import spring.dto.TagCreateDTO;
 import spring.service.AccountService;
 import spring.service.FileService;
 import spring.service.MailService;
@@ -89,6 +90,11 @@ public class ApiController {
     @PostMapping("/tagset")
     public String updateTag(HttpServletRequest request, @RequestBody CategorySetDTO data) {
         return pageService.updateTag(request, data);
+    }
+
+    @PostMapping("/addtag")
+    public String createTag(HttpServletRequest request, @RequestBody TagCreateDTO data) {
+        return pageService.createTag(request, data);
     }
 
     @PostMapping("/setprofile")

@@ -9,4 +9,5 @@ public class CategorySetDTO {
     private String act;
     private int id;
     private String target;
+    private boolean boolTarget = false;
 }
