@@ -94,6 +94,7 @@ public class MainController {
 
     @GetMapping("/category/{id}")
     public String category(HttpServletRequest request, Model model, PageVO vo, @PathVariable String id) {
+        log.info(vo.getSearch());
         accountService.sendProfileBySession(request, model);
         SidebarMenu sidebar = accountService.loadSidebarMenu(request, model, vo);
         model.addAttribute("sidebarMode", "category");
@@ -257,7 +258,6 @@ public class MainController {
         }
 
         int postPerPage = 0;
-        log.info(vo.getViewmode());
         if (vo.getViewmode().equals("exact")) {
             postPerPage = 4;
         } else {
@@ -279,6 +279,5 @@ public class MainController {
         model.addAttribute("page", vo.getPage());
         int pageCount = (int)Math.ceil((float)categoryData.getPosts() / postPerPage);
         model.addAttribute("pageCount", pageCount);
-        log.info(String.format("ppp: %s, %s / %s = %s -> %s", postPerPage, categoryData.getPosts(), postPerPage, (float)categoryData.getPosts() / postPerPage, pageCount));
     }
 }

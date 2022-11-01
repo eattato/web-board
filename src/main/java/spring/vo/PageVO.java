@@ -120,5 +120,6 @@ public class PageVO {
         if (searchParams.length == 0) {
             searchParams = new String[] {target};
         }
+        search = target;
     }
 }
