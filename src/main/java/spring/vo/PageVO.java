@@ -116,7 +116,6 @@ public class PageVO {
     }
 
     public void setSearch(String target) {
-        search = target;
         searchParams = target.split(" ");
         if (searchParams.length == 0) {
             searchParams = new String[] {target};

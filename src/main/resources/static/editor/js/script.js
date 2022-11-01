@@ -39,6 +39,9 @@ $(() => {
     elPlaceHolder: "editor_text",
     sSkinURI: "../../../library/smarteditor2-2.8.2.3/SmartEditor2Skin.html",
     fCreator: "createSEditor2",
+    htParams: {
+      bSkipXssFilter: true, // client-side xss filter 무시 여부 (true:사용하지 않음 / 그외:사용)
+    },
   });
 
   let category = $("#editor_category");

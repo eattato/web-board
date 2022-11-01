@@ -109,9 +109,9 @@ public class PageDao {
                 String admins = String.join(" ", adminList);
                 return jt.update(String.format("UPDATE categories SET admins = '%s' WHERE id = %s;", admins, data.getId()));
             } else if (data.getAct().equals("changeName")) {
-                return jt.update(String.format("UPDATE categories SET category = '%s' WHERE id = %s;", data.getTarget(), data.getId()));
+                return jt.update(String.format("UPDATE categories SET category = '%s' WHERE id = %s;", data.getTarget().replaceAll("'", "''"), data.getId()));
             } else if (data.getAct().equals("changeAbout")) {
-                return jt.update(String.format("UPDATE categories SET about = '%s' WHERE id = %s;", data.getTarget(), data.getId()));
+                return jt.update(String.format("UPDATE categories SET about = '%s' WHERE id = %s;", data.getTarget().replaceAll("'", "''"), data.getId()));
             }
             else {
                 return 0;
@@ -123,7 +123,7 @@ public class PageDao {
 
     public int addCategory(CategoryCreateDTO data) {
         int nextId = getIdCurrent("categories") + 1;
-        return jt.update(String.format("INSERT INTO categories VALUES(%s, '%s', '%s', null, false, false, null);", nextId, data.getCategory(), data.getAbout()));
+        return jt.update(String.format("INSERT INTO categories VALUES(%s, '%s', '%s', null, false, false, null);", nextId, data.getCategory().replaceAll("'", "''"), data.getAbout().replaceAll("'", "''")));
     }
 
     public int removeCategory(int id) {
@@ -245,15 +245,15 @@ public class PageDao {
     public int post(PostVO vo) {
         String queryString = "INSERT INTO posts VALUES(";
         int idCurrent = getIdCurrent("posts");
-        queryString += String.format("%s, %s, '%s', '%s', '%s', '%s', %s, %s, %s, '%s', '', '');", idCurrent + 1, vo.getCategory(), vo.getTitle(), vo.getAuthor(), LocalDate.now(), vo.getContent(), 0, 0, 0, vo.getTags());
+        queryString += String.format("%s, %s, '%s', '%s', '%s', '%s', 0, 0, 0, '%s', '', '');", idCurrent + 1, vo.getCategory(), vo.getTitle().replaceAll("'", "''"), vo.getAuthor(), LocalDate.now(), vo.getContent().replaceAll("'", "''"), vo.getTags());
         return jt.update(queryString);
     }
 
     public int updatePost(PostVO vo) {
         String queryString = "UPDATE posts SET ";
         queryString += String.format("category = %s, ", vo.getCategory());
-        queryString += String.format("postname = '%s', ", vo.getTitle());
-        queryString += String.format("content = '%s', ", vo.getContent());
+        queryString += String.format("postname = '%s', ", vo.getTitle().replaceAll("'", "''"));
+        queryString += String.format("content = '%s', ", vo.getContent().replaceAll("'", "''"));
         queryString += String.format("taglist = '%s' ", vo.getTags());
         queryString += String.format("WHERE id = %s;", vo.getId());
         return jt.update(queryString);
@@ -332,7 +332,7 @@ public class PageDao {
     public int uploadComment(CommentVO vo) {
         String queryString = "INSERT INTO comments VALUES(";
         int idCurrent = getIdCurrent("comments");
-        queryString += String.format("%s, %s, '%s', %s, '%s', '%s');", idCurrent + 1, vo.getPost(), vo.getAuthor(), vo.getReplyTarget(), vo.getContent(), LocalDate.now());
+        queryString += String.format("%s, %s, '%s', %s, '%s', '%s');", idCurrent + 1, vo.getPost(), vo.getAuthor(), vo.getReplyTarget(), vo.getContent().replaceAll("'", "''"), LocalDate.now());
         return jt.update(queryString);
     }
 
@@ -408,7 +408,7 @@ public class PageDao {
         TagDTO tagData = getTagData(data.getId());
         if (tagData != null) {
             if (data.getAct().equals("changeName")) {
-                return jt.update(String.format("UPDATE tags SET tagname = '%s' WHERE id = %s;", data.getTarget(), data.getId()));
+                return jt.update(String.format("UPDATE tags SET tagname = '%s' WHERE id = %s;", data.getTarget().replaceAll("'", "''"), data.getId()));
             } else if (data.getAct().equals("changeAbout")) {
                 return jt.update(String.format("UPDATE tags SET tagdesc = '%s' WHERE id = %s;", data.getTarget(), data.getId()));
             } else if (data.getAct().equals("changeColor")) {
@@ -428,7 +428,7 @@ public class PageDao {
 
     public int addTag(TagCreateDTO data) {
         int nextId = getIdCurrent("tags") + 1;
-        return jt.update(String.format("INSERT INTO tags VALUES(%s, '%s', '%s', %s, '%s');", nextId, data.getTag(), data.getAbout(), data.isAdmin(), data.getColor()));
+        return jt.update(String.format("INSERT INTO tags VALUES(%s, '%s', '%s', %s, '%s');", nextId, data.getTag().replaceAll("'", "''"), data.getAbout().replaceAll("'", "''"), data.isAdmin(), data.getColor()));
     }
 
     // Misc
