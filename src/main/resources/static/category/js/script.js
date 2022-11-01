@@ -8,6 +8,7 @@ function httpGet(url) {
 const removeHTML = (target) => {
   let inTag = false;
   let ind = 0;
+  target = target.replaceAll("&nbsp;", "");
   while (ind <= target.length - 1) {
     let char = target.charAt(ind);
     let cutThis = false;

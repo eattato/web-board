@@ -416,16 +416,4 @@ $(() => {
       }
     }
   });
-
-  let colorEditting = null;
-  var colorPicker = new iro.ColorPicker("#picker", {
-    width: 170,
-    color: "#00FF00",
-  });
-  colorPicker.on("color:change", function (color) {
-    console.log(color.hexString);
-  });
-
-  $(".setting_color").click(function () {});
-  //colorPicker.color.hexString
 });
