@@ -73,7 +73,10 @@ public class PageDao {
     }
 
     public CategoryDTO getCategoryData(int id) {
-        String queryString = String.format("SELECT * FROM categories WHERE id = %s", id);
+        String queryString = "SELECT categories.*, COUNT(posts.category) AS posts, SUM(IFNULL(posts.loved, 0)) - SUM(IFNULL(posts.hated, 0)) AS loved FROM categories " +
+                "LEFT JOIN posts " +
+                "ON (categories.id = posts.category) ";
+        queryString += String.format("WHERE categories.id = %s", id);
         List<Map<String, Object>> queryResult = getRows(queryString);
         if (queryResult.size() >= 1) {
             return mapper.convertValue(queryResult.get(0), CategoryDTO.class);

@@ -40,18 +40,12 @@ public class MainController {
     public String main(HttpServletRequest request, Model model, PageVO vo) {
         accountService.sendProfileBySession(request, model);
         SidebarMenu sidebar = accountService.loadSidebarMenu(request, model, vo);
+        //model.addAttribute("sidebarMode", "default");
 
         if (vo.getPage() < 1) {
             vo.setPage(1);
         }
-        int postPerPage = 0;
-        if (vo.getViewmode().equals("exact")) {
-            postPerPage = 10;
-        } else {
-            postPerPage = 25;
-        }
-        vo.setStartIndex((vo.getPage() - 1) * postPerPage);
-        vo.setEndIndex(vo.getPage() * postPerPage);
+        int postPerPage = markPageListToVO(vo);
 
         List<CategoryDTO> result = pageService.getCategoryList(vo);
         // 카테고리에서 클라이언트가 볼 필요 없는 내용 삭제, 근데 다 공개해도 상관 없는 내용이라 그냥 줌
@@ -263,6 +257,7 @@ public class MainController {
         }
 
         int postPerPage = 0;
+        log.info(vo.getViewmode());
         if (vo.getViewmode().equals("exact")) {
             postPerPage = 4;
         } else {
@@ -282,6 +277,8 @@ public class MainController {
         model.addAttribute("categoryData", categoryData);
         model.addAttribute("id", vo.getCategoryIndex());
         model.addAttribute("page", vo.getPage());
-        model.addAttribute("pageCount", (int)Math.ceil((float)posts.size() / postPerPage));
+        int pageCount = (int)Math.ceil((float)categoryData.getPosts() / postPerPage);
+        model.addAttribute("pageCount", pageCount);
+        log.info(String.format("ppp: %s, %s / %s = %s -> %s", postPerPage, categoryData.getPosts(), postPerPage, (float)categoryData.getPosts() / postPerPage, pageCount));
     }
 }

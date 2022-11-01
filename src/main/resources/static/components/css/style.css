@@ -1,8 +1,17 @@
+@font-face {
+  font-family: "NEXON Lv2 Gothic";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/NEXON Lv2 Gothic.woff")
+    format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
 * {
   padding: 0;
   margin: 0;
   color: black;
   box-sizing: border-box;
+  font-family: "NEXON Lv2 Gothic";
 }
 a {
   display: block;
@@ -54,11 +63,37 @@ input[type="file"] {
   height: 40px;
 }
 
+@keyframes menuHover {
+  from {
+    background-color: transparent;
+    color: black;
+  }
+  to {
+    background-color: #545454;
+    color: white;
+  }
+}
+@keyframes menuHoverOut {
+  from {
+    background-color: #545454;
+    color: white;
+  }
+  to {
+    background-color: transparent;
+    color: black;
+  }
+}
 .menu li {
   width: 100px;
   height: 40px;
   text-align: center;
   line-height: 40px;
+}
+.menu a {
+  animation: menuHoverOut 0.5s forwards;
+}
+.menu a:hover {
+  animation: menuHover 0.2s forwards;
 }
 
 .menu_profile {
