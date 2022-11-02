@@ -209,16 +209,30 @@ public class PageDao {
     }
 
     public int getPostCount(int id) {
-        String queryString = String.format("SELECT COUNT(id) AS csize FROM posts WHERE id = %s;", id);
-        List<Map<String, Object>> queryResult = getRows(queryString);
-        if (queryResult.size() >= 1) {
-            if (queryResult.get(0).get("csize") != null) {
-                return Integer.parseInt(queryResult.get(0).get("csize").toString());
+        if (id != -1) {
+            String queryString = String.format("SELECT COUNT(id) AS csize FROM posts WHERE id = %s;", id);
+            List<Map<String, Object>> queryResult = getRows(queryString);
+            if (queryResult.size() >= 1) {
+                if (queryResult.get(0).get("csize") != null) {
+                    return Integer.parseInt(queryResult.get(0).get("csize").toString());
+                } else {
+                    return 0;
+                }
             } else {
                 return 0;
             }
         } else {
-            return 0;
+            String queryString = String.format("SELECT COUNT(id) AS csize FROM posts;");
+            List<Map<String, Object>> queryResult = getRows(queryString);
+            if (queryResult.size() >= 1) {
+                if (queryResult.get(0).get("csize") != null) {
+                    return Integer.parseInt(queryResult.get(0).get("csize").toString());
+                } else {
+                    return 0;
+                }
+            } else {
+                return 0;
+            }
         }
     }
 
