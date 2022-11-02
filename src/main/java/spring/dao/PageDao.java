@@ -142,7 +142,7 @@ public class PageDao {
     private String queryConnect(boolean firstQuestion, boolean whereAdded) {
         String result = "";
         if (firstQuestion == true) {
-            if (whereAdded == false) {
+            if (whereAdded == true) {
                 result = "AND (";
             } else {
                 result = "WHERE (";
@@ -155,26 +155,28 @@ public class PageDao {
 
     public List<PostDTO> getPostList(PageVO data, int actType) {
         String queryString = "SELECT id, category, postname, author, postdate, content, IFNULL(loved, 0) - IFNULL(hated, 0) AS loved, IFNULL(viewers, 0) AS viewers, IFNULL(viewers, 0) + IFNULL(loved, 0) - IFNULL(hated, 0) AS interest, taglist FROM posts ";
+        boolean whereAdded = false;
         if (actType == 0) {
+            whereAdded = true;
             queryString += String.format("WHERE category = %s ", data.getCategoryIndex());
         }
 
         if (data.getSearch() != null) {
             boolean firstQuestion = true;
             if (data.isTitle()) {
-                queryString += queryConnect(firstQuestion, false) + String.format("postname LIKE '%%%s%%' ", data.getSearch());
+                queryString += queryConnect(firstQuestion, whereAdded) + String.format("postname LIKE '%%%s%%' ", data.getSearch());
                 firstQuestion = false;
             }
             if (data.isAuthor()) {
-                queryString += queryConnect(firstQuestion, false) + String.format("author LIKE '%%%s%%' ", data.getSearch());
+                queryString += queryConnect(firstQuestion, whereAdded) + String.format("author LIKE '%%%s%%' ", data.getSearch());
                 firstQuestion = false;
             }
             if (data.isContent()) {
-                queryString += queryConnect(firstQuestion, false) + String.format("content LIKE '%%%s%%' ", data.getSearch());
+                queryString += queryConnect(firstQuestion, whereAdded) + String.format("content LIKE '%%%s%%' ", data.getSearch());
                 firstQuestion = false;
             }
             if (data.isDate()) {
-                queryString += queryConnect(firstQuestion, false) + String.format("postdate LIKE '%%%s%%' ", data.getSearch());
+                queryString += queryConnect(firstQuestion, whereAdded) + String.format("postdate LIKE '%%%s%%' ", data.getSearch());
                 firstQuestion = false;
             }
 
@@ -214,26 +216,28 @@ public class PageDao {
 
     public int getPostCountQuery(PageVO data, int actType) {
         String queryString = "SELECT id FROM posts ";
+        boolean whereAdded = false;
         if (actType == 0) {
             queryString += String.format("WHERE category = %s ", data.getCategoryIndex());
+            whereAdded = true;
         }
 
         if (data.getSearch() != null) {
             boolean firstQuestion = true;
             if (data.isTitle()) {
-                queryString += queryConnect(firstQuestion, true) + String.format("postname LIKE '%%%s%%' ", data.getSearch());
+                queryString += queryConnect(firstQuestion, whereAdded) + String.format("postname LIKE '%%%s%%' ", data.getSearch());
                 firstQuestion = false;
             }
             if (data.isAuthor()) {
-                queryString += queryConnect(firstQuestion, true) + String.format("author LIKE '%%%s%%' ", data.getSearch());
+                queryString += queryConnect(firstQuestion, whereAdded) + String.format("author LIKE '%%%s%%' ", data.getSearch());
                 firstQuestion = false;
             }
             if (data.isContent()) {
-                queryString += queryConnect(firstQuestion, true) + String.format("content LIKE '%%%s%%' ", data.getSearch());
+                queryString += queryConnect(firstQuestion, whereAdded) + String.format("content LIKE '%%%s%%' ", data.getSearch());
                 firstQuestion = false;
             }
             if (data.isDate()) {
-                queryString += queryConnect(firstQuestion, true) + String.format("postdate LIKE '%%%s%%' ", data.getSearch());
+                queryString += queryConnect(firstQuestion, whereAdded) + String.format("postdate LIKE '%%%s%%' ", data.getSearch());
                 firstQuestion = false;
             }
 
