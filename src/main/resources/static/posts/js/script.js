@@ -232,7 +232,9 @@ $(() => {
       let commentId = ids[0];
       replyTo = commentId;
 
-      let replyingAuthor = comment.find(".comments_name");
+      let replyingAuthor = comment.find(
+        "> .comment_frame > .comments_profile > .comments_name"
+      );
       replyDisplay
         .find(".comments_reply_target")
         .text(replyingAuthor.text() + "에게 다는 답글");
