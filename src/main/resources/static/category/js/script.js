@@ -59,6 +59,7 @@ $(window).on("load", () => {
 
   let searchText = getUrlParameterV2("search");
   if (searchText != null) {
+    searchText = decodeURI(searchText);
     $(".search_input").val(searchText);
   }
 });
