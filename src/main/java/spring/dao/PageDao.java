@@ -208,6 +208,42 @@ public class PageDao {
         return result;
     }
 
+    public int getPostCountQuery(PageVO data, int actType) {
+        String queryString = "SELECT id FROM posts ";
+        if (actType == 0) {
+            queryString += String.format("WHERE category = %s ", data.getCategoryIndex());
+        }
+
+        if (data.getSearch() != null) {
+            boolean firstQuestion = true;
+            if (data.isTitle()) {
+                queryString += queryConnect(firstQuestion) + String.format("postname LIKE '%%%s%%' ", data.getSearch());
+                firstQuestion = false;
+            }
+            if (data.isAuthor()) {
+                queryString += queryConnect(firstQuestion) + String.format("author LIKE '%%%s%%' ", data.getSearch());
+                firstQuestion = false;
+            }
+            if (data.isContent()) {
+                queryString += queryConnect(firstQuestion) + String.format("content LIKE '%%%s%%' ", data.getSearch());
+                firstQuestion = false;
+            }
+            if (data.isDate()) {
+                queryString += queryConnect(firstQuestion) + String.format("postdate LIKE '%%%s%%' ", data.getSearch());
+                firstQuestion = false;
+            }
+
+            if (firstQuestion == false) {
+                queryString += ");";
+            }
+        } else {
+            queryString += ";";
+        }
+
+        List<Map<String, Object>> queryResult = getRows(queryString);
+        return queryResult.size();
+    }
+
     public int getPostCount(int id) {
         if (id != -1) {
             String queryString = String.format("SELECT COUNT(id) AS csize FROM posts WHERE id = %s;", id);

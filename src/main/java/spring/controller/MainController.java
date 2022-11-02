@@ -109,6 +109,7 @@ public class MainController {
 
             CategoryDTO categoryData = pageService.getCategoryData(intid);
             if (categoryData != null) {
+                categoryData.setPosts(pageService.getPostCountQuery(vo, 0));
                 List<PostDTO> posts = pageService.getPostList(vo, 0);
                 markPageListToView(model, posts, categoryData, vo, postPerPage);
                 return "category";
@@ -132,7 +133,7 @@ public class MainController {
 
         CategoryDTO categoryData = new CategoryDTO();
         categoryData.setCategory("인기글");
-        categoryData.setPosts(pageService.getPostCount(-1));
+        categoryData.setPosts(pageService.getPostCountQuery(vo, 1));
         categoryData.setAbout("카테고리 구분없이 좋아요와 조회수가 높은 게시물들을 모았습니다.");
         List<PostDTO> posts = pageService.getPostList(vo, 1);
         markPageListToView(model, posts, categoryData, vo, postPerPage);
@@ -148,7 +149,7 @@ public class MainController {
 
         CategoryDTO categoryData = new CategoryDTO();
         categoryData.setCategory("최신글");
-        categoryData.setPosts(pageService.getPostCount(-1));
+        categoryData.setPosts(pageService.getPostCountQuery(vo, 2));
         categoryData.setAbout("카테고리 구분없이 최근에 올라온 게시물들을 모았습니다.");
         List<PostDTO> posts = pageService.getPostList(vo, 2);
         markPageListToView(model, posts, categoryData, vo, postPerPage);

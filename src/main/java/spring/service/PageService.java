@@ -196,6 +196,10 @@ public class PageService {
         return pageDao.getPostCount(id);
     }
 
+    public int getPostCountQuery(PageVO vo, int actType) {
+        return pageDao.getPostCountQuery(vo, actType);
+    }
+
     public boolean getPost(HttpServletRequest request, int id, Model model) {
         HttpSession session = request.getSession();
         String sessionData = accountService.getSession(session);
