@@ -94,7 +94,6 @@ public class MainController {
 
     @GetMapping("/category/{id}")
     public String category(HttpServletRequest request, Model model, PageVO vo, @PathVariable String id) {
-        log.info(vo.getSearch());
         accountService.sendProfileBySession(request, model);
         SidebarMenu sidebar = accountService.loadSidebarMenu(request, model, vo);
         model.addAttribute("sidebarMode", "category");
