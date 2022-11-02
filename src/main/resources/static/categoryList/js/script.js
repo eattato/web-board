@@ -29,4 +29,9 @@ $(window).on("load", () => {
     previewText.text(textValue);
     previewText.css({ display: "block" });
   });
+
+  let searchText = getUrlParameterV2("search");
+  if (searchText != null) {
+    $(".search_input").val(searchText);
+  }
 });
