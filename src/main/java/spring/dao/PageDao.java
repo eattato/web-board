@@ -139,10 +139,14 @@ public class PageDao {
     }
 
     // Post
-    private String queryConnect(boolean firstQuestion) {
+    private String queryConnect(boolean firstQuestion, boolean whereAdded) {
         String result = "";
         if (firstQuestion == true) {
-            result = "AND (";
+            if (whereAdded == false) {
+                result = "AND (";
+            } else {
+                result = "WHERE (";
+            }
         } else {
             result = "OR ";
         }
@@ -158,19 +162,19 @@ public class PageDao {
         if (data.getSearch() != null) {
             boolean firstQuestion = true;
             if (data.isTitle()) {
-                queryString += queryConnect(firstQuestion) + String.format("postname LIKE '%%%s%%' ", data.getSearch());
+                queryString += queryConnect(firstQuestion, false) + String.format("postname LIKE '%%%s%%' ", data.getSearch());
                 firstQuestion = false;
             }
             if (data.isAuthor()) {
-                queryString += queryConnect(firstQuestion) + String.format("author LIKE '%%%s%%' ", data.getSearch());
+                queryString += queryConnect(firstQuestion, false) + String.format("author LIKE '%%%s%%' ", data.getSearch());
                 firstQuestion = false;
             }
             if (data.isContent()) {
-                queryString += queryConnect(firstQuestion) + String.format("content LIKE '%%%s%%' ", data.getSearch());
+                queryString += queryConnect(firstQuestion, false) + String.format("content LIKE '%%%s%%' ", data.getSearch());
                 firstQuestion = false;
             }
             if (data.isDate()) {
-                queryString += queryConnect(firstQuestion) + String.format("postdate LIKE '%%%s%%' ", data.getSearch());
+                queryString += queryConnect(firstQuestion, false) + String.format("postdate LIKE '%%%s%%' ", data.getSearch());
                 firstQuestion = false;
             }
 
@@ -217,19 +221,19 @@ public class PageDao {
         if (data.getSearch() != null) {
             boolean firstQuestion = true;
             if (data.isTitle()) {
-                queryString += queryConnect(firstQuestion) + String.format("postname LIKE '%%%s%%' ", data.getSearch());
+                queryString += queryConnect(firstQuestion, true) + String.format("postname LIKE '%%%s%%' ", data.getSearch());
                 firstQuestion = false;
             }
             if (data.isAuthor()) {
-                queryString += queryConnect(firstQuestion) + String.format("author LIKE '%%%s%%' ", data.getSearch());
+                queryString += queryConnect(firstQuestion, true) + String.format("author LIKE '%%%s%%' ", data.getSearch());
                 firstQuestion = false;
             }
             if (data.isContent()) {
-                queryString += queryConnect(firstQuestion) + String.format("content LIKE '%%%s%%' ", data.getSearch());
+                queryString += queryConnect(firstQuestion, true) + String.format("content LIKE '%%%s%%' ", data.getSearch());
                 firstQuestion = false;
             }
             if (data.isDate()) {
-                queryString += queryConnect(firstQuestion) + String.format("postdate LIKE '%%%s%%' ", data.getSearch());
+                queryString += queryConnect(firstQuestion, true) + String.format("postdate LIKE '%%%s%%' ", data.getSearch());
                 firstQuestion = false;
             }
 
