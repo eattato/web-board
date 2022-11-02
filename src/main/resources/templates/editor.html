@@ -91,6 +91,17 @@
             cols="30"
             rows="10"
             placeholder="내용을 입력하세요."
+            th:unless="${pastData != null}"
+          ></textarea>
+
+          <textarea
+            name="editor_text"
+            id="editor_text"
+            cols="30"
+            rows="10"
+            placeholder="내용을 입력하세요."
+            th:if="${pastData != null}"
+            th:text="${pastData.getContent()}"
           ></textarea>
         </div>
       </div>
