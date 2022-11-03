@@ -372,17 +372,17 @@
 }
 
 .paging li {
-  margin: 0 10px;
-  border: 1px solid lightgray;
-  border-radius: 15px;
-}
-
-.paging a {
   width: 35px;
   height: 35px;
   text-align: center;
   line-height: 30px;
   font-size: 18px;
+  margin: 0 10px;
+  border: 1px solid lightgray;
+  border-radius: 15px;
+}
+.post_button.current {
+  background-color: #eeeeee;
 }
 
 .post_data {

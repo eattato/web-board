@@ -192,7 +192,7 @@
               <li
                 class="post_button"
                 th:each="num : ${#numbers.sequence(1, pageCount)}"
-                th:classappend="${page} == num ? current : ''"
+                th:classappend="${page == num} ? 'current' : ''"
               >
                 <a
                   th:href="@{/category/{id}(id = ${id}, page = ${num})}"
