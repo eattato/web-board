@@ -33,11 +33,13 @@
                 <li
                   th:each="tag : ${post.getTagdataList()}"
                   th:title="${tag.getTagdesc()}"
-                  th:text="${tag.getTagname()}"
-                  th:style="|color: #${tag.getTagcolor()}|"
                   class="post_tag"
                 >
-                  <!-- <a href="#" th:text="${tag}"></a> -->
+                  <a
+                    th:href="@{/tag/{id}(id = ${tag.getId()})}"
+                    th:text="${tag.getTagname()}"
+                    th:style="|color: #${tag.getTagcolor()}|"
+                  ></a>
                 </li>
               </div>
             </div>

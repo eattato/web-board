@@ -170,25 +170,29 @@ public class MainController {
         if (vo.getPage() < 1) {
             vo.setPage(1);
         }
-        try {
+        //try {
             int intid = Integer.parseInt(id);
             vo.setCategory(intid);
             int postPerPage = markPageListToVO(vo);
 
-            CategoryDTO categoryData = pageService.getCategoryData(intid);
-            if (categoryData != null) {
-                List<PostDTO> posts = pageService.getPostList(vo, 3);
+            TagDTO tagData = pageService.getTagData(intid);
+            if (tagData != null) {
+                CategoryDTO categoryData = new CategoryDTO();
+                categoryData.setCategory("태그: " + tagData.getTagname());
+                categoryData.setPosts(pageService.getPostCountQuery(vo, 4));
+                categoryData.setAbout("해당 태그가 사용된 글입니다.");
+                List<PostDTO> posts = pageService.getPostList(vo, 4);
                 markPageListToView(model, posts, categoryData, vo, postPerPage);
                 return "category";
             } else {
-                log.info("redirect - no category data");
+                log.info("no tag");
                 return "redirect:/";
             }
-        } catch (Exception e) {
-            log.info(e.toString());
-            log.info("redirect - couldn't get id, got " + id);
-            return "redirect:/";
-        }
+//        } catch (Exception e) {
+//            log.info(e.toString());
+//            log.info("redirect - couldn't get id, got " + id);
+//            return "redirect:/";
+//        }
     }
 
     @GetMapping("/posts/{id}")

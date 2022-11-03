@@ -41,55 +41,58 @@
                 th:if="${#strings.equals(sidebar.getViewmode(), 'simple')}"
                 th:each="post : ${posts}"
               >
-                <a th:href="@{/posts/{id}(id = ${post.getId()})}">
-                  <div class="post_left">
-                    <div class="post_name" th:text="${post.getPostname()}">
-                      글 제목
-                    </div>
-                  </div>
-                  <div class="post_right">
-                    <ul class="post_tags">
-                      <li
-                        th:each="tag : ${post.getTagdataList()}"
+                <div class="post_left">
+                  <a
+                    class="post_name"
+                    th:text="${post.getPostname()}"
+                    th:href="@{/posts/{id}(id = ${post.getId()})}"
+                  >
+                  </a>
+                </div>
+                <div class="post_right">
+                  <ul class="post_tags">
+                    <li
+                      th:each="tag : ${post.getTagdataList()}"
+                      th:title="${tag.getTagdesc()}"
+                      class="post_tag"
+                    >
+                      <a
+                        th:href="@{/tag/{id}(id = ${tag.getId()})}"
                         th:text="${tag.getTagname()}"
-                        th:title="${tag.getTagdesc()}"
                         th:style="|color: #${tag.getTagcolor()}|"
-                        class="post_tag"
-                      >
-                        <!-- <a href="#" th:text="${tag}"></a> -->
-                      </li>
-                    </ul>
+                      ></a>
+                    </li>
+                  </ul>
 
-                    <div class="post_wrap">
-                      <div
-                        class="post_top"
-                        th:text="${post.authorInfo.getNickname()}"
-                      >
-                        게시자
-                      </div>
-                      <div
-                        class="post_bottom"
-                        th:text="${post.getPostdate()}"
-                      ></div>
+                  <div class="post_wrap">
+                    <div
+                      class="post_top"
+                      th:text="${post.authorInfo.getNickname()}"
+                    >
+                      게시자
                     </div>
-
-                    <div class="post_wrap">
-                      <div class="post_top">조회수</div>
-                      <div
-                        class="post_bottom"
-                        th:text="|${post.getViewers()}회|"
-                      ></div>
-                    </div>
-
-                    <div class="post_wrap">
-                      <div class="post_top">추천</div>
-                      <div
-                        class="post_bottom"
-                        th:text="|${post.getRecommend()}개|"
-                      ></div>
-                    </div>
+                    <div
+                      class="post_bottom"
+                      th:text="${post.getPostdate()}"
+                    ></div>
                   </div>
-                </a>
+
+                  <div class="post_wrap">
+                    <div class="post_top">조회수</div>
+                    <div
+                      class="post_bottom"
+                      th:text="|${post.getViewers()}회|"
+                    ></div>
+                  </div>
+
+                  <div class="post_wrap">
+                    <div class="post_top">추천</div>
+                    <div
+                      class="post_bottom"
+                      th:text="|${post.getRecommend()}개|"
+                    ></div>
+                  </div>
+                </div>
               </li>
 
               <li
@@ -97,76 +100,82 @@
                 th:if="${#strings.equals(sidebar.getViewmode(), 'exact')}"
                 th:each="post : ${posts}"
               >
-                <a th:href="@{/posts/{id}(id = ${post.getId()})}">
-                  <div class="post_top">
-                    <div class="post_top_left">
-                      <div class="post_name" th:text="${post.getPostname()}">
-                        글 제목
-                      </div>
-                      <ul class="post_tags">
-                        <li
-                          th:each="tag : ${post.getTagdataList()}"
+                <div class="post_top">
+                  <div class="post_top_left">
+                    <div class="post_name">
+                      <a
+                        th:href="@{/posts/{id}(id = ${post.getId()})}"
+                        th:text="${post.getPostname()}"
+                        >글 제목</a
+                      >
+                    </div>
+                    <ul class="post_tags">
+                      <li
+                        th:each="tag : ${post.getTagdataList()}"
+                        th:title="${tag.getTagdesc()}"
+                        class="post_tag"
+                      >
+                        <a
+                          th:href="@{/tag/{id}(id = ${tag.getId()})}"
                           th:text="${tag.getTagname()}"
-                          th:title="${tag.getTagdesc()}"
                           th:style="|color: #${tag.getTagcolor()}|"
-                          class="post_tag"
-                        >
-                          <!-- <a href="#" th:text="${tag}"></a> -->
-                        </li>
-                      </ul>
-                    </div>
-                    <div class="post_top_right">
-                      <div
-                        class="post_data"
-                        th:text="|조회수 ${post.getViewers()}회|"
-                      ></div>
-                      <div
-                        class="post_data"
-                        th:text="|추천 ${post.getRecommend()}개|"
-                      ></div>
-                    </div>
+                        ></a>
+                      </li>
+                    </ul>
                   </div>
-                  <div class="post_bottom">
-                    <div class="post_left">
-                      <div class="post_info">
-                        <div class="post_img_frame">
-                          <img
-                            src=""
-                            alt=""
-                            th:src="@{/images/{img}(img = ${categoryData.getImg()})}"
-                          />
-                        </div>
-                        <p th:text="${post.getContent()}">글 내용</p>
-                      </div>
-                    </div>
-                    <div class="post_right">
-                      <div
-                        class="post_right_info"
-                        th:text="|게시자 - ${post.authorInfo.getNickname()}|"
-                      >
-                        게시자
-                      </div>
-                      <div
-                        class="post_right_info"
-                        th:text="|게시일 - ${post.getPostdate()}|"
-                      >
-                        게시일
-                      </div>
-                      <div class="author_image_frame">
+                  <div class="post_top_right">
+                    <div
+                      class="post_data"
+                      th:text="|조회수 ${post.getViewers()}회|"
+                    ></div>
+                    <div
+                      class="post_data"
+                      th:text="|추천 ${post.getRecommend()}개|"
+                    ></div>
+                  </div>
+                </div>
+                <div class="post_bottom">
+                  <div class="post_left">
+                    <div class="post_info">
+                      <div class="post_img_frame">
                         <img
-                          th:if="${post.authorInfo.getFaceimg() == null}"
+                          src=""
                           alt=""
-                          th:src="@{/images/profiles/default.png}"
-                        />
-                        <img
-                          th:if="${post.authorInfo.getFaceimg() != null}"
-                          alt=""
-                          th:src="@{/images/{img}(img = ${post.authorInfo.getFaceimg()})}"
+                          th:src="@{/images/{img}(img = ${categoryData.getImg()})}"
                         />
                       </div>
+                      <a th:href="@{/posts/{id}(id = ${post.getId()})}"
+                        ><p th:text="${post.getContent()}">글 내용</p></a
+                      >
                     </div>
                   </div>
-                </a>
+                  <div class="post_right">
+                    <div
+                      class="post_right_info"
+                      th:text="|게시자 - ${post.authorInfo.getNickname()}|"
+                    >
+                      게시자
+                    </div>
+                    <div
+                      class="post_right_info"
+                      th:text="|게시일 - ${post.getPostdate()}|"
+                    >
+                      게시일
+                    </div>
+                    <div class="author_image_frame">
+                      <img
+                        th:if="${post.authorInfo.getFaceimg() == null}"
+                        alt=""
+                        th:src="@{/images/profiles/default.png}"
+                      />
+                      <img
+                        th:if="${post.authorInfo.getFaceimg() != null}"
+                        alt=""
+                        th:src="@{/images/{img}(img = ${post.authorInfo.getFaceimg()})}"
+                      />
+                    </div>
+                  </div>
+                </div>
               </li>
             </ul>
 

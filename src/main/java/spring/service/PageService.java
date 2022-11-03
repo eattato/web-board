@@ -519,6 +519,10 @@ public class PageService {
         return pageDao.getAllTags();
     }
 
+    public TagDTO getTagData(int id) {
+        return pageDao.getTagData(id);
+    }
+
     public String updateTag(HttpServletRequest request, CategorySetDTO data) {
         HttpSession session = request.getSession();
         String sessionData = accountService.getSession(session);

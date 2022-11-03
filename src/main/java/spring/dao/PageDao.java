@@ -159,6 +159,9 @@ public class PageDao {
         if (actType == 0) {
             whereAdded = true;
             queryString += String.format("WHERE category = %s ", data.getCategoryIndex());
+        } else if (actType == 4) {
+            whereAdded = true;
+            queryString += String.format("WHERE (taglist LIKE '%s' OR taglist LIKE '%% %s' OR taglist LIKE '%s %%' OR taglist LIKE '%% %s %%') ", data.getCategoryIndex(), data.getCategoryIndex(), data.getCategoryIndex(), data.getCategoryIndex());
         }
 
         if (data.getSearch() != null) {
@@ -220,6 +223,9 @@ public class PageDao {
         if (actType == 0) {
             queryString += String.format("WHERE category = %s ", data.getCategoryIndex());
             whereAdded = true;
+        } else if (actType == 4) {
+            whereAdded = true;
+            queryString += String.format("WHERE (taglist LIKE '%s' OR taglist LIKE '%% %s' OR taglist LIKE '%s %%' OR taglist LIKE '%% %s %%') ", data.getCategoryIndex(), data.getCategoryIndex(), data.getCategoryIndex(), data.getCategoryIndex());
         }
 
         if (data.getSearch() != null) {
@@ -472,7 +478,11 @@ public class PageDao {
 
     public TagDTO getTagData(int id) {
         List<Map<String, Object>> queryResult = getRows(String.format("SELECT * FROM tags WHERE id = %s", id));
-        return mapper.convertValue(queryResult.get(0), TagDTO.class);
+        if (queryResult.size() >= 1) {
+            return mapper.convertValue(queryResult.get(0), TagDTO.class);
+        } else {
+            return null;
+        }
     }
 
     public List<TagDTO> getAllTags() {
@@ -507,8 +517,7 @@ public class PageDao {
     }
 
     public int addTag(TagCreateDTO data) {
-        int nextId = getIdCurrent("tags") + 1;
-        return jt.update(String.format("INSERT INTO tags VALUES(%s, '%s', '%s', %s, '%s');", nextId, data.getTag().replaceAll("'", "''"), data.getAbout().replaceAll("'", "''"), data.isAdmin(), data.getColor()));
+        return jt.update(String.format("INSERT INTO tags(tagname, tagdesc, adminonly, tagcolor) VALUES('%s', '%s', %s, '%s');", data.getTag().replaceAll("'", "''"), data.getAbout().replaceAll("'", "''"), data.isAdmin(), data.getColor()));
     }
 
     // Misc
