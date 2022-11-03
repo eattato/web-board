@@ -18,6 +18,7 @@ public class CommentDTO {
     private int post;
     private String postdate;
     private AccountDataDTO authorInfo;
+    private Integer parent;
 
     public void setPostdate(final String value) {
         Date current = new Date(Long.parseLong(value));

@@ -471,7 +471,7 @@ public class PageService {
             AccountDataDTO userData = accountService.getProfile(sessionData);
             CommentDTO commentData = pageDao.getCommentData(id);
             if (commentData != null) {
-                PostDTO postData = pageDao.getPostData(id);
+                PostDTO postData = pageDao.getPostData(commentData.getPost());
                 if (postData != null) {
                     CategoryDTO categoryData = pageDao.getCategoryData(postData.getId());
                     if (categoryData != null) {

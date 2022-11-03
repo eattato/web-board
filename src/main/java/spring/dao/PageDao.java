@@ -393,9 +393,10 @@ public class PageDao {
     public int uploadComment(CommentVO vo) {
         String queryString = "";
         if (vo.getReplyTarget() == -1) {
-            queryString = String.format("(reply_id, reply_level, reply_order, author, content, post, postdate) values(" +
+            queryString = String.format(
+                    "insert into board.comments(reply_id, reply_level, reply_order, parent, author, content, post, postdate) values(" +
                     "(select ifnull(max(reply_id) + 1, 1) from board.comments as T1)," +
-                    " 0, 0, '%s', '%s', %s, '%s');", vo.getAuthor(), vo.getContent().replaceAll("'", "''"), vo.getPost(), LocalDate.now());
+                    " 0, 0, null, '%s', '%s', %s, '%s');", vo.getAuthor(), vo.getContent().replaceAll("'", "''"), vo.getPost(), LocalDate.now());
             return jt.update(queryString);
         } else {
             queryString = String.format(
@@ -405,11 +406,11 @@ public class PageDao {
                     "where comments.reply_id = origin.reply_id and comments.reply_order > origin.reply_order;", vo.getReplyTarget());
             jt.update(queryString);
             queryString = String.format(
-                    "insert into board.comments(reply_id, reply_level, reply_order, author, content, post, postdate) " +
+                    "insert into board.comments(reply_id, reply_level, reply_order, parent, author, content, post, postdate) " +
                     "select reply_id, reply_level + 1, reply_order + 1, " +
-                            "'%s', '%s', %s, '%s' " +
+                            "%s, '%s', '%s', %s, '%s' " +
                             "from board.comments as T1 " +
-                            "where id = %s;", vo.getAuthor(), vo.getContent().replaceAll("'", "''"), vo.getPost(), LocalDate.now(), vo.getReplyTarget());
+                            "where id = %s;", vo.getReplyTarget(), vo.getAuthor(), vo.getContent().replaceAll("'", "''"), vo.getPost(), LocalDate.now(), vo.getReplyTarget());
             return jt.update(queryString);
         }
     }
@@ -440,8 +441,9 @@ public class PageDao {
     }
 
     public int removeComment(int id) { // ID로 댓글 삭제
+        //log.info("remove comment " + id);
         String queryString = String.format("DELETE FROM comments WHERE id = %s", id);
-        removeReplyComment(id);
+        //removeReplyComment(id);
         return jt.update(queryString);
     }
 

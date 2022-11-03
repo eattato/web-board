@@ -174,6 +174,12 @@ public class ApiController {
 
     @PostMapping("/comment")
     public String uploadComment(HttpServletRequest request, @RequestBody CommentVO vo) {
+        if (vo.isRemove()) {
+            log.info("remove comment");
+        } else {
+            log.info("upload comment");
+        }
+
         if (vo.isRemove() == false) {
             return pageService.comment(request, vo);
         } else {
