@@ -10,10 +10,12 @@ import java.util.Date;
 @Setter
 public class CommentDTO {
     private int id;
-    private int post;
+    private int reply_id;
+    private int reply_level;
+    private int reply_order;
     private String author;
-    private int reply;
     private String content;
+    private int post;
     private String postdate;
     private AccountDataDTO authorInfo;
 

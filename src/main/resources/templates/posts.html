@@ -215,7 +215,7 @@
               <div
                 class="comment"
                 th:each="comment : ${comments}"
-                th:classappend="|id${comment.getId()} reply${comment.getReply()}|"
+                th:classappend="|id${comment.getId()} level${comment.getReply_level()}|"
               >
                 <div class="comment_frame">
                   <div class="comments_profile">
@@ -255,7 +255,6 @@
                     </div>
                   </div>
                 </div>
-                <ul class="comment_holder"></ul>
               </div>
             </div>
           </div>

@@ -391,14 +391,31 @@ public class PageDao {
     }
 
     public int uploadComment(CommentVO vo) {
-        String queryString = "INSERT INTO comments VALUES(";
-        int idCurrent = getIdCurrent("comments");
-        queryString += String.format("%s, %s, '%s', %s, '%s', '%s');", idCurrent + 1, vo.getPost(), vo.getAuthor(), vo.getReplyTarget(), vo.getContent().replaceAll("'", "''"), LocalDate.now());
-        return jt.update(queryString);
+        String queryString = "";
+        if (vo.getReplyTarget() == -1) {
+            queryString = String.format("(reply_id, reply_level, reply_order, author, content, post, postdate) values(" +
+                    "(select ifnull(max(reply_id) + 1, 1) from board.comments as T1)," +
+                    " 0, 0, '%s', '%s', %s, '%s');", vo.getAuthor(), vo.getContent().replaceAll("'", "''"), vo.getPost(), LocalDate.now());
+            return jt.update(queryString);
+        } else {
+            queryString = String.format(
+                    "update board.comments as comments, " +
+                    "(select reply_id, reply_order from board.comments where id = %s) as origin " +
+                    "set comments.reply_order = comments.reply_order + 1 " +
+                    "where comments.reply_id = origin.reply_id and comments.reply_order > origin.reply_order;", vo.getReplyTarget());
+            jt.update(queryString);
+            queryString = String.format(
+                    "insert into board.comments(reply_id, reply_level, reply_order, author, content, post, postdate) " +
+                    "select reply_id, reply_level + 1, reply_order + 1, " +
+                            "'%s', '%s', %s, '%s' " +
+                            "from board.comments as T1 " +
+                            "where id = %s;", vo.getAuthor(), vo.getContent().replaceAll("'", "''"), vo.getPost(), LocalDate.now(), vo.getReplyTarget());
+            return jt.update(queryString);
+        }
     }
 
     public List<CommentDTO> getCommentsFromPost(int id) {
-        String queryString = String.format("SELECT * FROM comments WHERE post = %s", id);
+        String queryString = String.format("SELECT * FROM comments WHERE post = %s ORDER BY reply_id DESC, reply_order ASC;", id);
         List<Map<String, Object>> queryResult = getRows(queryString);
         List<CommentDTO> result = new ArrayList<>();
         for (Map<String, Object> map : queryResult) {

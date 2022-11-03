@@ -15,8 +15,8 @@ const getId = (comment) => {
     let className = classList[ind];
     if (className.includes("id") == true) {
       commentId = Number(className.replace("id", ""));
-    } else if (className.includes("reply") == true) {
-      replyId = Number(className.replace("reply", ""));
+    } else if (className.includes("level") == true) {
+      replyId = Number(className.replace("level", ""));
     }
   }
   return [commentId, replyId];
@@ -200,8 +200,12 @@ $(() => {
     let comment = $(obj);
     let ids = getId(comment);
     let commentId = ids[0];
-    let replyId = ids[1];
-    comments.push([commentId, replyId, comment]);
+    let replyLevel = ids[1];
+    comments.push([commentId, replyLevel, comment]);
+    comment.find(".comment_frame").css({
+      "margin-left": 20 * replyLevel + "px",
+      width: 1000 - 20 * replyLevel + "px",
+    });
 
     let menuActivated = false;
     let button = comment.find(".comment_ellipsis_button");
@@ -273,24 +277,5 @@ $(() => {
       menuActivated = false;
       menuDisplay();
     });
-  });
-
-  // 댓글 정렬
-  $(".comment").each((ind, obj) => {
-    let comment = $(obj);
-    let ids = getId(comment);
-    let commentId = ids[0];
-    let replyId = ids[1];
-
-    if (commentId != null && replyId != null) {
-      if (replyId != -1) {
-        let parentComment = findInComments(replyId);
-        if (parentComment != null) {
-          comment.detach().appendTo(parentComment[2].find(".comment_holder"));
-        } else {
-          // comment.remove();
-        }
-      }
-    }
   });
 });

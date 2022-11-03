@@ -206,9 +206,11 @@ public class MainController {
                 pageService.addView(intid);
                 return "posts";
             } else {
+                log.info("no post id: " + intid);
                 return "redirect:/";
             }
         } catch (Exception e) {
+            log.info(e.toString());
             return "redirect:/";
         }
     }
