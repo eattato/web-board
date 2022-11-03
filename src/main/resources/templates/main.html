@@ -113,7 +113,7 @@
 
               <li
                 class="post_button"
-                th:each="num : ${#numbers.sequence(1, pageCount)}"
+                th:each="num : ${#numbers.sequence(T(Math).max(page - 3, 1), T(Math).min(page + 3, pageCount))}"
                 th:classappend="${page} == num ? current : ''"
               >
                 <a th:href="@{/(page=${num})}" th:text="${num}"></a>
