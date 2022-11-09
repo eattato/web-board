@@ -29,14 +29,12 @@
         <div class="main">
           <div class="editor">
             <div class="editor_top">
-              <select
-                id="editor_category"
-                th:value="${pastData != null} ? ${pastData.getCategory()} : ''"
-              >
+              <select id="editor_category">
                 <option
                   th:each="category : ${categoryList}"
                   th:value="${category.getId()}"
                   th:text="${category.getCategory()}"
+                  th:selected="${pastData != null and pastData.getCategory() == category.getId()}"
                 ></option>
               </select>
               <input
