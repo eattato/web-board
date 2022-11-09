@@ -131,7 +131,9 @@ public class PageDao {
 
     public int removeCategory(int id) {
         removePostsOfCategory(id);
-        return jt.update(String.format("DELETE FROM categories WHERE id = %s;", id));
+        String queryString = String.format("DELETE FROM categories WHERE id = %s;", id);
+        log.info(queryString);
+        return jt.update(queryString);
     }
 
     public int setCategoryImage(int id, String directory) {

@@ -141,7 +141,7 @@ public class AccountService {
     public String loginWithoutPassword(HttpServletRequest request) {
         HttpSession session = request.getSession();
         String sessionData = getSession(session);
-        session.setAttribute("email", "eattato0804@naver.com"); // 세션에 로그인한 계정 정보 저장
+        session.setAttribute("email", "eattato0804@gmail.com"); // 세션에 로그인한 계정 정보 저장
         log.info(auditDone, String.format("%s logged in to master account", request.getRemoteAddr()));
         return "ok";
     }

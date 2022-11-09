@@ -375,11 +375,14 @@ $(() => {
       let categoryAbout = $("#category_about").val();
       if (categoryName.length >= 1 && categoryName.length <= 100) {
         if (categoryAbout.length >= 1 && categoryAbout.length <= 300) {
+          canPost = false;
+
           let data = {
             category: categoryName,
             about: categoryAbout,
             image: null,
           };
+
           if (imgSelect[0].files.length == 1) {
             let encoded = await readFileAsDataURL(imgSelect[0].files[0]);
             encoded = encoded.replace("data:image/png;base64,", "");

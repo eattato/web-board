@@ -73,8 +73,12 @@ public class PageService {
                                 if (data.getTarget() != null && (data.getTarget().length() > 0 && data.getTarget().length() <= 300) == false) {
                                     error = "wrong length";
                                 }
-                            } else if (data.getTarget() != null && data.getAct().equals("removeCategory")) {
-                                return removeCategory(request, data);
+                            } else if (data.getAct().equals("removeCategory")) {
+                                if (data.getId() != -1) {
+                                    return removeCategory(request, data);
+                                } else {
+                                    error = "target not set";
+                                }
                             }
 
                             if (error == null) {
