@@ -52,7 +52,8 @@ public class MainController {
         model.addAttribute("categoryList", result);
         model.addAttribute("page", vo.getPage());
         model.addAttribute("page", vo.getPage());
-        model.addAttribute("pageCount", Math.ceil((float)pageService.getCategoryCount() / postPerPage));
+        int pageCount = (int)Math.ceil((float)pageService.getCategoryCount() / postPerPage);
+        model.addAttribute("pageCount", pageCount);
         return "main";
     }
 

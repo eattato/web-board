@@ -180,7 +180,7 @@
             </ul>
 
             <ul class="paging">
-              <li class="post_move" th:if="${page &gt; 1}">
+              <li class="post_move" th:if="${page &gt; 1 and page - 3 &lt;= 1}">
                 <a th:href="@{/category/{id}(id = ${id})}">&lt;&lt;</a>
               </li>
               <li class="post_move" th:if="${page &gt; 1}">
@@ -205,7 +205,10 @@
                   >&gt;</a
                 >
               </li>
-              <li class="post_move" th:if="${page &lt; pageCount}">
+              <li
+                class="post_move"
+                th:if="${page &lt; pageCount and page + 3 &gt;= pageCount}"
+              >
                 <a th:href="@{/category/{id}(id = ${id}, page = ${pageCount})}"
                   >&gt;&gt;</a
                 >
