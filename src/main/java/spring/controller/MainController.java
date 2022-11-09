@@ -53,6 +53,9 @@ public class MainController {
         model.addAttribute("page", vo.getPage());
         model.addAttribute("page", vo.getPage());
         int pageCount = (int)Math.ceil((float)pageService.getCategoryCount() / postPerPage);
+        if (pageCount == 0) {
+            pageCount = 1;
+        }
         model.addAttribute("pageCount", pageCount);
         return "main";
     }
@@ -287,6 +290,9 @@ public class MainController {
         model.addAttribute("id", vo.getCategoryIndex());
         model.addAttribute("page", vo.getPage());
         int pageCount = (int)Math.ceil((float)categoryData.getPosts() / postPerPage);
+        if (pageCount == 0) {
+            pageCount = 1;
+        }
         model.addAttribute("pageCount", pageCount);
     }
 }

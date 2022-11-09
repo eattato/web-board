@@ -21,8 +21,12 @@
       <div class="menu" th:replace="fragments/common :: header"></div>
       <div class="body">
         <div class="title">
-          <div class="category_name" th:text="${category.getCategory()}">
-            게시된 카테고리
+          <div class="category_name">
+            <a
+              th:text="${category.getCategory()}"
+              th:href="@{/category/{id}(id = ${category.getId()})}"
+              >게시된 카테고리</a
+            >
           </div>
         </div>
 
