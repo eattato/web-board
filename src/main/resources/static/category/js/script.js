@@ -8,7 +8,7 @@ function httpGet(url) {
 const removeHTML = (target) => {
   let inTag = false;
   let ind = 0;
-  target = target.replaceAll("&nbsp;", "");
+  target = target.replaceAll("&nbsp;", " ");
   while (ind <= target.length - 1) {
     let char = target.charAt(ind);
     let cutThis = false;
@@ -44,6 +44,7 @@ $(window).on("load", () => {
   $(".post_exact p").each((ind, obj) => {
     let previewText = $(obj);
     let textValue = previewText.text();
+    textValue.replaceAll("\n", " ");
     textValue = removeHTML(textValue);
 
     // let limit = 140;
