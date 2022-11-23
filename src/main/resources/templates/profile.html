@@ -36,10 +36,23 @@
           <div class="profile_bottom">
             <div class="profile_left">
               <div class="profile_title">프로필 이미지</div>
-              <div class="profile_img_admin" th:if="${profile.isIsadmin()}">
-                <i class="fa-solid fa-hammer"></i>
-                <span>관리자</span>
+              <div class="profile_badge_frame">
+                <div
+                  class="profile_badge profile_badge_admin"
+                  th:if="${profile.isIsadmin()}"
+                >
+                  <i class="fa-solid fa-hammer"></i>
+                  <span>관리자</span>
+                </div>
+                <div
+                  class="profile_badge profile_badge_verified"
+                  th:if="${profile.isIsadmin()}"
+                >
+                  <i class="fa-solid fa-check"></i>
+                  <span>인증됨</span>
+                </div>
               </div>
+
               <div class="profile_img_frame">
                 <img
                   th:src="@{/images/{img}(img = ${profile.getFaceimg()})}"

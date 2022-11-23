@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>BOARDARC - 멤버 관리</title>
+    <link rel="icon" th:href="@{/images/official/icon.png}" />
+    <link rel="stylesheet" th:href="@{/components/css/style.css}" />
+    <link rel="stylesheet" th:href="@{/control/css/style.css}" />
+    <script
+      src="https://kit.fontawesome.com/d5e5d975b2.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="/components/js/jquery.js"></script>
+    <script src="/components/js/jquery.cookie.js"></script>
+    <script src="/components/js/header.js"></script>
+    <script src="/control/js/script.js"></script>
+  </head>
+  <body>
+    <div class="popup">
+      <div class="popup_frame">
+        <div class="popup_close">x</div>
+        <div class="popup_title">정말 이 계정을 삭제하시겠습니까?</div>
+        <div class="popup_desc">
+          해당 계정의 게시물과 댓글이 모두 삭제되며, 되돌릴 수 없습니다.
+        </div>
+        <div class="popup_tab">
+          <button type="button" class="popup_accept">확인</button>
+          <button type="button" class="popup_cancel">취소</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <div class="banner" th:replace="fragments/common :: banner"></div>
+      <div class="menu" th:replace="fragments/common :: header"></div>
+      <div class="body">
+        <div class="main">
+          <ul class="control_menu">
+            <li>
+              <a th:href="@{/control/category}">
+                <i class="fa-solid fa-list"></i><span>카테고리</span>
+              </a>
+            </li>
+            <li>
+              <a th:href="@{/control/tags}">
+                <i class="fa-solid fa-tag"></i><span>태그</span>
+              </a>
+            </li>
+            <li>
+              <a th:href="@{/control/members}">
+                <i class="fa-solid fa-users"></i><span>멤버</span>
+              </a>
+            </li>
+          </ul>
+
+          <div class="control_main">
+            <div class="control_left">
+              <div class="search_box">
+                <div class="search_wrap"></div>
+                <input
+                  class="search_input"
+                  type="search"
+                  name="search"
+                  placeholder="검색"
+                />
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </div>
+
+              <ul>
+                <li
+                  class="setting"
+                  th:each="category : ${categories}"
+                  th:id="|category${category.getId()}|"
+                >
+                  <div class="setting_top">
+                    <div class="setting_img_frame">
+                      <img
+                        th:src="@{/images/{img}(img = ${category.getImg()})}"
+                        alt=""
+                      />
+                    </div>
+                    <div class="setting_right">
+                      <div class="setting_right_top">
+                        <div class="setting_right_split">
+                          <span
+                            class="setting_title"
+                            th:text="${category.getCategory()}"
+                            contenteditable="true"
+                          >
+                            카테고리명
+                          </span>
+                          <div
+                            class="setting_desc"
+                            th:text="|추천 ${category.getLoved()}|"
+                          >
+                            추천
+                          </div>
+                        </div>
+                        <div class="setting_right_split">
+                          <div class="setting_close">x</div>
+                        </div>
+                      </div>
+                      <span
+                        class="setting_right_bottom"
+                        th:text="${category.getAbout()}"
+                        contenteditable="true"
+                      >
+                        설명
+                      </span>
+                    </div>
+                  </div>
+                  <div class="setting_bottom">
+                    <div class="setting_display">관리자</div>
+                    <div class="setting_tags_frame">
+                      <div class="setting_tags">
+                        <div
+                          class="setting_tag"
+                          th:each="admin : ${category.getAdminList()}"
+                          th:title="${admin}"
+                        >
+                          <div class="setting_tag_name" th:text="${admin}">
+                            관리자 이름
+                          </div>
+                          <div class="setting_tag_close">x</div>
+                        </div>
+
+                        <div class="setting_tag_add">
+                          <div class="setting_tag_display">+</div>
+                          <input
+                            class="setting_tag_input"
+                            type="text"
+                            placeholder="관리자 이메일을 입력하세요."
+                          />
+                          <button class="setting_tag_commit" type="button">
+                            추가
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="control_right">
+              <div class="control_title">카테고리 생성</div>
+
+              <div class="control_input_wrap">
+                <div class="control_info">카테고리명</div>
+                <input
+                  id="category_name"
+                  type="text"
+                  placeholder="카테고리명을 입력하세요."
+                />
+              </div>
+
+              <div class="control_input_wrap">
+                <div class="control_info">카테고리 설명</div>
+                <input
+                  id="category_about"
+                  type="text"
+                  placeholder="카테고리 설명을 입력하세요."
+                />
+              </div>
+
+              <div class="profile_img_frame">
+                <img alt="" />
+                <div class="profile_img_desc">
+                  클릭해서 이미지를 변경하세요.
+                </div>
+                <input id="profile_img_select" type="file" title=" " />
+              </div>
+
+              <button class="control_create">추가</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

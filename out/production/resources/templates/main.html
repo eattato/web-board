@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <title>BOARDARC - 카테고리</title>
-    <link rel="icon" href="http://localhost:8888/images/official/icon.png" />
+    <link rel="icon" th:href="@{/images/official/icon.png}" />
     <link rel="stylesheet" th:href="@{/components/css/style.css}" />
     <link rel="stylesheet" th:href="@{/categoryList/css/style.css}" />
     <script
@@ -14,14 +14,12 @@
     <script src="components/js/jquery.cookie.js"></script>
     <script src="components/js/header.js"></script>
     <script src="categoryList/js/script.js"></script>
+    <script src="../categoryList/js/search.js"></script>
+    <script src="../components/js/sidebar.js"></script>
   </head>
   <body>
     <div class="wrap">
-      <div class="banner">
-        <a href="#">
-          <img src="" alt="배너" />
-        </a>
-      </div>
+      <div class="banner" th:replace="fragments/common :: banner"></div>
       <div class="menu" th:replace="fragments/common :: header"></div>
       <div class="body">
         <div class="title">
@@ -34,10 +32,12 @@
         <div class="main">
           <div class="main_posts">
             <ul class="post_list">
-              <li class="post_simple" th:each="category : ${categoryList}">
-                <a
-                  th:href="|http://localhost:8888/category/${category.getId()}|"
-                >
+              <li
+                class="post_simple"
+                th:if="${#strings.equals(sidebar.getViewmode(), 'simple')}"
+                th:each="category : ${categoryList}"
+              >
+                <a th:href="@{/category/{id}(id = ${category.getId()})}">
                   <div class="post_name" th:text="${category.getCategory()}">
                     카테고리 제목
                   </div>
@@ -61,16 +61,24 @@
                 </a>
               </li>
 
-              <li class="post_exact" th:each="category: ${categoryList}">
-                <a
-                  th:href="|http://localhost:8888/category/${category.getId()}|"
-                >
+              <li
+                class="post_exact"
+                th:if="${#strings.equals(sidebar.getViewmode(), 'exact')}"
+                th:each="category: ${categoryList}"
+              >
+                <a th:href="@{/category/{id}(id = ${category.getId()})}">
                   <div class="post_left">
                     <div class="post_name" th:text="${category.getCategory()}">
                       카테고리 제목
                     </div>
                     <div class="post_info">
-                      <img src="" alt="" th:src="${category.getImg()}" />
+                      <div class="post_img_frame">
+                        <img
+                          src=""
+                          alt=""
+                          th:src="@{/images/{img}(img = ${category.getImg()})}"
+                        />
+                      </div>
                       <p th:text="${category.getAbout()}">카테고리 설명</p>
                     </div>
                   </div>
@@ -93,48 +101,41 @@
                   </div>
                 </a>
               </li>
+
+              <div class="post_none" th:if="${#lists.size(categoryList) == 0}">
+                카테고리가 없습니다.
+              </div>
             </ul>
 
             <ul class="paging">
-              <li class="page_move"><a href="#">&lt;</a></li>
-              <li class="page_button"><a href="#">1</a></li>
-              <li class="page_button"><a href="#">2</a></li>
-              <li class="page_button"><a href="#">3</a></li>
-              <li class="page_move"><a href="#">&gt;</a></li>
+              <li class="post_move" th:if="${page &gt; 1 and page - 3 &gt;= 1}">
+                <a th:href="@{/(page=1)}">&lt;&lt;</a>
+              </li>
+              <li class="post_move" th:if="${page &gt; 1}">
+                <a th:href="@{/(page=${page - 1})}">&lt;</a>
+              </li>
+
+              <li
+                class="post_button"
+                th:each="num : ${#numbers.sequence(T(Math).max(page - 3, 1), T(Math).min(page + 3, pageCount))}"
+                th:classappend="${page} == num ? current : ''"
+              >
+                <a th:href="@{/(page=${num})}" th:text="${num}"></a>
+              </li>
+
+              <li class="post_move" th:if="${page &lt; pageCount}">
+                <a th:href="@{/(page=${page + 1})}">&gt;</a>
+              </li>
+              <li
+                class="post_move"
+                th:if="${page &lt; pageCount and page + 3 &lt;= pageCount}"
+              >
+                <a th:href="|@{/(page=${pageCount})}|">&gt;&gt;</a>
+              </li>
             </ul>
           </div>
 
-          <div class="sidebar">
-            <div class="sidebar_title">카테고리 검색</div>
-            <form class="sidebar_search">
-              <div class="search_box">
-                <div class="search_wrap"></div>
-                <input class="search_input" type="text" placeholder="검색" />
-                <i class="fa-solid fa-magnifying-glass"></i>
-              </div>
-
-              <div class="sidebar_title">보기 모드</div>
-              <div class="select_box">
-                <label
-                  ><input
-                    name="view_mode"
-                    id="view_simple"
-                    type="radio"
-                    value="simple"
-                    checked
-                  />간략히</label
-                >
-                <label
-                  ><input
-                    name="view_mode"
-                    id="view_exact"
-                    type="radio"
-                    value="exact"
-                  />자세히</label
-                >
-              </div>
-            </form>
-          </div>
+          <div class="sidebar" th:replace="fragments/common :: sidebar"></div>
         </div>
       </div>
     </div>

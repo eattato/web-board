@@ -5,7 +5,7 @@
     <title th:text="|BOARDARC - 카테고리: ${categoryData.getCategory()}|">
       카테고리
     </title>
-    <link rel="icon" href="http://localhost:8888/images/official/icon.png" />
+    <link rel="icon" th:href="@{/images/official/icon.png}" />
     <link rel="stylesheet" th:href="@{/components/css/style.css}" />
     <link rel="stylesheet" th:href="@{/category/css/style.css}" />
     <script
@@ -16,14 +16,12 @@
     <script src="../components/js/jquery.cookie.js"></script>
     <script src="../components/js/header.js"></script>
     <script src="../category/js/script.js"></script>
+    <script src="../category/js/search.js"></script>
+    <script src="../components/js/sidebar.js"></script>
   </head>
   <body>
     <div class="wrap">
-      <div class="banner">
-        <a href="#">
-          <img src="" alt="배너" />
-        </a>
-      </div>
+      <div class="banner" th:replace="fragments/common :: banner"></div>
       <div class="menu" th:replace="fragments/common :: header"></div>
       <div class="body">
         <div class="title">
@@ -38,74 +36,128 @@
         <div class="main">
           <div class="main_posts">
             <ul class="post_list">
-              <li class="post_simple" th:each="post : ${posts}">
-                <a th:href="|http://localhost:8888/posts/${post.getId()}|">
-                  <div class="post_name" th:text="${post.getPostname()}">
-                    글 제목
-                  </div>
-                  <div class="post_right">
-                    <div class="post_wrap">
-                      <div
-                        class="post_top"
-                        th:text="${post.authorInfo.getNickname()}"
-                      >
-                        게시자
-                      </div>
-                      <div
-                        class="post_bottom"
-                        th:text="${post.getPostdate()}"
-                      ></div>
-                    </div>
+              <li
+                class="post_simple"
+                th:if="${#strings.equals(sidebar.getViewmode(), 'simple')}"
+                th:each="post : ${posts}"
+              >
+                <div class="post_left">
+                  <a
+                    class="post_name"
+                    th:text="${post.getPostname()}"
+                    th:href="@{/posts/{id}(id = ${post.getId()})}"
+                  >
+                  </a>
+                </div>
+                <div class="post_right">
+                  <ul class="post_tags">
+                    <li
+                      th:each="tag : ${post.getTagdataList()}"
+                      th:title="${tag.getTagdesc()}"
+                      class="post_tag"
+                    >
+                      <a
+                        th:href="@{/tag/{id}(id = ${tag.getId()})}"
+                        th:text="${tag.getTagname()}"
+                        th:style="|color: #${tag.getTagcolor()}|"
+                      ></a>
+                    </li>
+                  </ul>
 
-                    <div class="post_wrap">
-                      <div class="post_top">조회수</div>
-                      <div
-                        class="post_bottom"
-                        th:text="|${post.getViewers()}회|"
-                      ></div>
+                  <div class="post_wrap">
+                    <div
+                      class="post_top"
+                      th:text="${post.authorInfo.getNickname()}"
+                    >
+                      게시자
                     </div>
-
-                    <div class="post_wrap">
-                      <div class="post_top">추천</div>
-                      <div
-                        class="post_bottom"
-                        th:text="|${post.getRecommend()}개|"
-                      ></div>
-                    </div>
+                    <div
+                      class="post_bottom"
+                      th:text="${post.getPostdate()}"
+                    ></div>
                   </div>
-                </a>
+
+                  <div class="post_wrap">
+                    <div class="post_top">조회수</div>
+                    <div
+                      class="post_bottom"
+                      th:text="|${post.getViewers()}회|"
+                    ></div>
+                  </div>
+
+                  <div class="post_wrap">
+                    <div class="post_top">추천</div>
+                    <div
+                      class="post_bottom"
+                      th:text="|${post.getRecommend()}개|"
+                    ></div>
+                  </div>
+                </div>
               </li>
 
-              <li class="post_exact" th:each="post : ${posts}">
-                <a th:href="|http://localhost:8888/posts/${post.getId()}|">
-                  <div class="post_left">
-                    <div class="post_title">
-                      <div class="post_name" th:text="${post.getPostname()}">
-                        글 제목
-                      </div>
-                      <div
-                        class="post_data"
-                        th:text="|조회수 ${post.getViewers()}회|"
-                      ></div>
-                      <div
-                        class="post_data"
-                        th:text="|추천 ${post.getRecommend()}개|"
-                      ></div>
+              <li
+                class="post_exact"
+                th:if="${#strings.equals(sidebar.getViewmode(), 'exact')}"
+                th:each="post : ${posts}"
+              >
+                <div class="post_top">
+                  <div class="post_top_left">
+                    <div class="post_name">
+                      <a
+                        th:href="@{/posts/{id}(id = ${post.getId()})}"
+                        th:text="${post.getPostname()}"
+                        >글 제목</a
+                      >
                     </div>
+                    <ul class="post_tags">
+                      <li
+                        th:each="tag : ${post.getTagdataList()}"
+                        th:title="${tag.getTagdesc()}"
+                        class="post_tag"
+                      >
+                        <a
+                          th:href="@{/tag/{id}(id = ${tag.getId()})}"
+                          th:text="${tag.getTagname()}"
+                          th:style="|color: #${tag.getTagcolor()}|"
+                        ></a>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="post_top_right">
+                    <div
+                      class="post_data"
+                      th:text="|조회수 ${post.getViewers()}회|"
+                    ></div>
+                    <div
+                      class="post_data"
+                      th:text="|추천 ${post.getRecommend()}개|"
+                    ></div>
+                  </div>
+                </div>
+                <div class="post_bottom">
+                  <div class="post_left">
                     <div class="post_info">
-                      <img src="" alt="" />
-                      <p th:text="${post.getContent()}">글 내용</p>
+                      <div class="post_img_frame">
+                        <img
+                          src=""
+                          alt=""
+                          th:src="@{/images/{img}(img = ${categoryData.getImg()})}"
+                        />
+                      </div>
+                      <a th:href="@{/posts/{id}(id = ${post.getId()})}"
+                        ><p th:text="${post.getContent()}">글 내용</p></a
+                      >
                     </div>
                   </div>
                   <div class="post_right">
                     <div
-                      class="post_top"
+                      class="post_right_info"
                       th:text="|게시자 - ${post.authorInfo.getNickname()}|"
                     >
                       게시자
                     </div>
                     <div
-                      class="post_top"
+                      class="post_right_info"
                       th:text="|게시일 - ${post.getPostdate()}|"
                     >
                       게시일
@@ -114,128 +166,61 @@
                       <img
                         th:if="${post.authorInfo.getFaceimg() == null}"
                         alt=""
-                        th:src="http://localhost:8888/images/profiles/default.png"
+                        th:src="@{/images/profiles/default.png}"
                       />
                       <img
                         th:if="${post.authorInfo.getFaceimg() != null}"
                         alt=""
-                        th:src="|http://localhost:8888/images/${post.authorInfo.getFaceimg()}|"
+                        th:src="@{/images/{img}(img = ${post.authorInfo.getFaceimg()})}"
                       />
                     </div>
                   </div>
-                </a>
+                </div>
               </li>
+
+              <div class="post_none" th:if="${#lists.size(posts) == 0}">
+                게시물이 없습니다.
+              </div>
             </ul>
 
             <ul class="paging">
-              <li class="post_move"><a href="#">&lt;</a></li>
-              <li class="post_button"><a href="#">1</a></li>
-              <li class="post_button"><a href="#">2</a></li>
-              <li class="post_button"><a href="#">3</a></li>
-              <li class="post_move"><a href="#">&gt;</a></li>
+              <li class="post_move" th:if="${page &gt; 1 and page - 3 &gt;= 1}">
+                <a th:href="@{/category/{id}(id = ${id})}">&lt;&lt;</a>
+              </li>
+              <li class="post_move" th:if="${page &gt; 1}">
+                <a th:href="@{/category/{id}(id = ${id}, page = ${page - 1})}"
+                  >&lt;</a
+                >
+              </li>
+
+              <li
+                class="post_button"
+                th:each="num : ${#numbers.sequence(T(Math).max(page - 3, 1), T(Math).min(page + 3, pageCount))}"
+                th:classappend="${page == num} ? 'current' : ''"
+              >
+                <a
+                  th:href="@{/category/{id}(id = ${id}, page = ${num})}"
+                  th:text="${num}"
+                ></a>
+              </li>
+
+              <li class="post_move" th:if="${page &lt; pageCount}">
+                <a th:href="@{/category/{id}(id = ${id}, page = ${page + 1})}"
+                  >&gt;</a
+                >
+              </li>
+              <li
+                class="post_move"
+                th:if="${page &lt; pageCount and page + 3 &lt;= pageCount}"
+              >
+                <a th:href="@{/category/{id}(id = ${id}, page = ${pageCount})}"
+                  >&gt;&gt;</a
+                >
+              </li>
             </ul>
           </div>
 
-          <div class="sidebar">
-            <div class="sidebar_title">카테고리 검색</div>
-            <form class="sidebar_search">
-              <div class="search_box">
-                <div class="search_wrap"></div>
-                <input class="search_input" type="text" placeholder="검색" />
-                <i class="fa-solid fa-magnifying-glass"></i>
-              </div>
-
-              <div class="sidebar_title">보기 모드</div>
-              <div class="select_box">
-                <label
-                  ><input
-                    name="view_mode"
-                    id="view_simple"
-                    type="radio"
-                    value="simple"
-                    checked
-                  />간략히</label
-                >
-                <label
-                  ><input
-                    name="view_mode"
-                    id="view_exact"
-                    type="radio"
-                    value="exact"
-                  />자세히</label
-                >
-              </div>
-
-              <div class="sidebar_title">검색 필터</div>
-              <div class="select_box">
-                <label
-                  ><input
-                    name="filter"
-                    type="checkbox"
-                    value="title"
-                    checked
-                  />제목</label
-                >
-                <label
-                  ><input
-                    name="filter"
-                    type="checkbox"
-                    value="author"
-                    checked
-                  />작성자</label
-                >
-                <label
-                  ><input
-                    name="filter"
-                    type="checkbox"
-                    value="content"
-                    checked
-                  />내용</label
-                >
-                <label
-                  ><input
-                    name="filter"
-                    type="checkbox"
-                    value="date"
-                  />날짜</label
-                >
-              </div>
-
-              <div class="sidebar_title"></div>
-              <div class="select_box">
-                <label
-                  ><input
-                    name="sort"
-                    type="radio"
-                    value="loved"
-                    checked
-                  />인기순</label
-                >
-                <label
-                  ><input name="sort" type="radio" value="new" />최신순</label
-                >
-              </div>
-
-              <div class="sidebar_title"></div>
-              <div class="select_box">
-                <label
-                  ><input
-                    name="direction"
-                    type="radio"
-                    value="up"
-                    checked
-                  />오름차순</label
-                >
-                <label
-                  ><input
-                    name="direction"
-                    type="radio"
-                    value="down"
-                  />내림차순</label
-                >
-              </div>
-            </form>
-          </div>
+          <div class="sidebar" th:replace="fragments/common :: sidebar"></div>
         </div>
       </div>
     </div>

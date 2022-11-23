@@ -36,7 +36,8 @@
   display: flex;
   flex-direction: column;
   width: 780px;
-  border: 1px solid lightgray;
+  border-top: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
 }
 
 .post_list a {
@@ -46,7 +47,6 @@
 
 /* post simple */
 .post_simple {
-  display: none;
   width: 100%;
   height: 50px;
   border-bottom: 1px solid lightgray;
@@ -61,6 +61,9 @@
 .post_simple .post_name {
   font-size: 18px;
   margin-left: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .post_simple .post_right {
@@ -88,7 +91,6 @@
 
 /* post exact */
 .post_exact {
-  display: none;
   width: 100%;
   height: 150px;
   border-bottom: 1px solid lightgray;
@@ -109,6 +111,9 @@
   font-size: 18px;
   margin-left: 10px;
   margin-bottom: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .post_exact .post_info {
@@ -116,18 +121,37 @@
   justify-content: left;
 }
 
-.post_exact img {
+.post_exact .post_img_frame {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100px;
   height: 100px;
   margin-left: 10px;
   background-color: lightgray;
+  border: 1px solid lightgray;
+  border-radius: 50px;
+  overflow: hidden;
+}
+
+.post_exact img {
+  width: 100px;
 }
 
 .post_exact p {
   display: none;
   width: 400px;
+  height: 96px;
+  line-height: 1.2;
   margin-left: 10px;
   color: gray;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.post_exact p.activate {
+  display: -webkit-box;
 }
 
 .post_exact .post_right {
@@ -149,12 +173,12 @@
   color: gray;
 }
 
-.no_post {
-  display: none;
+.post_none {
   width: 100%;
-  height: 150px;
+  height: 200px;
   text-align: center;
-  line-height: 150px;
+  line-height: 200px;
+  font-size: 16px;
   color: gray;
 }
 
@@ -243,9 +267,17 @@
 }
 
 .paging li {
+  width: 35px;
+  height: 35px;
+  text-align: center;
+  line-height: 30px;
+  font-size: 18px;
   margin: 0 10px;
   border: 1px solid lightgray;
   border-radius: 15px;
+}
+.post_button.current {
+  background-color: #eeeeee;
 }
 
 .paging a {

@@ -113,23 +113,42 @@
   background-color: rgba(0, 0, 0, 0.7);
 }
 
-.profile_img_admin {
+.profile_badge_frame {
   position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100px;
+  height: 40px;
+  right: 30px;
+  top: 140px;
+}
+
+.profile_badge {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-shrink: 0;
   width: 100px;
   height: 35px;
   padding: 0 15px;
-  right: 30px;
-  top: 140px;
-  background-color: yellow;
+  margin: 3px 0;
   border-radius: 20px;
   z-index: 2;
   pointer-events: none;
 }
 
-.profile_img_admin > * {
+.profile_badge_admin {
+  background-color: yellow;
+}
+.profile_badge_admin > * {
+  color: black;
+}
+
+.profile_badge_verified {
+  background-color: greenyellow;
+}
+.profile_badge_verified > * {
   color: black;
 }
 
