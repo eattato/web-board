@@ -17,7 +17,6 @@ import spring.vo.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
-import java.sql.Array;
 import java.util.*;
 
 @Service

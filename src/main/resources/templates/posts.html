@@ -174,11 +174,11 @@
                   작성자
                 </div>
                 <div class="comments_img_frame">
-                  <img
+                  <!-- <img
                     th:if="${profile != null}"
                     th:src="@{/images/{img}(img = ${profile.getFaceimg()})}"
                     alt=""
-                  />
+                  /> -->
                   <div
                     class="comments_lock"
                     th:unless="${profile != null and profile.isVerify()}"

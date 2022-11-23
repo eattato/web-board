@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <title th:text="|BOARDARC - 게시물: ${post.getPostname()}|"></title>
-    <link rel="icon" href="http://localhost:8888/images/official/icon.png" />
+    <link rel="icon" th:href="@{/images/official/icon.png}" />
     <link rel="stylesheet" th:href="@{/components/css/style.css}" />
     <link rel="stylesheet" th:href="@{/posts/css/style.css}" />
     <script
@@ -17,27 +17,33 @@
   </head>
   <body>
     <div class="wrap">
-      <div class="banner">
-        <a href="#">
-          <img src="" alt="배너" />
-        </a>
-      </div>
+      <div class="banner" th:replace="fragments/common :: banner"></div>
       <div class="menu" th:replace="fragments/common :: header"></div>
       <div class="body">
         <div class="title">
-          <div class="category_name" th:text="${category.getCategory()}">
-            카테고리 목록
+          <div class="category_name">
+            <a
+              th:text="${category.getCategory()}"
+              th:href="@{/category/{id}(id = ${category.getId()})}"
+              >게시된 카테고리</a
+            >
           </div>
         </div>
 
         <div class="main">
           <div class="post_top">
             <div class="post_top_left">
-              <div class="post_title" th:text="${post.postname}">제목</div>
               <div class="post_tags">
-                <li class="tag" th:each="tag : ${tags}">
-                  <div class="tag_name" th:text="tag">태그</div>
-                  <div class="tag_close">x</div>
+                <li
+                  th:each="tag : ${post.getTagdataList()}"
+                  th:title="${tag.getTagdesc()}"
+                  class="post_tag"
+                >
+                  <a
+                    th:href="@{/tag/{id}(id = ${tag.getId()})}"
+                    th:text="${tag.getTagname()}"
+                    th:style="|color: #${tag.getTagcolor()}|"
+                  ></a>
                 </li>
               </div>
             </div>
@@ -65,16 +71,45 @@
                   th:text="|${post.getRecommend()}회|"
                 ></div>
               </div>
+
+              <div class="post_ellipsis">
+                <button type="button" class="post_ellipsis_button">
+                  <i class="fa-solid fa-ellipsis"></i>
+                </button>
+                <div class="post_ellipsis_menu">
+                  <button type="button" class="post_ellipsis_share">
+                    공유
+                  </button>
+                  <button type="button" class="post_ellipsis_report">
+                    신고
+                  </button>
+                  <button
+                    th:if="${profile != null && #strings.equals(post.getAuthor(), email)}"
+                    type="button"
+                    class="post_ellipsis_edit"
+                  >
+                    <a th:href="@{/editor/{id}(id = ${post.getId()})}">수정</a>
+                  </button>
+                  <button
+                    th:if="${profile != null && (#strings.equals(post.getAuthor(), email) || profile.isIsadmin() == true || #lists.contains(category.getAdminList(), email))}"
+                    type="button"
+                    class="post_ellipsis_delete"
+                  >
+                    삭제
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
+          <div class="post_title" th:text="${post.postname}">제목</div>
           <div class="post_author">
             <div class="author_img_frame">
               <a
                 href="#"
-                th:href="|http://localhost:8888/info/${post.getAuthor()}|"
+                th:href="@{/info/{author}(author = ${post.getAuthor()})}"
               >
                 <img
-                  th:src="|http://localhost:8888/images/${author.getFaceimg()}|"
+                  th:src="@{/images/{img}(img = ${author.getFaceimg()})}"
                   src=""
                   alt=""
                 />
@@ -84,24 +119,86 @@
               <div class="author_name" th:text="${author.getNickname()}">
                 작성자 이름
               </div>
-              <div class="author_about">작성자 소개</div>
+              <div class="author_about" th:text="${author.getAbout()}">
+                작성자 소개
+              </div>
             </div>
           </div>
 
           <div class="post_main" th:text="${post.getContent()}">본문</div>
 
+          <div
+            class="recommend_frame"
+            th:if="${profile != null and profile.isVerify()}"
+          >
+            <button
+              class="recommend_love"
+              th:classappend="${loved} ? 'activate' : ''"
+            >
+              <i class="fa-solid fa-thumbs-up"></i>
+              <span th:text="|좋아요 ${post.getLoved()}|"></span>
+            </button>
+            <button
+              class="recommend_hate"
+              th:classappend="${hated} ? 'activate' : ''"
+            >
+              <i class="fa-solid fa-thumbs-down"></i>
+              <span th:text="|싫어요 ${post.getHated()}|"></span>
+            </button>
+          </div>
+          <div
+            class="recommend_frame"
+            th:unless="${profile != null and profile.isVerify()}"
+          >
+            <button class="recommend_lock">
+              <i class="fa-solid fa-lock"></i>
+              <span th:text="|좋아요 ${post.getLoved()}|"></span>
+            </button>
+            <button class="recommend_lock">
+              <i class="fa-solid fa-lock"></i>
+              <span th:text="|싫어요 ${post.getHated()}|"></span>
+            </button>
+          </div>
+
           <div class="comments_frame">
             <div class="comments_top">
               <div class="comments_profile">
-                <div class="comments_name" th:text="${author.getNickname()}">
+                <div class="comments_name" th:if="${profile == null}">
+                  댓글을 남기려면 로그인 해주세요.
+                </div>
+                <div
+                  class="comments_name"
+                  th:if="${profile != null}"
+                  th:text="${profile.getNickname()}"
+                >
                   작성자
                 </div>
                 <div class="comments_img_frame">
-                  <img
-                    th:src="|http://localhost:8888/images/${profile.getFaceimg()}|"
-                    src=""
+                  <!-- <img
+                    th:if="${profile != null}"
+                    th:src="@{/images/{img}(img = ${profile.getFaceimg()})}"
                     alt=""
-                  />
+                  /> -->
+                  <div
+                    class="comments_lock"
+                    th:unless="${profile != null and profile.isVerify()}"
+                  >
+                    <div class="comments_lock_frame">
+                      <i class="fa-solid fa-lock"></i>
+                      <div
+                        th:if="${profile == null}"
+                        class="comments_lock_display"
+                      >
+                        로그인이 필요합니다.
+                      </div>
+                      <div
+                        th:if="${profile != null}"
+                        class="comments_lock_display"
+                      >
+                        이메일 인증이 필요합니다.
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="comments_input_frame">
@@ -124,7 +221,7 @@
               <div
                 class="comment"
                 th:each="comment : ${comments}"
-                th:classappend="|id${comment.getId()} reply${comment.getReply()}|"
+                th:classappend="|id${comment.getId()} level${comment.getReply_level()}|"
               >
                 <div class="comment_frame">
                   <div class="comments_profile">
@@ -136,7 +233,7 @@
                     </div>
                     <div class="comments_img_frame">
                       <img
-                        th:src="|http://localhost:8888/images/${comment.authorInfo.getFaceimg()}|"
+                        th:src="@{/images/{img}(img = ${comment.authorInfo.getFaceimg()})}"
                         src=""
                         alt=""
                       />
@@ -145,7 +242,7 @@
                   <p th:text="${comment.getContent()}">댓글 내용</p>
                   <div class="comment_ellipsis">
                     <button type="button" class="comment_ellipsis_button">
-                      ...
+                      <i class="fa-solid fa-ellipsis"></i>
                     </button>
                     <div class="comment_ellipsis_menu">
                       <button type="button" class="comment_ellipsis_reply">
@@ -154,10 +251,16 @@
                       <button type="button" class="comment_ellipsis_report">
                         신고
                       </button>
+                      <button
+                        th:if="${profile != null && (#strings.equals(comment.getAuthor(), email) || profile.isIsadmin() == true || #lists.contains(category.getAdminList(), email))}"
+                        type="button"
+                        class="comment_ellipsis_delete"
+                      >
+                        삭제
+                      </button>
                     </div>
                   </div>
                 </div>
-                <ul class="comment_holder"></ul>
               </div>
             </div>
           </div>

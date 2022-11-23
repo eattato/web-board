@@ -12,10 +12,7 @@ import spring.vo.PostVO;
 import spring.vo.RecommendVO;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 @Slf4j
@@ -335,29 +332,32 @@ public class PageDao {
         PostDTO postData = getPostData(vo.getId());
         if (postData != null) {
             String queryString = null;
-            if (vo.isLove() == true) {
-                List<String> lovers = postData.getLoverList();
-                if (lovers == null) {
-                    log.info("lovers is null");
-                } else {
-                    if (lovers.contains(email)) {
-                        lovers.remove(email);
-                        queryString = String.format("UPDATE posts SET loved = loved - 1, lovers = '%s' WHERE id = %s", String.join(" ", lovers), vo.getId());
-                    } else {
-                        lovers.add(email);
-                        queryString = String.format("UPDATE posts SET loved = loved + 1, lovers = '%s' WHERE id = %s", String.join(" ", lovers), vo.getId());
-                    }
-                }
-            } else {
-                List<String> haters = postData.getHaterList();
-                if (haters.contains(email)) {
-                    haters.remove(email);
-                    queryString = String.format("UPDATE posts SET hated = hated - 1, haters = '%s' WHERE id = %s", String.join(" ", haters), vo.getId());
-                } else {
-                    haters.add(email);
-                    queryString = String.format("UPDATE posts SET hated = hated + 1, haters = '%s' WHERE id = %s", String.join(" ", haters), vo.getId());
-                }
+            HashMap<String, List<String>> recommends = new HashMap<>();
+            recommends.put("loved", postData.getLoverList());
+            recommends.put("hated", postData.getHaterList());
+            String targetKey = "loved";
+            String otherKey = "hated";
+            if (vo.isLove() == false) {
+                targetKey = "hated";
+                otherKey = "loved";
             }
+
+            List<String> targetList = recommends.get(targetKey);
+            List<String> otherList = recommends.get(otherKey);
+            if (targetList.contains(email)) { // 누른 대상 해제
+                targetList.remove(email);
+                queryString = String.format("%s = %s - 1", targetKey, targetKey);
+            } else { // 누른 대상 추가
+                targetList.add(email);
+                queryString = String.format("%s = %s + 1", targetKey, targetKey);
+            }
+            if (otherList.contains(email)) { // 누르지 않은 대상 취소
+                queryString += String.format(", %s = %s - 1", otherKey, otherKey);
+            }
+            queryString = String.format(
+                    "UPDATE posts SET %s, lovers = '%s', haters = '%s' WHERE id = %s",
+                    queryString, String.join(" ", recommends.get("loved")), String.join(" ", recommends.get("hated")), vo.getId()
+            );
             return jt.update(queryString);
         } else {
             return 0;
