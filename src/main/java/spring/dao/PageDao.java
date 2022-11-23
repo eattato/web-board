@@ -352,12 +352,15 @@ public class PageDao {
                 queryString = String.format("%s = %s + 1", targetKey, targetKey);
             }
             if (otherList.contains(email)) { // 누르지 않은 대상 취소
+                otherList.remove(email);
                 queryString += String.format(", %s = %s - 1", otherKey, otherKey);
             }
             queryString = String.format(
                     "UPDATE posts SET %s, lovers = '%s', haters = '%s' WHERE id = %s",
                     queryString, String.join(" ", recommends.get("loved")), String.join(" ", recommends.get("hated")), vo.getId()
             );
+
+            //log.info(queryString);
             return jt.update(queryString);
         } else {
             return 0;
