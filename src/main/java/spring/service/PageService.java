@@ -500,19 +500,25 @@ public class PageService {
 
     // page access
     public String controlPage(HttpServletRequest request, Model model, String menu) {
-        accountService.sendProfileBySession(request, model);
-        if (menu.equals("category")) {
-            PageVO vo = new PageVO();
-            vo.setStartIndex(0);
-            vo.setEndIndex(-1);
-            List<CategoryDTO> result = getCategoryList(vo);
-            model.addAttribute("categories", result);
-            return "control/category";
-        } else if (menu.equals("tags")) {
-            model.addAttribute("tags", getAllTags());
-            return "control/tags";
-        } else if (menu.equals("members")) {
-            return "control/members";
+        HttpSession session = request.getSession();
+        String sessionData = accountService.getSession(session);
+        
+        AccountDataDTO userData = accountService.getUserData(sessionData);
+        if (userData.isIsadmin() == true) {
+            accountService.sendProfileBySession(request, model);
+            if (menu.equals("category")) {
+                PageVO vo = new PageVO();
+                vo.setStartIndex(0);
+                vo.setEndIndex(-1);
+                List<CategoryDTO> result = getCategoryList(vo);
+                model.addAttribute("categories", result);
+                return "control/category";
+            } else if (menu.equals("tags")) {
+                model.addAttribute("tags", getAllTags());
+                return "control/tags";
+            } else if (menu.equals("members")) {
+                return "control/members";
+            }
         }
         return "redirect:/";
     }
