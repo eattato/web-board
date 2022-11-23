@@ -26,6 +26,33 @@ public class PageDao {
         return jt.queryForList(queryString);
     }
 
+    private String getFirstRow(String queryString) {
+        List<Map<String, Object>> result = getRows(queryString);
+        if (result.size() >= 1) {
+            for (String key : result.get(0).keySet()) {
+                return result.get(0).get(key).toString();
+            }
+            return null;
+        } else {
+            return null;
+        }
+    }
+
+    private String[] queryDict(HashMap<String, Object> target) {
+        String[] result = new String[2];
+        List<String> keys = new ArrayList<>();
+        List<String> vals = new ArrayList<>();
+
+        for (String key : target.keySet()) {
+            keys.add(key);
+            vals.add(target.get(key).toString());
+        }
+
+        result[0] = String.join(", ", keys);
+        result[1] = String.join(", ", vals);
+        return result;
+    }
+
     // Category
     public List<CategoryDTO> getCategoryList(PageVO data) {
         String queryString = "SELECT categories.*, COUNT(posts.category) AS posts, SUM(IFNULL(posts.loved, 0)) - SUM(IFNULL(posts.hated, 0)) AS loved FROM categories " +
@@ -150,7 +177,10 @@ public class PageDao {
     }
 
     public List<PostDTO> getPostList(PageVO data, int actType) {
-        String queryString = "SELECT id, category, postname, author, postdate, content, IFNULL(loved, 0) - IFNULL(hated, 0) AS loved, IFNULL(viewers, 0) AS viewers, IFNULL(viewers, 0) + IFNULL(loved, 0) - IFNULL(hated, 0) AS interest, taglist FROM posts ";
+        String queryString = "SELECT p.*, sum(r.recommend) as recommend, sum(if(r.recommend=1, 1, 0)) as loved, sum(if(r.recommend=-1, -1, 0)) as hated "
+                + "from posts p "
+                + "join recommends r "
+                + "on p.id = r.post ";
         boolean whereAdded = false;
         if (actType == 0) {
             whereAdded = true;
@@ -306,9 +336,20 @@ public class PageDao {
     }
 
     public int post(PostVO vo) {
-        String queryString = "INSERT INTO posts VALUES(";
-        int idCurrent = getIdCurrent("posts");
-        queryString += String.format("%s, %s, '%s', '%s', '%s', '%s', 0, 0, 0, '%s', '', '');", idCurrent + 1, vo.getCategory(), vo.getTitle().replaceAll("'", "''"), vo.getAuthor(), LocalDate.now(), vo.getContent().replaceAll("'", "''"), vo.getTags());
+        int postId = Integer.parseInt(getFirstRow("SELECT AUTO_INCREMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'board' AND TABLE_NAME = 'posts';"));
+        HashMap<String, Object> queryMap = new HashMap<>();
+        queryMap.put("category", vo.getCategory());
+        queryMap.put("postname", vo.getTitle());
+        queryMap.put("author", vo.getAuthor());
+        queryMap.put("postdate", LocalDate.now());
+        queryMap.put("content", vo.getContent());
+        queryMap.put("viewers", 0);
+
+        String[] queryMapString = queryDict(queryMap);
+        String queryString = String.format("INSERT INTO posts(%s) VALUES(%s);", queryMapString[0], queryMapString[1]);
+        for (int tag : vo.getTagsAsInt()) {
+            queryString += String.format("INSERT INTO tagref(post, tag) VALUES(%s, %s);", postId, tag);
+        }
         return jt.update(queryString);
     }
 
@@ -317,8 +358,12 @@ public class PageDao {
         queryString += String.format("category = %s, ", vo.getCategory());
         queryString += String.format("postname = '%s', ", vo.getTitle().replaceAll("'", "''"));
         queryString += String.format("content = '%s', ", vo.getContent().replaceAll("'", "''"));
-        queryString += String.format("taglist = '%s' ", vo.getTags());
         queryString += String.format("WHERE id = %s;", vo.getId());
+
+        queryString += String.format("DELETE FROM board.tagref WHERE id = %s;", vo.getId()); // 현재 태그 테이블 삭제
+        for (int tag : vo.getTagsAsInt()) { // 수정된 태그 다시 추가
+            queryString += String.format("INSERT INTO tagref(post, tag) VALUES(%s, %s);", vo.getId(), tag);
+        }
         return jt.update(queryString);
     }
 

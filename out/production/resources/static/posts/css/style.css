@@ -298,15 +298,18 @@
 }
 .comments_lock_display {
   position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100px;
   height: 40px;
   padding: 0 10px;
-  text-align: center;
-  line-height: 40px;
-  font-size: 12px;
   background-color: rgba(0, 0, 0, 0.5);
+}
+.comments_lock_display > span {
+  text-align: center;
+  font-size: 13px;
   color: white;
-  word-break: break-all;
 }
 
 .comments_input_frame {
