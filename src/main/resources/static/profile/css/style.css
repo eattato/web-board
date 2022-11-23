@@ -58,6 +58,7 @@
 
 /* profile img */
 .profile_left {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -110,6 +111,26 @@
 
 #profile_img_select:hover {
   background-color: rgba(0, 0, 0, 0.7);
+}
+
+.profile_img_admin {
+  position: absolute;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100px;
+  height: 35px;
+  padding: 0 15px;
+  right: 30px;
+  top: 140px;
+  background-color: yellow;
+  border-radius: 20px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.profile_img_admin > * {
+  color: black;
 }
 
 .commit {

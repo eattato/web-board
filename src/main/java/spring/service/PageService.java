@@ -502,7 +502,7 @@ public class PageService {
     public String controlPage(HttpServletRequest request, Model model, String menu) {
         HttpSession session = request.getSession();
         String sessionData = accountService.getSession(session);
-        
+
         AccountDataDTO userData = accountService.getUserData(sessionData);
         if (userData.isIsadmin() == true) {
             accountService.sendProfileBySession(request, model);

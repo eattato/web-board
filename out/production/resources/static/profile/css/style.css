@@ -21,6 +21,18 @@
 /* main */
 .main {
   width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.profile_top {
+  width: 100%;
+  height: auto;
+}
+
+.profile_bottom {
+  width: 100%;
   display: flex;
   justify-content: space-between;
 }
@@ -28,7 +40,7 @@
 /* form */
 .form {
   margin-top: 50px;
-  height: 500px !important;
+  height: auto !important;
   width: 300px !important;
   border: 0 !important;
 }
@@ -46,6 +58,7 @@
 
 /* profile img */
 .profile_left {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -100,7 +113,28 @@
   background-color: rgba(0, 0, 0, 0.7);
 }
 
+.profile_img_admin {
+  position: absolute;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100px;
+  height: 35px;
+  padding: 0 15px;
+  right: 30px;
+  top: 140px;
+  background-color: yellow;
+  border-radius: 20px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.profile_img_admin > * {
+  color: black;
+}
+
 .commit {
+  position: unset !important;
   display: flex;
   justify-content: space-between;
   width: 300px;
@@ -111,4 +145,15 @@
   background-color: white;
   color: red;
   border-radius: 5px;
+}
+
+/* profile top */
+.profile_warn {
+  width: 100%;
+  height: 30px;
+  text-align: center;
+  line-height: 30px;
+  color: white;
+  background-color: red;
+  font-size: 18px;
 }
