@@ -517,6 +517,7 @@ public class PageService {
                 model.addAttribute("tags", getAllTags());
                 return "control/tags";
             } else if (menu.equals("members")) {
+                model.addAttribute("members", accountService.getAllUsers());
                 return "control/members";
             }
         }

@@ -412,6 +412,10 @@ public class AccountService {
         session.setAttribute("sidebar", menu);
     }
 
+    public List<AccountDataDTO> getAllUsers() {
+        return accountDao.getAllUsers();
+    }
+
     // Private Methods
     private String checkPassword(String pw) {
         String result = null;

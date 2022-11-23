@@ -118,4 +118,16 @@ public class AccountDao {
     public int resetPassword(String email, String password) {
         return jt.update(String.format("UPDATE members SET pw = '%s' WHERE email = '%s'", password, email));
     }
+
+    public List<AccountDataDTO> getAllUsers() {
+        // 민감한 정보 제외
+        String queryString = "SELECT email, nickname, verify, faceimg, about, isadmin FROM members;";
+        List<Map<String, Object>> queryResult = getRows(queryString);
+
+        List<AccountDataDTO> result = new ArrayList<>();
+        for (Map<String, Object> row : queryResult) {
+            result.add(mapper.convertValue(row, AccountDataDTO.class));
+        }
+        return result;
+    }
 }

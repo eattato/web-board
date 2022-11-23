@@ -127,7 +127,6 @@ public class PageDao {
     }
 
     public int removeCategory(int id) {
-        removePostsOfCategory(id);
         return jt.update(String.format("DELETE FROM categories WHERE id = %s;", id));
     }
 
@@ -369,20 +368,7 @@ public class PageDao {
 
     public int removePost(int id) {
         String queryString = String.format("DELETE FROM posts WHERE id = %s", id);
-        removeCommentsOfPost(id);
         return jt.update(queryString);
-    }
-
-    public int removePostsOfCategory(int id) {
-        PageVO vo = new PageVO();
-        vo.setStartIndex(0);
-        vo.setEndIndex(-1);
-        vo.setCategory(id);
-        List<PostDTO> posts = getPostList(vo, 0);
-        for (PostDTO post : posts) {
-            removePost(post.getId());
-        }
-        return 1;
     }
 
     // Comment
@@ -444,25 +430,8 @@ public class PageDao {
         }
     }
 
-    public int removeCommentsOfPost(int id) { // 해당 포스트의 모든 댓글을 삭제하기 때문에 대댓글 삭제 필요 없음
-        String queryString = String.format("DELETE FROM comments WHERE post = %s", id);
-        return jt.update(queryString);
-    }
-
     public int removeComment(int id) { // ID로 댓글 삭제
-        //log.info("remove comment " + id);
         String queryString = String.format("DELETE FROM comments WHERE id = %s", id);
-        //removeReplyComment(id);
-        return jt.update(queryString);
-    }
-
-    public int removeReplyComment(int id) { // 해당 ID 댓글의 대댓글 모두 삭제
-        List<Map<String, Object>> queryResult = getRows(String.format("SELECT * FROM comments WHERE reply = %s", id));
-        for (Map<String, Object> map : queryResult) {
-            CommentDTO commentData = mapper.convertValue(map, CommentDTO.class);
-            removeReplyComment(commentData.getId()); // 그 밑의 대댓글을 모두 재귀함수로 제거
-        }
-        String queryString = String.format("DELETE FROM comments WHERE reply = %s", id);
         return jt.update(queryString);
     }
 
