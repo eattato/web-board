@@ -37,7 +37,8 @@
   display: flex;
   flex-direction: column;
   width: 780px;
-  border: 1px solid lightgray;
+  border-top: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
 }
 
 .post_list a {
@@ -275,12 +276,12 @@
   height: 120px;
 }
 
-.no_post {
-  display: none;
+.post_none {
   width: 100%;
-  height: 150px;
+  height: 200px;
   text-align: center;
-  line-height: 150px;
+  line-height: 200px;
+  font-size: 16px;
   color: gray;
 }
 

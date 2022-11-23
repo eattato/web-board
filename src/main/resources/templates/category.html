@@ -177,6 +177,10 @@
                   </div>
                 </div>
               </li>
+
+              <div class="post_none" th:if="${#lists.size(posts) == 0}">
+                게시물이 없습니다.
+              </div>
             </ul>
 
             <ul class="paging">

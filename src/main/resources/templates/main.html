@@ -101,6 +101,10 @@
                   </div>
                 </a>
               </li>
+
+              <div class="post_none" th:if="${#lists.size(posts) == 0}">
+                카테고리가 없습니다.
+              </div>
             </ul>
 
             <ul class="paging">
