@@ -102,22 +102,26 @@ public class PageDao {
 
     public CategoryDTO getCategoryData(int id) {
         String queryString = String.format(
-                "select c.*, count(p.id) as posts, sum(ifnull(r.recommend, 0)) as loved " +
-                "from categories c " +
-                "left join posts p " +
-                "on p.category = c.id " +
-                "left join recommends r " +
-                "on r.post = p.id " +
-                "WHERE c.id = %s " +
-                "group by c.id;",
+                "select * from categories where id = %s;",
                 id
         );
         List<Map<String, Object>> queryResult = getRows(queryString);
         if (queryResult.size() >= 1) {
-            return mapper.convertValue(queryResult.get(0), CategoryDTO.class);
+            CategoryDTO result = mapper.convertValue(queryResult.get(0), CategoryDTO.class);
+            return result;
         } else {
             return null;
         }
+    }
+
+    public List<String> getCategoryAdmins(int id) {
+        String queryString = String.format("SELECT target FROM adminref WHERE category = %s", id);
+        List<Map<String, Object>> adminsQuery = getRows(queryString);
+        List<String> admins = new ArrayList<>();
+        for (Map<String, Object> row : adminsQuery) {
+            admins.add(row.get("target").toString());
+        }
+        return admins;
     }
 
     public boolean hasCategory(int id) {
@@ -135,17 +139,16 @@ public class PageDao {
 
     public int updateCategory(CategorySetDTO data) {
         CategoryDTO categoryData = getCategoryData(data.getId());
+        List<String> adminList = getCategoryAdmins(data.getId());
         if (categoryData != null) {
             if (data.getAct().equals("addAdmin")) {
-                List<String> adminList = categoryData.getAdminList();
-                adminList.add(data.getTarget());
-                String admins = String.join(" ", adminList);
-                return jt.update(String.format("UPDATE categories SET admins = '%s' WHERE id = %s;", admins, data.getId()));
+                if (adminList.contains(data.getTarget()) == false) {
+                    return jt.update(String.format("INSERT INTO adminref VALUES(%s, '%s');", categoryData.getId(), data.getTarget()));
+                } else {
+                    return 0;
+                }
             } else if (data.getAct().equals("removeAdmin")) {
-                List<String> adminList = categoryData.getAdminList();
-                adminList.remove(data.getTarget());
-                String admins = String.join(" ", adminList);
-                return jt.update(String.format("UPDATE categories SET admins = '%s' WHERE id = %s;", admins, data.getId()));
+                return jt.update(String.format("DELETE FROM adminref WHERE category = %s and target = '%s';", categoryData.getId(), data.getTarget()));
             } else if (data.getAct().equals("changeName")) {
                 return jt.update(String.format("UPDATE categories SET category = '%s' WHERE id = %s;", data.getTarget().replaceAll("'", "''"), data.getId()));
             } else if (data.getAct().equals("changeAbout")) {
@@ -161,7 +164,14 @@ public class PageDao {
 
     public int addCategory(CategoryCreateDTO data) {
         int nextId = getIdCurrent("categories") + 1;
-        return jt.update(String.format("INSERT INTO categories VALUES(%s, '%s', '%s', null, false, false, null);", nextId, data.getCategory().replaceAll("'", "''"), data.getAbout().replaceAll("'", "''")));
+        HashMap<String, Object> queryMap = new HashMap<>();
+        queryMap.put("category", data.getCategory().replaceAll("'", "''"));
+        queryMap.put("about", data.getAbout().replaceAll("'", "''"));
+        queryMap.put("img", null);
+        queryMap.put("anonymous", false);
+        queryMap.put("adminonly", false);
+        String[] queryMapString = queryDict(queryMap);
+        return jt.update(String.format("INSERT INTO categories(%s) VALUES();", queryMapString[0], queryMapString[1]));
     }
 
     public int removeCategory(int id) {

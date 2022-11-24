@@ -55,11 +55,12 @@ public class PageService {
                 CategoryDTO categoryData = getCategoryData(data.getId());
                 AccountDataDTO userData = accountService.getUserData(sessionData);
                 if (categoryData != null) {
-                    if (userData != null && (userData.isIsadmin() || categoryData.getAdminList().contains(sessionData))) {
+                    List<String> admins = pageDao.getCategoryAdmins(data.getId());
+                    if (userData != null && (userData.isIsadmin() || admins.contains(sessionData))) {
                         List<String> availableActs = Arrays.asList(new String[] {"addAdmin", "removeAdmin", "setAdmin", "changeName", "changeAbout", "removeCategory"});
                         if (availableActs.contains(data.getAct())) {
                             String error = null;
-                            if (data.getAct().equals("addAdmin")) {
+                            if (data.getAct().equals("addAdmin") || data.getAct().equals("removeAdmin")) {
                                 AccountDataDTO target = accountService.getUserData(data.getTarget());
                                 if (target == null) {
                                     error = "target is null";
@@ -400,7 +401,8 @@ public class PageService {
             if (postData != null) {
                 CategoryDTO categoryData = pageDao.getCategoryData(postData.getCategory());
                 if (categoryData != null) {
-                    if (userData != null && (postData.getAuthor().equals(sessionData) || userData.isIsadmin() == true || categoryData.getAdminList().contains(sessionData))) {
+                    List<String> admins = pageDao.getCategoryAdmins(categoryData.getId());
+                    if (userData != null && (postData.getAuthor().equals(sessionData) || userData.isIsadmin() == true || admins.contains(sessionData))) {
                         int result = pageDao.removePost(id);
                         if (result == 1) {
                             return "ok";
@@ -479,7 +481,7 @@ public class PageService {
                 if (postData != null) {
                     CategoryDTO categoryData = pageDao.getCategoryData(postData.getId());
                     if (categoryData != null) {
-                        if (userData != null && (commentData.getAuthor().equals(sessionData) || userData.isIsadmin() == true || categoryData.getAdminList().contains(sessionData))) {
+                        if (userData != null && (commentData.getAuthor().equals(sessionData) || userData.isIsadmin() == true || categoryData.getAdmins().contains(sessionData))) {
                             pageDao.removeComment(id);
                             return "ok";
                         } else {
@@ -505,13 +507,16 @@ public class PageService {
         String sessionData = accountService.getSession(session);
 
         AccountDataDTO userData = accountService.getUserData(sessionData);
-        if (userData.isIsadmin() == true) {
+        if (userData != null && userData.isIsadmin() == true) {
             accountService.sendProfileBySession(request, model);
             if (menu.equals("category")) {
                 PageVO vo = new PageVO();
                 vo.setStartIndex(0);
                 vo.setEndIndex(-1);
                 List<CategoryDTO> result = getCategoryList(vo);
+                for (CategoryDTO category : result) {
+                    category.setAdmins(pageDao.getCategoryAdmins(category.getId()));
+                }
                 model.addAttribute("categories", result);
                 return "control/category";
             } else if (menu.equals("tags")) {

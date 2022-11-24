@@ -20,7 +20,7 @@ public class CategoryDTO {
     private boolean adminonly;
     private int posts;
     private int loved;
-    private String admins;
+    private List<String> admins = new ArrayList<>();
 
     public String getImg() {
         if (img == null) {
@@ -32,10 +32,6 @@ public class CategoryDTO {
 
     public void setAbout() {
         about = "글을 둘러보세요";
-    }
-
-    public List<String> getAdminList() {
-        return getStringAsList(admins);
     }
 
     // private methods
