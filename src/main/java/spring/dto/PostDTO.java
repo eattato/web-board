@@ -26,6 +26,7 @@ public class PostDTO {
     private int recommend;
     private int loved;
     private int hated;
+    private int interest;
 
     // custom property
     private AccountDataDTO authorInfo;

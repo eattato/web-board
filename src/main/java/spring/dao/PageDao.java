@@ -55,27 +55,27 @@ public class PageDao {
 
     // Category
     public List<CategoryDTO> getCategoryList(PageVO data) {
-        String queryString = "select c.*, count(p.category) as posts, sum(ifnull(r.recommend, 0)) as loved " +
+        String queryString = "select c.*, count(p.id) as posts, ifnull(sum(r.recommend), 0) as loved " +
                 "from categories c " +
-                "join posts p " +
+                "left join posts p " +
                 "on p.category = c.id " +
-                "join recommends r " +
+                "left join recommends r " +
                 "on r.post = p.id ";
 
         if (data.getSearch() != null) {
             queryString += "WHERE " + String.format("c.category LIKE '%%%s%%' ", data.getSearch());
         }
 
-        queryString += "GROUP BY c.id ORDER BY id ";
+        queryString += "GROUP BY c.id ORDER BY c.id ";
         if (data.getDirection().equals("down")) {
             queryString += "DESC ";
         } else {
             queryString += "ASC ";
         }
         if (data.getEnd() != -1) {
-            queryString += String.format("OFFSET %s ROWS FETCH NEXT %s ROWS ONLY;", data.getStart(), data.getEnd() - data.getStart());
+            queryString += String.format("LIMIT %s OFFSET %s;", data.getEnd() - data.getStart(), data.getStart());
         } else { // 끝이 -1이면 전부 다 로드
-            queryString += String.format("OFFSET %s ROWS;", data.getStart());
+            queryString += String.format("LIMIT 9999999 OFFSET %s ROWS;", data.getStart());
         }
 
         List<Map<String, Object>> queryResult = getRows(queryString);
@@ -108,7 +108,8 @@ public class PageDao {
                 "on p.category = c.id " +
                 "join recommends r " +
                 "on r.post = p.id " +
-                "WHERE c.id = %s;",
+                "WHERE c.id = %s " +
+                "group by c.id;",
                 id
         );
         List<Map<String, Object>> queryResult = getRows(queryString);
@@ -188,11 +189,12 @@ public class PageDao {
 
     public List<PostDTO> getPostList(PageVO data, int actType) {
         String queryString = "SELECT p.*, "
-                + "sum(r.recommend) as recommend, "
+                + "ifnull(sum(r.recommend), 0) as recommend,"
                 + "ifnull(sum(if(r.recommend=1, 1, 0)), 0) as loved, "
-                + "ifnull(sum(if(r.recommend=-1, -1, 0)), 0) as hated "
+                + "ifnull(sum(if(r.recommend=-1, -1, 0)), 0) as hated, "
+                + "ifnull(sum(r.recommend), 0) * 2 + ifnull(sum(p.viewers), 0) as interest "
                 + "from posts p "
-                + "join recommends r "
+                + "left join recommends r "
                 + "on p.id = r.post ";
         boolean whereAdded = false;
         if (actType == 0) {
@@ -233,11 +235,11 @@ public class PageDao {
                 queryString += ") ";
             }
         }
-        queryString += "GROUP BY id ";
+        queryString += "GROUP BY p.id ";
         if (actType == 0) {
             if (data.getSort().equals("loved")) {
                 //queryString += String.format("ORDER BY loved %s, viewers %s;", data.getDirection(), data.getDirection());
-                queryString += String.format("ORDER BY interest %s ", data.getDirection());
+                queryString += String.format("ORDER BY recommend %s ", data.getDirection());
             } else {
                 queryString += String.format("ORDER BY postdate %s ", data.getDirection());
             }
@@ -249,10 +251,10 @@ public class PageDao {
 
         if (data.getEnd() != -1) {
             //log.info(String.format("loaded %s ~ %s (total %s) posts", data.getStart(), data.getEnd(), data.getEnd() - data.getStart()));
-            queryString += String.format("OFFSET %s ROWS FETCH NEXT %s ROWS ONLY;", data.getStart(), data.getEnd() - data.getStart());
+            queryString += String.format("LIMIT %s OFFSET %s;", data.getEnd() - data.getStart(), data.getStart());
         } else { // 끝이 -1이면 전부 다 로드
             //log.info("loaded all posts");
-            queryString += String.format("OFFSET %s ROWS;", data.getStart());
+            queryString += String.format("LIMIT 9999999 OFFSET %s;", data.getStart());
         }
 
         List<Map<String, Object>> queryResult = getRows(queryString);
@@ -315,13 +317,15 @@ public class PageDao {
 
     public PostDTO getPostData(int id) {
         String queryString = String.format("SELECT p.*, "
-                + "sum(r.recommend) as recommend, "
+                + "ifnull(sum(r.recommend), 0) as recommend, "
                 + "ifnull(sum(if(r.recommend=1, 1, 0)), 0) as loved, "
-                + "ifnull(sum(if(r.recommend=-1, -1, 0)), 0) as hated "
+                + "ifnull(sum(if(r.recommend=-1, -1, 0)), 0) as hated, "
+                + "ifnull(sum(r.recommend), 0) * 2 + ifnull(sum(p.viewers), 0) as interest "
                 + "from posts p "
-                + "join recommends r "
+                + "left join recommends r "
                 + "on p.id = r.post "
-                + "WHERE p.id = %s;",
+                + "WHERE p.id = %s "
+                + "group by p.id;",
                 id
         );
         List<Map<String, Object>> result = getRows(queryString);
