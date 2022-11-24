@@ -184,7 +184,9 @@ public class PageService {
     public List<PostDTO> getPostList(PageVO data, int actType) {
         List<PostDTO> result = pageDao.getPostList(data, actType);
         for (PostDTO post : result) {
-            post.setTagdataList(pageDao.getTagDatas(post.getTaglist()));
+            post.setTagdataList(pageDao.getTagDatasFromPost(post));
+            post.setLovers(pageDao.getRecommendersFromPost(post, 1));
+            post.setHaters(pageDao.getRecommendersFromPost(post, -1));
 
             if (post.getContent().contains("{image}")) {
 //                map.put("mainImage", );
@@ -193,10 +195,6 @@ public class PageService {
             }
         }
         return result;
-    }
-
-    public int getPostCount(int id) {
-        return pageDao.getPostCount(id);
     }
 
     public int getPostCountQuery(PageVO vo, int actType) {
@@ -214,10 +212,13 @@ public class PageService {
             model.addAttribute("category", getCategoryData(postData.getCategory()));
             model.addAttribute("author", accountService.getProfile(postData.getAuthor()));
             model.addAttribute("comments", commentData);
-            postData.setTagdataList(pageDao.getTagDatas(postData.getTaglist()));
+            postData.setTagdataList(pageDao.getTagDatasFromPost(postData));
+
+            List<String> lovers = pageDao.getRecommendersFromPost(postData, 1);
+            List<String> haters = pageDao.getRecommendersFromPost(postData, -1);
+            postData.setLovers(lovers);
+            postData.setHaters(haters);
             if (sessionData != null) {
-                List<String> lovers = postData.getLoverList();
-                List<String> haters = postData.getHaterList();
                 model.addAttribute("loved", lovers.contains(sessionData));
                 model.addAttribute("hated", haters.contains(sessionData));
             } else {
@@ -335,7 +336,7 @@ public class PageService {
                 if (editing != -1) {
                     PostDTO postData = pageDao.getPostData(editing);
                     if (postData.getAuthor().equals(sessionData)) {
-                        postData.setTagdataList(pageDao.getTagDatas(postData.getTaglist()));
+                        postData.setTagdataList(pageDao.getTagDatasFromPost(postData));
                         model.addAttribute("pastData", postData);
                     } else {
                         return "redirect:";

@@ -55,14 +55,18 @@ public class PageDao {
 
     // Category
     public List<CategoryDTO> getCategoryList(PageVO data) {
-        String queryString = "SELECT categories.*, COUNT(posts.category) AS posts, SUM(IFNULL(posts.loved, 0)) - SUM(IFNULL(posts.hated, 0)) AS loved FROM categories " +
-                "LEFT JOIN posts " +
-                "ON (categories.id = posts.category) ";
+        String queryString = "select c.*, count(p.category) as posts, sum(ifnull(r.recommend, 0)) as loved " +
+                "from categories c " +
+                "join posts p " +
+                "on p.category = c.id " +
+                "join recommends r " +
+                "on r.post = p.id ";
+
         if (data.getSearch() != null) {
-            queryString += "WHERE " + String.format("categories.category LIKE '%%%s%%' ", data.getSearch());
+            queryString += "WHERE " + String.format("c.category LIKE '%%%s%%' ", data.getSearch());
         }
 
-        queryString += "GROUP BY categories.id ORDER BY id ";
+        queryString += "GROUP BY c.id ORDER BY id ";
         if (data.getDirection().equals("down")) {
             queryString += "DESC ";
         } else {
@@ -97,10 +101,16 @@ public class PageDao {
     }
 
     public CategoryDTO getCategoryData(int id) {
-        String queryString = "SELECT categories.*, COUNT(posts.category) AS posts, SUM(IFNULL(posts.loved, 0)) - SUM(IFNULL(posts.hated, 0)) AS loved FROM categories " +
-                "LEFT JOIN posts " +
-                "ON (categories.id = posts.category) ";
-        queryString += String.format("WHERE categories.id = %s", id);
+        String queryString = String.format(
+                "select c.*, count(p.category) as posts, sum(ifnull(r.recommend, 0)) as loved " +
+                "from categories c " +
+                "join posts p " +
+                "on p.category = c.id " +
+                "join recommends r " +
+                "on r.post = p.id " +
+                "WHERE c.id = %s;",
+                id
+        );
         List<Map<String, Object>> queryResult = getRows(queryString);
         if (queryResult.size() >= 1) {
             return mapper.convertValue(queryResult.get(0), CategoryDTO.class);
@@ -177,7 +187,10 @@ public class PageDao {
     }
 
     public List<PostDTO> getPostList(PageVO data, int actType) {
-        String queryString = "SELECT p.*, sum(r.recommend) as recommend, sum(if(r.recommend=1, 1, 0)) as loved, sum(if(r.recommend=-1, -1, 0)) as hated "
+        String queryString = "SELECT p.*, "
+                + "sum(r.recommend) as recommend, "
+                + "ifnull(sum(if(r.recommend=1, 1, 0)), 0) as loved, "
+                + "ifnull(sum(if(r.recommend=-1, -1, 0)), 0) as hated "
                 + "from posts p "
                 + "join recommends r "
                 + "on p.id = r.post ";
@@ -185,9 +198,16 @@ public class PageDao {
         if (actType == 0) {
             whereAdded = true;
             queryString += String.format("WHERE category = %s ", data.getCategoryIndex());
-        } else if (actType == 4) {
+        } else if (actType == 4) { // 태그 검색, 카테고리 인덱스로 tag id 들어옴
             whereAdded = true;
-            queryString += String.format("WHERE (taglist LIKE '%s' OR taglist LIKE '%% %s' OR taglist LIKE '%s %%' OR taglist LIKE '%% %s %%') ", data.getCategoryIndex(), data.getCategoryIndex(), data.getCategoryIndex(), data.getCategoryIndex());
+            queryString += String.format(
+                    "JOIN tagref tr " +
+                    "ON p.id = tr.post " +
+                    "JOIN tags t " +
+                    "ON tr.tag = t.id " +
+                    "WHERE t.id = %s ",
+                    data.getCategoryIndex()
+            );
         }
 
         if (data.getSearch() != null) {
@@ -245,17 +265,26 @@ public class PageDao {
 
     public int getPostCountQuery(PageVO data, int actType) {
         String queryString = "SELECT id FROM posts ";
+
         boolean whereAdded = false;
         if (actType == 0) {
             queryString += String.format("WHERE category = %s ", data.getCategoryIndex());
             whereAdded = true;
-        } else if (actType == 4) {
+        } else if (actType == 4) { // 태그 검색, 카테고리 인덱스로 tag id 들어옴
             whereAdded = true;
-            queryString += String.format("WHERE (taglist LIKE '%s' OR taglist LIKE '%% %s' OR taglist LIKE '%s %%' OR taglist LIKE '%% %s %%') ", data.getCategoryIndex(), data.getCategoryIndex(), data.getCategoryIndex(), data.getCategoryIndex());
+            queryString += String.format(
+                    "p " +
+                    "JOIN tagref r " +
+                    "ON p.id = r.post " +
+                    "JOIN tags t" +
+                    "ON r.tag = t.id " +
+                    "WHERE t.id = %s ",
+                    data.getCategoryIndex()
+            );
         }
 
         if (data.getSearch() != null) {
-            boolean firstQuestion = true;
+            boolean firstQuestion = false;
             if (data.isTitle()) {
                 queryString += queryConnect(firstQuestion, whereAdded) + String.format("postname LIKE '%%%s%%' ", data.getSearch());
                 firstQuestion = false;
@@ -284,36 +313,17 @@ public class PageDao {
         return queryResult.size();
     }
 
-    public int getPostCount(int id) {
-        if (id != -1) {
-            String queryString = String.format("SELECT COUNT(id) AS csize FROM posts WHERE id = %s;", id);
-            List<Map<String, Object>> queryResult = getRows(queryString);
-            if (queryResult.size() >= 1) {
-                if (queryResult.get(0).get("csize") != null) {
-                    return Integer.parseInt(queryResult.get(0).get("csize").toString());
-                } else {
-                    return 0;
-                }
-            } else {
-                return 0;
-            }
-        } else {
-            String queryString = String.format("SELECT COUNT(id) AS csize FROM posts;");
-            List<Map<String, Object>> queryResult = getRows(queryString);
-            if (queryResult.size() >= 1) {
-                if (queryResult.get(0).get("csize") != null) {
-                    return Integer.parseInt(queryResult.get(0).get("csize").toString());
-                } else {
-                    return 0;
-                }
-            } else {
-                return 0;
-            }
-        }
-    }
-
     public PostDTO getPostData(int id) {
-        String queryString = String.format("SELECT * FROM posts WHERE id = %s", id);
+        String queryString = String.format("SELECT p.*, "
+                + "sum(r.recommend) as recommend, "
+                + "ifnull(sum(if(r.recommend=1, 1, 0)), 0) as loved, "
+                + "ifnull(sum(if(r.recommend=-1, -1, 0)), 0) as hated "
+                + "from posts p "
+                + "join recommends r "
+                + "on p.id = r.post "
+                + "WHERE p.id = %s;",
+                id
+        );
         List<Map<String, Object>> result = getRows(queryString);
         if (result.size() >= 1) {
             return mapper.convertValue(result.get(0), PostDTO.class);
@@ -375,36 +385,17 @@ public class PageDao {
     public int pressRecommend(String email, RecommendVO vo) {
         PostDTO postData = getPostData(vo.getId());
         if (postData != null) {
-            String queryString = null;
-            HashMap<String, List<String>> recommends = new HashMap<>();
-            recommends.put("loved", postData.getLoverList());
-            recommends.put("hated", postData.getHaterList());
-            String targetKey = "loved";
-            String otherKey = "hated";
+            int recommendCount = 1;
             if (vo.isLove() == false) {
-                targetKey = "hated";
-                otherKey = "loved";
+                recommendCount = -1;
             }
 
-            List<String> targetList = recommends.get(targetKey);
-            List<String> otherList = recommends.get(otherKey);
-            if (targetList.contains(email)) { // 누른 대상 해제
-                targetList.remove(email);
-                queryString = String.format("%s = %s - 1", targetKey, targetKey);
-            } else { // 누른 대상 추가
-                targetList.add(email);
-                queryString = String.format("%s = %s + 1", targetKey, targetKey);
-            }
-            if (otherList.contains(email)) { // 누르지 않은 대상 취소
-                otherList.remove(email);
-                queryString += String.format(", %s = %s - 1", otherKey, otherKey);
-            }
-            queryString = String.format(
-                    "UPDATE posts SET %s, lovers = '%s', haters = '%s' WHERE id = %s",
-                    queryString, String.join(" ", recommends.get("loved")), String.join(" ", recommends.get("hated")), vo.getId()
+            String queryString = String.format( // 기존에 있던 평가를 제거하고 새 평가 추가
+                    "DELETE FROM recommends WHERE post = %s and target = '%s';"
+                    + "INSERT INTO recommends VALUES(%s, %s, %s);",
+                    postData.getId(), email,
+                    postData.getId(), email, recommendCount
             );
-
-            //log.info(queryString);
             return jt.update(queryString);
         } else {
             return 0;
@@ -493,6 +484,24 @@ public class PageDao {
         return result;
     }
 
+    public List<TagDTO> getTagDatasFromPost(PostDTO data) {
+        String queryString = String.format(
+                "SELECT d.* "
+                + "FROM tagref r "
+                + "JOIN tags d "
+                + "ON r.tag = d.id "
+                + "WHERE r.post = %s;",
+                data.getId()
+        );
+
+        List<TagDTO> result = new ArrayList<>();
+        List<Map<String, Object>> queryResult = getRows(queryString);
+        for (Map<String, Object> row : queryResult) {
+            result.add(mapper.convertValue(row, TagDTO.class));
+        }
+        return result;
+    }
+
     public TagDTO getTagData(int id) {
         List<Map<String, Object>> queryResult = getRows(String.format("SELECT * FROM tags WHERE id = %s", id));
         if (queryResult.size() >= 1) {
@@ -535,6 +544,17 @@ public class PageDao {
 
     public int addTag(TagCreateDTO data) {
         return jt.update(String.format("INSERT INTO tags(tagname, tagdesc, adminonly, tagcolor) VALUES('%s', '%s', %s, '%s');", data.getTag().replaceAll("'", "''"), data.getAbout().replaceAll("'", "''"), data.isAdmin(), data.getColor()));
+    }
+
+    // Recommends
+    public List<String> getRecommendersFromPost(PostDTO data, int finding) {
+        String queryString = String.format("SELECT target FROM recommends WHERE post = %s and recommend = %s;", data.getId(), finding);
+        List<Map<String, Object>> queryResult = getRows(queryString);
+        List<String> result = new ArrayList<>();
+        for (Map<String, Object> row : queryResult) {
+            result.add(row.get("target").toString());
+        }
+        return result;
     }
 
     // Misc

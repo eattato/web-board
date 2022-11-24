@@ -120,11 +120,13 @@ public class MainController {
                 log.info("redirect - no category data");
                 return "redirect:/";
             }
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             log.info(e.toString());
             log.info("redirect - couldn't get id, got " + id);
-            return "redirect:/";
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return "redirect:/";
     }
 
     @GetMapping("/popular")
