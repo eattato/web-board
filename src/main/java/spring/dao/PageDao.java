@@ -191,7 +191,7 @@ public class PageDao {
         String queryString = "SELECT p.*, "
                 + "ifnull(sum(r.recommend), 0) as recommend,"
                 + "ifnull(sum(if(r.recommend=1, 1, 0)), 0) as loved, "
-                + "ifnull(sum(if(r.recommend=-1, -1, 0)), 0) as hated, "
+                + "ifnull(sum(if(r.recommend=-1, -1, 0)), 0) * -1 as hated, "
                 + "ifnull(sum(r.recommend), 0) * 2 + ifnull(sum(p.viewers), 0) as interest "
                 + "from posts p "
                 + "left join recommends r "
@@ -319,7 +319,7 @@ public class PageDao {
         String queryString = String.format("SELECT p.*, "
                 + "ifnull(sum(r.recommend), 0) as recommend, "
                 + "ifnull(sum(if(r.recommend=1, 1, 0)), 0) as loved, "
-                + "ifnull(sum(if(r.recommend=-1, -1, 0)), 0) as hated, "
+                + "ifnull(sum(if(r.recommend=-1, -1, 0)), 0) * -1 as hated, "
                 + "ifnull(sum(r.recommend), 0) * 2 + ifnull(sum(p.viewers), 0) as interest "
                 + "from posts p "
                 + "left join recommends r "
@@ -389,18 +389,37 @@ public class PageDao {
     public int pressRecommend(String email, RecommendVO vo) {
         PostDTO postData = getPostData(vo.getId());
         if (postData != null) {
+            postData.setLovers(getRecommendersFromPost(postData, 1));
+            postData.setHaters(getRecommendersFromPost(postData, -1));
+
             int recommendCount = 1;
+            boolean alreadyPressed = false;
             if (vo.isLove() == false) {
                 recommendCount = -1;
+                if (postData.getHaters().contains(email)) {
+                    alreadyPressed = true;
+                }
+            } else {
+                if (postData.getLovers().contains(email)) {
+                    alreadyPressed = true;
+                }
             }
 
+            int result = 1;
             String queryString = String.format( // 기존에 있던 평가를 제거하고 새 평가 추가
-                    "DELETE FROM recommends WHERE post = %s and target = '%s';"
-                    + "INSERT INTO recommends VALUES(%s, %s, %s);",
-                    postData.getId(), email,
-                    postData.getId(), email, recommendCount
+                    "DELETE FROM recommends WHERE post = %s and target = '%s';",
+                    postData.getId(), email
             );
-            return jt.update(queryString);
+            result = jt.update(queryString);
+
+            if (alreadyPressed == false) {
+                queryString = String.format(
+                        "INSERT INTO recommends VALUES(%s, '%s', %s);",
+                        postData.getId(), email, recommendCount
+                );
+                result = jt.update(queryString);
+            }
+            return result;
         } else {
             return 0;
         }
