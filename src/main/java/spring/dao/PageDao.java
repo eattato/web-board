@@ -266,7 +266,7 @@ public class PageDao {
     }
 
     public int getPostCountQuery(PageVO data, int actType) {
-        String queryString = "SELECT id FROM posts ";
+        String queryString = "SELECT count(p.id) FROM posts p ";
 
         boolean whereAdded = false;
         if (actType == 0) {
@@ -275,10 +275,9 @@ public class PageDao {
         } else if (actType == 4) { // 태그 검색, 카테고리 인덱스로 tag id 들어옴
             whereAdded = true;
             queryString += String.format(
-                    "p " +
                     "JOIN tagref r " +
                     "ON p.id = r.post " +
-                    "JOIN tags t" +
+                    "JOIN tags t " +
                     "ON r.tag = t.id " +
                     "WHERE t.id = %s ",
                     data.getCategoryIndex()
