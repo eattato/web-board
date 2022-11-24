@@ -375,14 +375,19 @@ public class PageDao {
         String queryString = "UPDATE posts SET ";
         queryString += String.format("category = %s, ", vo.getCategory());
         queryString += String.format("postname = '%s', ", vo.getTitle().replaceAll("'", "''"));
-        queryString += String.format("content = '%s', ", vo.getContent().replaceAll("'", "''"));
+        queryString += String.format("content = '%s' ", vo.getContent().replaceAll("'", "''"));
         queryString += String.format("WHERE id = %s;", vo.getId());
 
-        queryString += String.format("DELETE FROM board.tagref WHERE id = %s;", vo.getId()); // 현재 태그 테이블 삭제
-        for (int tag : vo.getTagsAsInt()) { // 수정된 태그 다시 추가
-            queryString += String.format("INSERT INTO tagref(post, tag) VALUES(%s, %s);", vo.getId(), tag);
+        int result = jt.update(queryString);
+        if (result == 1) {
+            queryString = String.format("DELETE FROM board.tagref WHERE post = %s;", vo.getId()); // 현재 태그 테이블 삭제
+            int removed = jt.update(queryString);
+            for (int tag : vo.getTagsAsInt()) { // 수정된 태그 다시 추가
+                queryString = String.format("INSERT INTO tagref(post, tag) VALUES(%s, %s);", vo.getId(), tag);
+                int done = jt.update(queryString);
+            }
         }
-        return jt.update(queryString);
+        return result;
     }
 
     public int addToPost(int id, String target, int add) {
