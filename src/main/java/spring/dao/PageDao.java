@@ -102,11 +102,11 @@ public class PageDao {
 
     public CategoryDTO getCategoryData(int id) {
         String queryString = String.format(
-                "select c.*, count(p.category) as posts, sum(ifnull(r.recommend, 0)) as loved " +
+                "select c.*, count(p.id) as posts, sum(ifnull(r.recommend, 0)) as loved " +
                 "from categories c " +
-                "join posts p " +
+                "left join posts p " +
                 "on p.category = c.id " +
-                "join recommends r " +
+                "left join recommends r " +
                 "on r.post = p.id " +
                 "WHERE c.id = %s " +
                 "group by c.id;",
