@@ -75,7 +75,7 @@ public class PageDao {
         if (data.getEnd() != -1) {
             queryString += String.format("LIMIT %s OFFSET %s;", data.getEnd() - data.getStart(), data.getStart());
         } else { // 끝이 -1이면 전부 다 로드
-            queryString += String.format("LIMIT 9999999 OFFSET %s ROWS;", data.getStart());
+            queryString += String.format("LIMIT 9999999 OFFSET %s;", data.getStart());
         }
 
         List<Map<String, Object>> queryResult = getRows(queryString);
