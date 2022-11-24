@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <title>BOARDARC - 글 작성</title>
-    <link rel="icon" href="http://localhost:8888/images/official/icon.png" />
+    <link rel="icon" th:href="@{/images/official/icon.png}" />
     <link rel="stylesheet" th:href="@{/components/css/style.css}" />
     <link rel="stylesheet" th:href="@{/editor/css/style.css}" />
     <script
@@ -14,13 +14,14 @@
     <script src="../components/js/jquery.cookie.js"></script>
     <script src="../components/js/header.js"></script>
     <script src="../library/smarteditor2-2.8.2.3/js/HuskyEZCreator.js"></script>
+    <script src="../library/hangul/hangul.js"></script>
     <script src="../editor/js/script.js"></script>
   </head>
   <body>
     <div class="wrap">
       <div class="banner">
         <a href="#">
-          <img src="" alt="배너" />
+          <img th:src="@{/images/official/banner.png}" alt="배너" />
         </a>
       </div>
       <div class="menu" th:replace="fragments/common :: header"></div>
@@ -33,20 +34,51 @@
                   th:each="category : ${categoryList}"
                   th:value="${category.getId()}"
                   th:text="${category.getCategory()}"
+                  th:selected="${pastData != null and pastData.getCategory() == category.getId()}"
                 ></option>
               </select>
               <input
                 id="editor_title"
                 type="text"
                 placeholder="제목을 입력하세요."
+                th:value="${pastData == null} ? '' : ${pastData.getPostname()}"
               />
               <button id="editor_post" type="button">게시</button>
             </div>
             <div class="editor_bottom">
               <ul>
-                <li class="editor_tag">
-                  <div class="editor_tag_name">태그</div>
-                  <div class="editor_tag_close">x</div>
+                <div class="past" th:if="${pastData != null}">
+                  <li
+                    class="editor_tag_name"
+                    th:if="${#lists.size(pastData.getTagdataList()) >= 1}"
+                    th:each="tag : ${pastData.getTagdataList()}"
+                    th:id="|tag${tag.getId()}|"
+                    th:text="${tag.getTagname()}"
+                    th:title="${tag.getTagdesc()}"
+                    th:style="|color: #${tag.getTagcolor()}|"
+                  ></li>
+                </div>
+
+                <li class="editor_tag_add">
+                  <div class="editor_tag_display">+</div>
+                  <input
+                    class="editor_tag_input"
+                    type="text"
+                    placeholder="태그를 검색하세요."
+                  />
+                  <ul class="editor_tag_recommend">
+                    <div
+                      th:each="tag : ${tags}"
+                      th:if="${tag.getAdminonly() == false || profile.isIsadmin() == true}"
+                      th:text="${tag.getTagname()}"
+                      th:title="${tag.getTagdesc()}"
+                      th:style="|color: #${tag.getTagcolor()}|"
+                      th:id="|tag${tag.getId()}|"
+                      class="editor_tag_name"
+                    >
+                      태그 이름
+                    </div>
+                  </ul>
                 </li>
               </ul>
             </div>
@@ -58,6 +90,17 @@
             cols="30"
             rows="10"
             placeholder="내용을 입력하세요."
+            th:unless="${pastData != null}"
+          ></textarea>
+
+          <textarea
+            name="editor_text"
+            id="editor_text"
+            cols="30"
+            rows="10"
+            placeholder="내용을 입력하세요."
+            th:if="${pastData != null}"
+            th:text="${pastData.getContent()}"
           ></textarea>
         </div>
       </div>

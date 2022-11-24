@@ -39,12 +39,130 @@ $(() => {
     elPlaceHolder: "editor_text",
     sSkinURI: "../../../library/smarteditor2-2.8.2.3/SmartEditor2Skin.html",
     fCreator: "createSEditor2",
+    htParams: {
+      bSkipXssFilter: true, // client-side xss filter 무시 여부 (true:사용하지 않음 / 그외:사용)
+    },
   });
 
   let category = $("#editor_category");
   let title = $("#editor_title");
   let post = $("#editor_post");
+  let addTag = $(".editor_tag_add");
+  let tagRecommends = $(".editor_tag_recommend .editor_tag_name");
+  let tagInput = $(".editor_tag_input");
+  let tagIncluded = {};
   let canPost = true;
+
+  const addTagToTab = (tag) => {
+    let idstr = tag.attr("id");
+    let id = -1;
+    if (idstr.includes("tag") == true) {
+      id = Number(idstr.replace("tag", ""));
+    }
+
+    if (id != -1) {
+      tag.click(() => {
+        if (id in tagIncluded == false) {
+          let newTag = $("<li class='editor_tag'></li>");
+          tagIncluded[id] = newTag;
+          tag.clone().appendTo(newTag);
+          let closeButton = $("<div class='editor_tag_close'>x</div>");
+          newTag.append(closeButton);
+          newTag.detach().prependTo(".editor_bottom > ul");
+
+          closeButton.click(() => {
+            if (id in tagIncluded) {
+              tagIncluded[id].remove();
+              delete tagIncluded[id];
+            }
+          });
+        }
+      });
+      //console.log("done");
+    } else {
+      //console.log("id wrong");
+    }
+  };
+
+  // 태그 추가 버튼
+  $(".editor_tag_display").click(() => {
+    let enabled = addTag.hasClass("activated");
+    if (enabled == false) {
+      addTag.addClass("activated");
+    } else {
+      addTag.removeClass("activated");
+    }
+  });
+
+  // 태그 추천으로 추가
+  tagRecommends.each((ind, obj) => {
+    let tag = $(obj);
+    addTagToTab(tag);
+  });
+  // 수정 시 예전에 있던 태그 추가
+  $(".past .editor_tag_name").each((ind, obj) => {
+    let tag = $(obj);
+    let idstr = tag.attr("id");
+    let id = -1;
+    if (idstr.includes("tag") == true) {
+      id = Number(idstr.replace("tag", ""));
+    }
+
+    let newTag = $("<li class='editor_tag'></li>");
+    tagIncluded[id] = newTag;
+    tag.detach().appendTo(newTag);
+    let closeButton = $("<div class='editor_tag_close'>x</div>");
+    newTag.append(closeButton);
+    newTag.detach().prependTo(".editor_bottom > ul");
+
+    closeButton.click(() => {
+      if (id in tagIncluded) {
+        tagIncluded[id].remove();
+        delete tagIncluded[id];
+        closeButton.off("click");
+      }
+    });
+  });
+
+  // 태그 입력 추천
+  tagInput.on("input", () => {
+    let inputValue = tagInput.val();
+    if (inputValue == null) {
+      inputValue = "";
+    }
+    let inputSplit = Hangul.disassemble(inputValue);
+
+    tagRecommends.each((ind, obj) => {
+      let tag = $(obj);
+      let tagName = tag.text();
+      let searched = true;
+
+      // fuzzy searching
+      let tagSplit = Hangul.disassemble(tagName);
+      for (let ind in inputSplit) {
+        let foundChar = false;
+        for (let tagInd in tagSplit) {
+          if (inputSplit[ind] === tagSplit[tagInd]) {
+            foundChar = true;
+            tagSplit.splice(tagInd, 1);
+            //console.log(tagName + ":" + inputSplit[ind] + "(" + ind + ")" + " == " + cutted + "(" + tagInd + ")" + + ", used " + tagSplit[tagInd] + ", now " + tagSplit.join(", ") + " current");
+            break;
+          }
+        }
+
+        if (foundChar == false) {
+          searched = false;
+          break;
+        }
+      }
+
+      if (searched == true) {
+        tag.css({ display: "block" });
+      } else {
+        tag.css({ display: "none" });
+      }
+    });
+  });
 
   post.click(() => {
     if (canPost == true) {
@@ -58,16 +176,25 @@ $(() => {
             title: title.val(),
             content: content,
             category: category.val(),
-            tag: "",
+            tags: Object.keys(tagIncluded).join(" "),
+          };
+          let id = null;
+          if (getPathParameter(1) != null) {
+            id = Number(getPathParameter(1));
+            data.id = id;
+          }
+
+          let errors = {
+            "no session": "로그인이 필요합니다!",
+            "post not valid": "내용이 유효하지 않습니다!",
+            "title not valid": "제목이 유효하지 않습니다!",
+            "category does not exist": "존재하지 않는 카테고리입니다!",
+            "data save failed": "글을 게시하는 데 실패했습니다.",
+            "tag not found": "존재하지 않는 태그를 사용했습니다!",
+            "post not found": "수정할 글을 찾지 못했습니다!",
+            "no access": "해당 글의 수정 권한이 없습니다!",
           };
 
-          let errors = [
-            "no session",
-            "post not valid",
-            "title not valid",
-            "category does not exist",
-            "data save failed",
-          ];
           fetch("http://localhost:8888/post", {
             method: "POST",
             headers: {
@@ -78,13 +205,16 @@ $(() => {
             .then((response) => response.text())
             .then((result) => {
               canPost = true;
-              if (errors.indexOf(result) == -1) {
+              if (result in errors) {
+                alert(errors[result]);
+              } else {
                 let link = "http://localhost:8888/posts/" + result;
                 window.location.href = link;
               }
             })
             .catch((result) => {
               canPost = true;
+              console.log(result);
             });
         } else {
           alert("내용을 1자 이상 적어주세요.");

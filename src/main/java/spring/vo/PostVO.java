@@ -2,9 +2,11 @@ package spring.vo;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @Setter
+@Slf4j
 public class PostVO {
     // Properties
     private String title;
@@ -26,16 +28,20 @@ public class PostVO {
     }
 
     public int[] getTagsAsInt() {
-        String[] split = tags.split(" ");
-        int[] result = new int[split.length];
-        for (int ind = 0; ind < split.length; ind++) {
-            try {
-                result[ind] = Integer.parseInt(split[ind]);
-            } catch (Exception e) {
-                break;
+        if (tags.equals("")) {
+            return new int[0];
+        } else {
+            String[] split = tags.split(" ");
+            int[] result = new int[split.length];
+            for (int ind = 0; ind < split.length; ind++) {
+                try {
+                    result[ind] = Integer.parseInt(split[ind]);
+                } catch (Exception e) {
+                    break;
+                }
             }
+            return result;
         }
-        return result;
     }
 
     // Setter
@@ -47,25 +53,29 @@ public class PostVO {
 
     public void setTags(String target) {
         if (target != null) {
-            String[] split = target.split(" ");
-            if (split.length >= 1) {
-
+            if (target.equals("")) {
+                tags = "";
             } else {
-                split = new String[1];
-                split[0] = target;
-            }
+                String[] split = target.split(" ");
+                if (split.length >= 1) {
 
-            boolean available = true;
-            for (String tag : split) {
-                try {
-                    Integer.parseInt(tag);
-                } catch (Exception e) {
-                    available = false;
-                    break;
+                } else {
+                    split = new String[1];
+                    split[0] = target;
                 }
-            }
-            if (available == true) {
-                tags = target;
+
+                boolean available = true;
+                for (String tag : split) {
+                    try {
+                        Integer.parseInt(tag);
+                    } catch (Exception e) {
+                        available = false;
+                        break;
+                    }
+                }
+                if (available == true) {
+                    tags = target;
+                }
             }
         }
     }

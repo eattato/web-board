@@ -56,6 +56,13 @@ const getPathParameter = (index) => {
   return split[index];
 };
 
+$().ready(() => {
+  // 0 = 새로운 이동, 1 = 새로고침, 2 = 이동 버튼 사용
+  if (performance.navigation.type == 2) {
+    window.location.href = window.location.href;
+  }
+});
+
 // $(".auto_scale").each((ind, obj) => {
 //   let element = $(obj);
 //   while (element[0].scrollWidth > element.innerWidth()) {

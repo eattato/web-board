@@ -50,6 +50,7 @@
                 <div class="past" th:if="${pastData != null}">
                   <li
                     class="editor_tag_name"
+                    th:if="${#lists.size(pastData.getTagdataList()) >= 1}"
                     th:each="tag : ${pastData.getTagdataList()}"
                     th:id="|tag${tag.getId()}|"
                     th:text="${tag.getTagname()}"

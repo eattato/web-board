@@ -519,7 +519,7 @@ public class PageDao {
         String queryString = String.format(
                 "SELECT d.* "
                 + "FROM tagref r "
-                + "JOIN tags d "
+                + "LEFT JOIN tags d "
                 + "ON r.tag = d.id "
                 + "WHERE r.post = %s;",
                 data.getId()
