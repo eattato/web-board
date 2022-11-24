@@ -266,7 +266,7 @@ public class PageDao {
     }
 
     public int getPostCountQuery(PageVO data, int actType) {
-        String queryString = "SELECT count(p.id) FROM posts p ";
+        String queryString = "SELECT p.id FROM posts p ";
 
         boolean whereAdded = false;
         if (actType == 0) {
