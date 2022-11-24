@@ -45,7 +45,7 @@ public class PageDao {
 
         for (String key : target.keySet()) {
             keys.add(key);
-            vals.add(target.get(key).toString());
+            vals.add(String.format("'%s'", target.get(key).toString()));
         }
 
         result[0] = String.join(", ", keys);
@@ -361,10 +361,14 @@ public class PageDao {
 
         String[] queryMapString = queryDict(queryMap);
         String queryString = String.format("INSERT INTO posts(%s) VALUES(%s);", queryMapString[0], queryMapString[1]);
-        for (int tag : vo.getTagsAsInt()) {
-            queryString += String.format("INSERT INTO tagref(post, tag) VALUES(%s, %s);", postId, tag);
+        int created = jt.update(queryString);
+        if (created == 1) {
+            for (int tag : vo.getTagsAsInt()) {
+                queryString = String.format("INSERT INTO tagref(post, tag) VALUES(%s, %s);", postId, tag);
+                jt.update(queryString);
+            }
         }
-        return jt.update(queryString);
+        return 1;
     }
 
     public int updatePost(PostVO vo) {
