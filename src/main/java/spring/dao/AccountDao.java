@@ -119,9 +119,12 @@ public class AccountDao {
         return jt.update(String.format("UPDATE members SET pw = '%s' WHERE email = '%s'", password, email));
     }
 
-    public List<AccountDataDTO> getAllUsers() {
-        // 민감한 정보 제외
-        String queryString = "SELECT email, nickname, verify, faceimg, about, isadmin FROM members;";
+    public List<AccountDataDTO> getUsersPage(int page, int userCountPerPage) {
+        String queryString = String.format(
+                "SELECT email, nickname, verify, faceimg, about, isadmin "
+                + "from members limit %s offset %s;",
+                userCountPerPage, page * userCountPerPage
+        );
         List<Map<String, Object>> queryResult = getRows(queryString);
 
         List<AccountDataDTO> result = new ArrayList<>();
@@ -129,5 +132,15 @@ public class AccountDao {
             result.add(mapper.convertValue(row, AccountDataDTO.class));
         }
         return result;
+    }
+
+    public int getUserCount() {
+        String queryString = String.format("select ifnull(count(email), 0) as users from members;");
+        List<Map<String, Object>> queryResult = getRows(queryString);
+        if (queryResult.size() >= 1) {
+            return Integer.parseInt(queryResult.get(0).get("users").toString());
+        } else {
+            return 0;
+        }
     }
 }

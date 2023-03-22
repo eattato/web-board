@@ -1,6 +1,7 @@
 package spring.controller;
 
 import java.io.*;
+import java.text.ParseException;
 import java.util.*;
 
 import lombok.extern.slf4j.Slf4j;
@@ -162,9 +163,9 @@ public class MainController {
         return "category";
     }
 
-    @GetMapping("/control/{menu}")
-    public String control(HttpServletRequest request, Model model, @PathVariable String menu) {
-        return pageService.controlPage(request, model, menu);
+    @GetMapping(value = {"/control/{menu}", "/control/{menu}/{page}"})
+    public String control(HttpServletRequest request, Model model, @PathVariable String menu, @PathVariable(required = false) Integer page) {
+        return pageService.controlPage(request, model, menu, page);
     }
 
     @GetMapping("/tag/{id}")

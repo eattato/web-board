@@ -139,6 +139,17 @@ public class ApiController {
         }
     }
 
+    @GetMapping("/resource/**")
+    public String getResource(HttpServletRequest request) {
+        String[] fullLink = request.getRequestURI().split("/");
+        String directory = "";
+        for (int ind = 2; ind < fullLink.length; ind++) {
+            directory = directory + "/" + fullLink[ind];
+        }
+        String basicPath = System.getProperty("user.dir");
+        directory = basicPath + directory;
+    }
+
     @PostMapping("/tempupload")
     public ResponseEntity<?> tempUpload(HttpServletRequest request) {
         String result = fileService.addTempImage(request);

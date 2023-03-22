@@ -502,7 +502,7 @@ public class PageService {
     }
 
     // page access
-    public String controlPage(HttpServletRequest request, Model model, String menu) {
+    public String controlPage(HttpServletRequest request, Model model, String menu, Integer page) {
         HttpSession session = request.getSession();
         String sessionData = accountService.getSession(session);
 
@@ -523,7 +523,10 @@ public class PageService {
                 model.addAttribute("tags", getAllTags());
                 return "control/tags";
             } else if (menu.equals("members")) {
-                model.addAttribute("members", accountService.getAllUsers());
+                int userCountPerPage = 10;
+                model.addAttribute("members", accountService.getUsersPage(page, userCountPerPage));
+                model.addAttribute("page", page);
+                model.addAttribute("pageCount", accountService.getUsersPageCount(userCountPerPage));
                 return "control/members";
             }
         }

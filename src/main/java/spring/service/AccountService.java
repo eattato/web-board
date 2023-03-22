@@ -273,6 +273,18 @@ public class AccountService {
         return accountDao.getUserData(email);
     }
 
+    public List<AccountDataDTO> getUsersPage(int page, int userCountPerPage) {
+        return accountDao.getUsersPage(page, userCountPerPage);
+    }
+
+    public int getUserCount() {
+        return accountDao.getUserCount();
+    }
+
+    public int getUsersPageCount(int userCountPerPage) {
+        return (int)Math.floor((float)getUserCount() / userCountPerPage);
+    }
+
     public String verify(HttpServletRequest request, VerifyVO vo, Model model) {
         HttpSession session = request.getSession();
         String sessionData = getSession(session);
@@ -410,10 +422,6 @@ public class AccountService {
         SidebarMenu sidebar = loadSidebarMenu(request, model, null);
         HttpSession session = request.getSession();
         session.setAttribute("sidebar", menu);
-    }
-
-    public List<AccountDataDTO> getAllUsers() {
-        return accountDao.getAllUsers();
     }
 
     // Private Methods
